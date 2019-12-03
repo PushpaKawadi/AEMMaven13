@@ -35,21 +35,18 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE Save in DB",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE Save in DB", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=SPE2579Save" })
 public class CSUFSPE2579DB implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(CSUFSPE2579DB.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFSPE2579DB.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
 		Connection conn = null;
 
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -220,11 +217,9 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -237,8 +232,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -252,446 +246,191 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					org.w3c.dom.NodeList nList = doc
-							.getElementsByTagName("afBoundData");
+					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
 					for (int temp = 0; temp < nList.getLength(); temp++) {
 						org.w3c.dom.Node nNode = nList.item(temp);
 
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							initials = eElement
-									.getElementsByTagName("Initials").item(0)
+							initials = eElement.getElementsByTagName("Initials").item(0).getTextContent();
+							hrDate = eElement.getElementsByTagName("HrDate").item(0).getTextContent();
+							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
-							hrDate = eElement.getElementsByTagName("HrDate")
-									.item(0).getTextContent();
-							ratingPeriodFrom = eElement
-									.getElementsByTagName("ReviewPeriodFrom")
-									.item(0).getTextContent();
-							ratingPeriodTo = eElement
-									.getElementsByTagName("ReviewPeriodTo")
-									.item(0).getTextContent();
-							empId = eElement.getElementsByTagName("EmplID")
-									.item(0).getTextContent();
-							empRCD = eElement.getElementsByTagName("EmpRCD")
-									.item(0).getTextContent();
-							cbid = eElement.getElementsByTagName("CBID")
-									.item(0).getTextContent();
-							classification = eElement
-									.getElementsByTagName("Classification")
-									.item(0).getTextContent();
-							range = eElement.getElementsByTagName("Range")
-									.item(0).getTextContent();
-							evaluationType = eElement
-									.getElementsByTagName("EvaluationType")
-									.item(0).getTextContent();
-							firstName = eElement
-									.getElementsByTagName("StaffFirstName")
-									.item(0).getTextContent();
-							lastName = eElement
-									.getElementsByTagName("StaffLastName")
-									.item(0).getTextContent();
-							departmentID = eElement
-									.getElementsByTagName("Department_ID")
-									.item(0).getTextContent();
-							departmentName = eElement
-									.getElementsByTagName("Department").item(0)
+							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
+							empId = eElement.getElementsByTagName("EmplID").item(0).getTextContent();
+							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
+							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
+							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
+							range = eElement.getElementsByTagName("Range").item(0).getTextContent();
+							evaluationType = eElement.getElementsByTagName("EvaluationType").item(0).getTextContent();
+							firstName = eElement.getElementsByTagName("StaffFirstName").item(0).getTextContent();
+							lastName = eElement.getElementsByTagName("StaffLastName").item(0).getTextContent();
+							departmentID = eElement.getElementsByTagName("Department_ID").item(0).getTextContent();
+							departmentName = eElement.getElementsByTagName("Department").item(0).getTextContent();
+							draftDate = eElement.getElementsByTagName("DraftDate").item(0).getTextContent();
+							athleticsEmp = eElement.getElementsByTagName("AthleticsEmp").item(0).getTextContent();
+							staffposdesc = eElement.getElementsByTagName("Staffposdesc").item(0).getTextContent();
+							evaluatorsName = eElement.getElementsByTagName("EvaluatorsName").item(0).getTextContent();
+							evaluatorsTitle = eElement.getElementsByTagName("EvaluatorsTitle").item(0).getTextContent();
+							qualityRB = eElement.getElementsByTagName("Quality").item(0).getTextContent();
+							quality1 = eElement.getElementsByTagName("quality1").item(0).getTextContent();
+							quality2 = eElement.getElementsByTagName("quality2").item(0).getTextContent();
+							quality3 = eElement.getElementsByTagName("quality3").item(0).getTextContent();
+							quality4 = eElement.getElementsByTagName("quality4").item(0).getTextContent();
+							quality5 = eElement.getElementsByTagName("quality5").item(0).getTextContent();
+							quantityRB = eElement.getElementsByTagName("Quantity").item(0).getTextContent();
+							quantity1 = eElement.getElementsByTagName("Quantity1").item(0).getTextContent();
+							quantity2 = eElement.getElementsByTagName("Quantity2").item(0).getTextContent();
+							quantity3 = eElement.getElementsByTagName("Quantity3").item(0).getTextContent();
+							quantity4 = eElement.getElementsByTagName("Quantity4").item(0).getTextContent();
+							quantity5 = eElement.getElementsByTagName("Quantity5").item(0).getTextContent();
+							oralCommRB = eElement.getElementsByTagName("OralComm").item(0).getTextContent();
+							oralComm1 = eElement.getElementsByTagName("OC1").item(0).getTextContent();
+							oralComm2 = eElement.getElementsByTagName("OC2").item(0).getTextContent();
+							oralComm3 = eElement.getElementsByTagName("OC3").item(0).getTextContent();
+							oralComm4 = eElement.getElementsByTagName("OC4").item(0).getTextContent();
+							oralComm5 = eElement.getElementsByTagName("OC5").item(0).getTextContent();
+							interpersonalSkillsRB = eElement.getElementsByTagName("InterpersonalSkills").item(0)
 									.getTextContent();
-							draftDate = eElement
-									.getElementsByTagName("DraftDate").item(0)
+							interpersonalSkills1 = eElement.getElementsByTagName("IPSkill1").item(0).getTextContent();
+							interpersonalSkills2 = eElement.getElementsByTagName("IPSkill2").item(0).getTextContent();
+							interpersonalSkills3 = eElement.getElementsByTagName("IPSkill3").item(0).getTextContent();
+							interpersonalSkills4 = eElement.getElementsByTagName("IPSkill4").item(0).getTextContent();
+							interpersonalSkills5 = eElement.getElementsByTagName("IPSkill5").item(0).getTextContent();
+							initiativeRB = eElement.getElementsByTagName("Initiative").item(0).getTextContent();
+							initiative1 = eElement.getElementsByTagName("Initiative1").item(0).getTextContent();
+							initiative2 = eElement.getElementsByTagName("Initiative2").item(0).getTextContent();
+							initiative3 = eElement.getElementsByTagName("Initiative3").item(0).getTextContent();
+							initiative4 = eElement.getElementsByTagName("Initiative4").item(0).getTextContent();
+							initiative5 = eElement.getElementsByTagName("Initiative5").item(0).getTextContent();
+							serviceOrientationRB = eElement.getElementsByTagName("ServiceOrientation").item(0)
 									.getTextContent();
-							athleticsEmp = eElement
-									.getElementsByTagName("AthleticsEmp")
-									.item(0).getTextContent();
-							staffposdesc = eElement
-									.getElementsByTagName("Staffposdesc")
-									.item(0).getTextContent();
-							evaluatorsName = eElement
-									.getElementsByTagName("EvaluatorsName")
-									.item(0).getTextContent();
-							evaluatorsTitle = eElement
-									.getElementsByTagName("EvaluatorsTitle")
-									.item(0).getTextContent();
-							qualityRB = eElement
-									.getElementsByTagName("Quality").item(0)
+							serviceOrientation1 = eElement.getElementsByTagName("SC1").item(0).getTextContent();
+							serviceOrientation2 = eElement.getElementsByTagName("SC2").item(0).getTextContent();
+							serviceOrientation3 = eElement.getElementsByTagName("SC3").item(0).getTextContent();
+							serviceOrientation4 = eElement.getElementsByTagName("SC4").item(0).getTextContent();
+							serviceOrientation5 = eElement.getElementsByTagName("SC5").item(0).getTextContent();
+							adaptabilityRB = eElement.getElementsByTagName("Adaptability").item(0).getTextContent();
+							adaptability1 = eElement.getElementsByTagName("Adaptability1").item(0).getTextContent();
+							adaptability2 = eElement.getElementsByTagName("Adaptability2").item(0).getTextContent();
+							adaptability3 = eElement.getElementsByTagName("Adaptability3").item(0).getTextContent();
+							adaptability4 = eElement.getElementsByTagName("Adaptability4").item(0).getTextContent();
+							adaptability5 = eElement.getElementsByTagName("Adaptability5").item(0).getTextContent();
+							jobKnowledgeRB = eElement.getElementsByTagName("JobKnowledge").item(0).getTextContent();
+							jobKnowledge1 = eElement.getElementsByTagName("JK1").item(0).getTextContent();
+							jobKnowledge2 = eElement.getElementsByTagName("JK2").item(0).getTextContent();
+							jobKnowledge3 = eElement.getElementsByTagName("JK3").item(0).getTextContent();
+							jobKnowledge4 = eElement.getElementsByTagName("JK4").item(0).getTextContent();
+							jobKnowledge5 = eElement.getElementsByTagName("JK5").item(0).getTextContent();
+							dependReliRB = eElement.getElementsByTagName("DependReli").item(0).getTextContent();
+							dependReli1 = eElement.getElementsByTagName("DR1").item(0).getTextContent();
+							dependReli2 = eElement.getElementsByTagName("DR2").item(0).getTextContent();
+							dependReli3 = eElement.getElementsByTagName("DR3").item(0).getTextContent();
+							dependReli4 = eElement.getElementsByTagName("DR4").item(0).getTextContent();
+							dependReli5 = eElement.getElementsByTagName("DR5").item(0).getTextContent();
+							writtenCommRB = eElement.getElementsByTagName("WrittenComm").item(0).getTextContent();
+							writtenComm1 = eElement.getElementsByTagName("WC1").item(0).getTextContent();
+							writtenComm2 = eElement.getElementsByTagName("WC2").item(0).getTextContent();
+							writtenComm3 = eElement.getElementsByTagName("WC3").item(0).getTextContent();
+							writtenComm4 = eElement.getElementsByTagName("WC4").item(0).getTextContent();
+							writtenComm5 = eElement.getElementsByTagName("WC5").item(0).getTextContent();
+							probSolvingRB = eElement.getElementsByTagName("ProbSolving").item(0).getTextContent();
+							probSolving1 = eElement.getElementsByTagName("ProbSol1").item(0).getTextContent();
+							probSolving2 = eElement.getElementsByTagName("ProbSol2").item(0).getTextContent();
+							probSolving3 = eElement.getElementsByTagName("ProbSol3").item(0).getTextContent();
+							probSolving4 = eElement.getElementsByTagName("ProbSol4").item(0).getTextContent();
+							probSolving5 = eElement.getElementsByTagName("ProbSol5").item(0).getTextContent();
+							leadingOthersRB = eElement.getElementsByTagName("LeadingOthers").item(0).getTextContent();
+							leadingOthers1 = eElement.getElementsByTagName("LeadOthers1").item(0).getTextContent();
+							leadingOthers2 = eElement.getElementsByTagName("LeadOthers2").item(0).getTextContent();
+							leadingOthers3 = eElement.getElementsByTagName("LeadOthers3").item(0).getTextContent();
+							leadingOthers4 = eElement.getElementsByTagName("LeadOthers4").item(0).getTextContent();
+							leadingOthers5 = eElement.getElementsByTagName("LeadOthers5").item(0).getTextContent();
+							acceptingRB = eElement.getElementsByTagName("Accepting").item(0).getTextContent();
+							accepting1 = eElement.getElementsByTagName("Accepting1").item(0).getTextContent();
+							accepting2 = eElement.getElementsByTagName("Accepting2").item(0).getTextContent();
+							accepting3 = eElement.getElementsByTagName("Accepting3").item(0).getTextContent();
+							accepting4 = eElement.getElementsByTagName("Accepting4").item(0).getTextContent();
+							accepting5 = eElement.getElementsByTagName("Accepting5").item(0).getTextContent();
+							athleticsEmpRating = eElement.getElementsByTagName("AtDetails").item(0).getTextContent();
+							athleticsEmpRating1 = eElement.getElementsByTagName("AtMeets").item(0).getTextContent();
+							athleticsEmpRating2 = eElement.getElementsByTagName("AtDoesnotMeet").item(0)
 									.getTextContent();
-							quality1 = eElement
-									.getElementsByTagName("quality1").item(0)
+							addCriteriaSelection1 = eElement.getElementsByTagName("AdditionalCriteria").item(0)
 									.getTextContent();
-							quality2 = eElement
-									.getElementsByTagName("quality2").item(0)
+							addCriteriaSelection2 = eElement.getElementsByTagName("AdditionalCriteriaV2").item(0)
 									.getTextContent();
-							quality3 = eElement
-									.getElementsByTagName("quality3").item(0)
+							addCriteriaCom1 = eElement.getElementsByTagName("AddCriteria1").item(0).getTextContent();
+							log.error("val of com 1:"+addCriteriaCom1);
+							
+							addCriteriaCom2 = eElement.getElementsByTagName("AddCriteria2").item(0).getTextContent();
+							log.error("val of com 2:"+addCriteriaCom2);
+							addCriteriaRating1 = eElement.getElementsByTagName("Additional1").item(0).getTextContent();
+							addCriteriaRating2 = eElement.getElementsByTagName("Additional2").item(0).getTextContent();
+							addCriteriaRating3 = eElement.getElementsByTagName("Additional3").item(0).getTextContent();
+							addCriteriaRating4 = eElement.getElementsByTagName("Additional4").item(0).getTextContent();
+							addCriteriaRating5 = eElement.getElementsByTagName("Additional5").item(0).getTextContent();
+							addCriteriaRating6 = eElement.getElementsByTagName("Additional6").item(0).getTextContent();
+							addCriteriaRating7 = eElement.getElementsByTagName("Additional7").item(0).getTextContent();
+							addCriteriaRating8 = eElement.getElementsByTagName("Additional8").item(0).getTextContent();
+							addCriteriaRating9 = eElement.getElementsByTagName("Additional9").item(0).getTextContent();
+							addCriteriaRating10 = eElement.getElementsByTagName("Additional10").item(0)
 									.getTextContent();
-							quality4 = eElement
-									.getElementsByTagName("quality4").item(0)
+							criteriaComment1 = eElement.getElementsByTagName("AdditionalCriteria1").item(0)
 									.getTextContent();
-							quality5 = eElement
-									.getElementsByTagName("quality5").item(0)
+							criteriaComment2 = eElement.getElementsByTagName("AdditionalCriteria2").item(0)
 									.getTextContent();
-							quantityRB = eElement
-									.getElementsByTagName("Quantity").item(0)
+							criteriaComment3 = eElement.getElementsByTagName("AdditionalCriteria3").item(0)
 									.getTextContent();
-							quantity1 = eElement
-									.getElementsByTagName("Quantity1").item(0)
+							criteriaComment4 = eElement.getElementsByTagName("AdditionalCriteria4").item(0)
 									.getTextContent();
-							quantity2 = eElement
-									.getElementsByTagName("Quantity2").item(0)
+							criteriaComment5 = eElement.getElementsByTagName("AdditionalCriteria5").item(0)
 									.getTextContent();
-							quantity3 = eElement
-									.getElementsByTagName("Quantity3").item(0)
+							criteriaComment6 = eElement.getElementsByTagName("AdditionalCriteria6").item(0)
 									.getTextContent();
-							quantity4 = eElement
-									.getElementsByTagName("Quantity4").item(0)
+							criteriaComment7 = eElement.getElementsByTagName("AdditionalCriteria7").item(0)
 									.getTextContent();
-							quantity5 = eElement
-									.getElementsByTagName("Quantity5").item(0)
+							criteriaComment8 = eElement.getElementsByTagName("AdditionalCriteria8").item(0)
 									.getTextContent();
-							oralCommRB = eElement
-									.getElementsByTagName("OralComm").item(0)
+							criteriaComment9 = eElement.getElementsByTagName("AdditionalCriteria9").item(0)
 									.getTextContent();
-							oralComm1 = eElement.getElementsByTagName("OC1")
-									.item(0).getTextContent();
-							oralComm2 = eElement.getElementsByTagName("OC2")
-									.item(0).getTextContent();
-							oralComm3 = eElement.getElementsByTagName("OC3")
-									.item(0).getTextContent();
-							oralComm4 = eElement.getElementsByTagName("OC4")
-									.item(0).getTextContent();
-							oralComm5 = eElement.getElementsByTagName("OC5")
-									.item(0).getTextContent();
-							interpersonalSkillsRB = eElement
-									.getElementsByTagName("InterpersonalSkills")
-									.item(0).getTextContent();
-							interpersonalSkills1 = eElement
-									.getElementsByTagName("IPSkill1").item(0)
+							criteriaComment10 = eElement.getElementsByTagName("AdditionalCriteria10").item(0)
 									.getTextContent();
-							interpersonalSkills2 = eElement
-									.getElementsByTagName("IPSkill2").item(0)
+							overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
+							supportFactorComments1 = eElement.getElementsByTagName("supportFactorComments1").item(0)
 									.getTextContent();
-							interpersonalSkills3 = eElement
-									.getElementsByTagName("IPSkill3").item(0)
+							supportFactorComments2 = eElement.getElementsByTagName("supportFactorComments2").item(0)
 									.getTextContent();
-							interpersonalSkills4 = eElement
-									.getElementsByTagName("IPSkill4").item(0)
+							performanceGoalComment1 = eElement.getElementsByTagName("performanceGoalComment1").item(0)
 									.getTextContent();
-							interpersonalSkills5 = eElement
-									.getElementsByTagName("IPSkill5").item(0)
+							performanceGoalComment2 = eElement.getElementsByTagName("performanceGoalComment2").item(0)
 									.getTextContent();
-							initiativeRB = eElement
-									.getElementsByTagName("Initiative").item(0)
+							performanceGoalComment3 = eElement.getElementsByTagName("performanceGoalComment3").item(0)
 									.getTextContent();
-							initiative1 = eElement
-									.getElementsByTagName("Initiative1")
-									.item(0).getTextContent();
-							initiative2 = eElement
-									.getElementsByTagName("Initiative2")
-									.item(0).getTextContent();
-							initiative3 = eElement
-									.getElementsByTagName("Initiative3")
-									.item(0).getTextContent();
-							initiative4 = eElement
-									.getElementsByTagName("Initiative4")
-									.item(0).getTextContent();
-							initiative5 = eElement
-									.getElementsByTagName("Initiative5")
-									.item(0).getTextContent();
-							serviceOrientationRB = eElement
-									.getElementsByTagName("ServiceOrientation")
-									.item(0).getTextContent();
-							serviceOrientation1 = eElement
-									.getElementsByTagName("SC1").item(0)
+							evalCB = eElement.getElementsByTagName("EvalCB").item(0).getTextContent();
+							evalPrintedName = eElement.getElementsByTagName("EvaluatorsPrintedName").item(0)
 									.getTextContent();
-							serviceOrientation2 = eElement
-									.getElementsByTagName("SC2").item(0)
+							evalSign = eElement.getElementsByTagName("EvaluatorsSignature").item(0).getTextContent();
+							evalSignDate = eElement.getElementsByTagName("EvalSignDate").item(0).getTextContent();
+							evalComments = eElement.getElementsByTagName("evalComments").item(0).getTextContent();
+							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
+							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
+							empSignDate = eElement.getElementsByTagName("Date_3").item(0).getTextContent();
+							empComment = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+							waivePeriod = eElement.getElementsByTagName("WaivePeriod").item(0).getTextContent();
+							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
+							adminPrintedName = eElement.getElementsByTagName("AdministratorsPrintedName").item(0)
 									.getTextContent();
-							serviceOrientation3 = eElement
-									.getElementsByTagName("SC3").item(0)
+							adminSign = eElement.getElementsByTagName("AdministratorSignature").item(0)
 									.getTextContent();
-							serviceOrientation4 = eElement
-									.getElementsByTagName("SC4").item(0)
+							adminSignDate = eElement.getElementsByTagName("Date_2").item(0).getTextContent();
+							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
+							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
 									.getTextContent();
-							serviceOrientation5 = eElement
-									.getElementsByTagName("SC5").item(0)
-									.getTextContent();
-							adaptabilityRB = eElement
-									.getElementsByTagName("Adaptability")
-									.item(0).getTextContent();
-							adaptability1 = eElement
-									.getElementsByTagName("Adaptability1")
-									.item(0).getTextContent();
-							adaptability2 = eElement
-									.getElementsByTagName("Adaptability2")
-									.item(0).getTextContent();
-							adaptability3 = eElement
-									.getElementsByTagName("Adaptability3")
-									.item(0).getTextContent();
-							adaptability4 = eElement
-									.getElementsByTagName("Adaptability4")
-									.item(0).getTextContent();
-							adaptability5 = eElement
-									.getElementsByTagName("Adaptability5")
-									.item(0).getTextContent();
-							jobKnowledgeRB = eElement
-									.getElementsByTagName("JobKnowledge")
-									.item(0).getTextContent();
-							jobKnowledge1 = eElement
-									.getElementsByTagName("JK1").item(0)
-									.getTextContent();
-							jobKnowledge2 = eElement
-									.getElementsByTagName("JK2").item(0)
-									.getTextContent();
-							jobKnowledge3 = eElement
-									.getElementsByTagName("JK3").item(0)
-									.getTextContent();
-							jobKnowledge4 = eElement
-									.getElementsByTagName("JK4").item(0)
-									.getTextContent();
-							jobKnowledge5 = eElement
-									.getElementsByTagName("JK5").item(0)
-									.getTextContent();
-							dependReliRB = eElement
-									.getElementsByTagName("DependReli").item(0)
-									.getTextContent();
-							dependReli1 = eElement.getElementsByTagName("DR1")
-									.item(0).getTextContent();
-							dependReli2 = eElement.getElementsByTagName("DR2")
-									.item(0).getTextContent();
-							dependReli3 = eElement.getElementsByTagName("DR3")
-									.item(0).getTextContent();
-							dependReli4 = eElement.getElementsByTagName("DR4")
-									.item(0).getTextContent();
-							dependReli5 = eElement.getElementsByTagName("DR5")
-									.item(0).getTextContent();
-							writtenCommRB = eElement
-									.getElementsByTagName("WrittenComm")
-									.item(0).getTextContent();
-							writtenComm1 = eElement.getElementsByTagName("WC1")
-									.item(0).getTextContent();
-							writtenComm2 = eElement.getElementsByTagName("WC2")
-									.item(0).getTextContent();
-							writtenComm3 = eElement.getElementsByTagName("WC3")
-									.item(0).getTextContent();
-							writtenComm4 = eElement.getElementsByTagName("WC4")
-									.item(0).getTextContent();
-							writtenComm5 = eElement.getElementsByTagName("WC5")
-									.item(0).getTextContent();
-							probSolvingRB = eElement
-									.getElementsByTagName("ProbSolving")
-									.item(0).getTextContent();
-							probSolving1 = eElement
-									.getElementsByTagName("ProbSol1").item(0)
-									.getTextContent();
-							probSolving2 = eElement
-									.getElementsByTagName("ProbSol2").item(0)
-									.getTextContent();
-							probSolving3 = eElement
-									.getElementsByTagName("ProbSol3").item(0)
-									.getTextContent();
-							probSolving4 = eElement
-									.getElementsByTagName("ProbSol4").item(0)
-									.getTextContent();
-							probSolving5 = eElement
-									.getElementsByTagName("ProbSol5").item(0)
-									.getTextContent();
-							leadingOthersRB = eElement
-									.getElementsByTagName("LeadingOthers")
-									.item(0).getTextContent();
-							leadingOthers1 = eElement
-									.getElementsByTagName("LeadOthers1")
-									.item(0).getTextContent();
-							leadingOthers2 = eElement
-									.getElementsByTagName("LeadOthers2")
-									.item(0).getTextContent();
-							leadingOthers3 = eElement
-									.getElementsByTagName("LeadOthers3")
-									.item(0).getTextContent();
-							leadingOthers4 = eElement
-									.getElementsByTagName("LeadOthers4")
-									.item(0).getTextContent();
-							leadingOthers5 = eElement
-									.getElementsByTagName("LeadOthers5")
-									.item(0).getTextContent();
-							acceptingRB = eElement
-									.getElementsByTagName("Accepting").item(0)
-									.getTextContent();
-							accepting1 = eElement
-									.getElementsByTagName("Accepting1").item(0)
-									.getTextContent();
-							accepting2 = eElement
-									.getElementsByTagName("Accepting2").item(0)
-									.getTextContent();
-							accepting3 = eElement
-									.getElementsByTagName("Accepting3").item(0)
-									.getTextContent();
-							accepting4 = eElement
-									.getElementsByTagName("Accepting4").item(0)
-									.getTextContent();
-							accepting5 = eElement
-									.getElementsByTagName("Accepting5").item(0)
-									.getTextContent();
-							athleticsEmpRating = eElement
-									.getElementsByTagName("AtDetails").item(0)
-									.getTextContent();
-							athleticsEmpRating1 = eElement
-									.getElementsByTagName("AtMeets").item(0)
-									.getTextContent();
-							athleticsEmpRating2 = eElement
-									.getElementsByTagName("AtDoesnotMeet")
-									.item(0).getTextContent();
-							addCriteriaSelection1 = eElement
-									.getElementsByTagName("AdditionalCriteria")
-									.item(0).getTextContent();
-							// addCriteriaSelection2 = eElement
-							// .getElementsByTagName(
-							// "AdditionalCriteriaV2").item(0)
-							// .getTextContent();
-							addCriteriaCom1 = eElement
-									.getElementsByTagName("AddCriteria1")
-									.item(0).getTextContent();
-							addCriteriaCom2 = eElement
-									.getElementsByTagName("AddCriteria2")
-									.item(0).getTextContent();
-							addCriteriaRating1 = eElement
-									.getElementsByTagName("Additional1")
-									.item(0).getTextContent();
-							addCriteriaRating2 = eElement
-									.getElementsByTagName("Additional2")
-									.item(0).getTextContent();
-							addCriteriaRating3 = eElement
-									.getElementsByTagName("Additional3")
-									.item(0).getTextContent();
-							addCriteriaRating4 = eElement
-									.getElementsByTagName("Additional4")
-									.item(0).getTextContent();
-							addCriteriaRating5 = eElement
-									.getElementsByTagName("Additional5")
-									.item(0).getTextContent();
-							addCriteriaRating6 = eElement
-									.getElementsByTagName("Additional6")
-									.item(0).getTextContent();
-							addCriteriaRating7 = eElement
-									.getElementsByTagName("Additional7")
-									.item(0).getTextContent();
-							addCriteriaRating8 = eElement
-									.getElementsByTagName("Additional8")
-									.item(0).getTextContent();
-							addCriteriaRating9 = eElement
-									.getElementsByTagName("Additional9")
-									.item(0).getTextContent();
-							addCriteriaRating10 = eElement
-									.getElementsByTagName("Additional10")
-									.item(0).getTextContent();
-							criteriaComment1 = eElement
-									.getElementsByTagName("AdditionalCriteria1")
-									.item(0).getTextContent();
-							criteriaComment2 = eElement
-									.getElementsByTagName("AdditionalCriteria2")
-									.item(0).getTextContent();
-							criteriaComment3 = eElement
-									.getElementsByTagName("AdditionalCriteria3")
-									.item(0).getTextContent();
-							criteriaComment4 = eElement
-									.getElementsByTagName("AdditionalCriteria4")
-									.item(0).getTextContent();
-							criteriaComment5 = eElement
-									.getElementsByTagName("AdditionalCriteria5")
-									.item(0).getTextContent();
-							criteriaComment6 = eElement
-									.getElementsByTagName("AdditionalCriteria6")
-									.item(0).getTextContent();
-							criteriaComment7 = eElement
-									.getElementsByTagName("AdditionalCriteria7")
-									.item(0).getTextContent();
-							criteriaComment8 = eElement
-									.getElementsByTagName("AdditionalCriteria8")
-									.item(0).getTextContent();
-							criteriaComment9 = eElement
-									.getElementsByTagName("AdditionalCriteria9")
-									.item(0).getTextContent();
-							criteriaComment10 = eElement
-									.getElementsByTagName(
-											"AdditionalCriteria10").item(0)
-									.getTextContent();
-							overallRating = eElement
-									.getElementsByTagName("OverallRating")
-									.item(0).getTextContent();
-							supportFactorComments1 = eElement
-									.getElementsByTagName(
-											"supportFactorComments1").item(0)
-									.getTextContent();
-							supportFactorComments2 = eElement
-									.getElementsByTagName(
-											"supportFactorComments2").item(0)
-									.getTextContent();
-							performanceGoalComment1 = eElement
-									.getElementsByTagName(
-											"performanceGoalComment1").item(0)
-									.getTextContent();
-							performanceGoalComment2 = eElement
-									.getElementsByTagName(
-											"performanceGoalComment2").item(0)
-									.getTextContent();
-							performanceGoalComment3 = eElement
-									.getElementsByTagName(
-											"performanceGoalComment3").item(0)
-									.getTextContent();
-							evalCB = eElement.getElementsByTagName("EvalCB")
-									.item(0).getTextContent();
-							evalPrintedName = eElement
-									.getElementsByTagName(
-											"EvaluatorsPrintedName").item(0)
-									.getTextContent();
-							evalSign = eElement
-									.getElementsByTagName("EvaluatorsSignature")
-									.item(0).getTextContent();
-							evalSignDate = eElement
-									.getElementsByTagName("EvalSignDate")
-									.item(0).getTextContent();
-							evalComments = eElement
-									.getElementsByTagName("evalComments")
-									.item(0).getTextContent();
-							empCB = eElement.getElementsByTagName("EmpCB")
-									.item(0).getTextContent();
-							empSign = eElement.getElementsByTagName("EmpSign")
-									.item(0).getTextContent();
-							empSignDate = eElement
-									.getElementsByTagName("Date_3").item(0)
-									.getTextContent();
-							empComment = eElement
-									.getElementsByTagName("EmpComment").item(0)
-									.getTextContent();
-							waivePeriod = eElement
-									.getElementsByTagName("WaivePeriod")
-									.item(0).getTextContent();
-							adminCB = eElement.getElementsByTagName("AdminCB")
-									.item(0).getTextContent();
-							adminPrintedName = eElement
-									.getElementsByTagName(
-											"AdministratorsPrintedName")
-									.item(0).getTextContent();
-							adminSign = eElement
-									.getElementsByTagName(
-											"AdministratorSignature").item(0)
-									.getTextContent();
-							adminSignDate = eElement
-									.getElementsByTagName("Date_2").item(0)
-									.getTextContent();
-							adminComments = eElement
-									.getElementsByTagName("AdminComment")
-									.item(0).getTextContent();
-							reviewerComments = eElement
-									.getElementsByTagName("ReviewerComment")
-									.item(0).getTextContent();
-							hrCB = eElement.getElementsByTagName("HRCB")
-									.item(0).getTextContent();
-							hrComments = eElement
-									.getElementsByTagName("HrComment").item(0)
-									.getTextContent();
-							hrOverallRate = eElement
-									.getElementsByTagName("HrOverallRate")
-									.item(0).getTextContent();
+							hrCB = eElement.getElementsByTagName("HRCB").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("HrComment").item(0).getTextContent();
+							hrOverallRate = eElement.getElementsByTagName("HrOverallRate").item(0).getTextContent();
 
 						}
 					}
@@ -719,11 +458,20 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					dataMap.put("DEPARTMENTID", Integer.parseInt(departmentID));
 					dataMap.put("EVALUATORSNAME", evaluatorsName);
 					dataMap.put("EVALUATORSTITLE", evaluatorsTitle);
-					dataMap.put("REVIEWPERIODFROM",
-							Date.valueOf(ratingPeriodFrom));
-					dataMap.put("REVIEWPERIODTO", Date.valueOf(ratingPeriodTo));
+					Object reviewPeriodFromObj = null;
+					if (ratingPeriodFrom != null && ratingPeriodFrom != "") {
+						Date reviewPeriodFromNew = Date.valueOf(ratingPeriodFrom);
+						reviewPeriodFromObj = reviewPeriodFromNew;
+					}
+					dataMap.put("REVIEWPERIODFROM", reviewPeriodFromObj);
+					Object reviewPeriodToObj = null;
+					if (ratingPeriodTo != null && ratingPeriodTo != "") {
+						Date reviewPeriodToNew = Date.valueOf(ratingPeriodTo);
+						reviewPeriodToObj = reviewPeriodToNew;
+					}
+					dataMap.put("REVIEWPERIODTO", reviewPeriodToObj);
 
-					/*dataMap.put("QUALITY", qualityRB);
+					dataMap.put("QUALITY", qualityRB);
 					dataMap.put("QUALITY_RATING_1", quality1);
 					dataMap.put("QUALITY_RATING_2", quality2);
 					dataMap.put("QUALITY_RATING_3", quality3);
@@ -819,7 +567,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					dataMap.put("ATHETICSEMP_RATING_2", athleticsEmpRating2);
 
 					dataMap.put("ADDCRITERIA_1", addCriteriaCom1);
-					dataMap.put("ADDITIONALCRITERIA", addCriteriaSelection1);
+					dataMap.put("ADDITIONALCRITERIA1", addCriteriaSelection1);
 					dataMap.put("ADDCRITERIA_RATING1", addCriteriaRating1);
 					dataMap.put("ADDCRITERIA_RATING2", addCriteriaRating2);
 					dataMap.put("ADDCRITERIA_RATING3", addCriteriaRating3);
@@ -832,7 +580,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					dataMap.put("ADDCRITERIA_COMMENT_5", criteriaComment5);
 
 					dataMap.put("ADDCRITERIA_2", addCriteriaCom2);
-					// dataMap.put("ADDITIONALCRITERIA", addCriteriaSelection2);
+					dataMap.put("ADDITIONALCRITERIA2", addCriteriaSelection2);
 					dataMap.put("ADDCRITERIA_RATING6", addCriteriaRating6);
 					dataMap.put("ADDCRITERIA_RATING7", addCriteriaRating7);
 					dataMap.put("ADDCRITERIA_RATING8", addCriteriaRating8);
@@ -846,18 +594,13 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 
 					dataMap.put("OVERALLRATING", overallRating);
 
-					dataMap.put("SUPPORTFACTORCOMMENTS1",
-							supportFactorComments1);
-					dataMap.put("SUPPORTFACTORCOMMENTS2",
-							supportFactorComments2);
-					dataMap.put("PERFORMANCEGOALCOMMENT1",
-							performanceGoalComment1);
-					dataMap.put("PERFORMANCEGOALCOMMENT2",
-							performanceGoalComment2);
-					dataMap.put("PERFORMANCEGOALCOMMENT3",
-							performanceGoalComment3);*/
+					dataMap.put("SUPPORTFACTORCOMMENTS1", supportFactorComments1);
+					dataMap.put("SUPPORTFACTORCOMMENTS2", supportFactorComments2);
+					dataMap.put("PERFORMANCEGOALCOMMENT1", performanceGoalComment1);
+					dataMap.put("PERFORMANCEGOALCOMMENT2", performanceGoalComment2);
+					dataMap.put("PERFORMANCEGOALCOMMENT3", performanceGoalComment3);
 
-					/*dataMap.put("EVAL_DECL_CB", evalCB);
+					dataMap.put("EVAL_DECL_CB", evalCB);
 					dataMap.put("EVALUATORSPRINTEDNAME", evalPrintedName);
 					dataMap.put("EVALUATORSSIGNATURE", evalSign);
 					dataMap.put("EVALCOMMENTS", evalComments);
@@ -867,11 +610,11 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						Date evalDateNew = Date.valueOf(evalSignDate);
 						evalDateObj = evalDateNew;
 					}
-					
-					dataMap.put("EVALSIGNDATE",evalDateObj);
+
+					dataMap.put("EVALSIGNDATE", evalDateObj);
 					dataMap.put("EMP_DECL_CB", empCB);
 					dataMap.put("WAIVEPERIOD", waivePeriod);
-					
+
 					Object empSignObj = null;
 					if (empSignDate != null && empSignDate != "") {
 						Date empDateNew = Date.valueOf(empSignDate);
@@ -882,28 +625,28 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					dataMap.put("EMPSIGN", empSign);
 					dataMap.put("REVIEWERCOMMENT", reviewerComments);
 					dataMap.put("ADMIN_DECL_CB", adminCB);
-					
+
 					Object adminSignObj = null;
 					if (adminSignDate != null && adminSignDate != "") {
 						Date adminDateNew = Date.valueOf(adminSignDate);
 						adminSignObj = adminDateNew;
 					}
-					dataMap.put("ADMINSIGNDATE",adminSignObj);
+					dataMap.put("ADMINSIGNDATE", adminSignObj);
 					dataMap.put("ADMINCOMMENT", adminComments);
 					dataMap.put("ADMINISTRATORSIGNATURE", adminSign);
 					dataMap.put("ADMINISTRATORSPRINTEDNAME", adminPrintedName);
 					dataMap.put("HR_DECL_CB", hrCB);
-					
+
 					Object hrDateObj = null;
 					if (hrDate != null && hrDate != "") {
 						Date hrDateNew = Date.valueOf(hrDate);
 						hrDateObj = hrDateNew;
 					}
-					
+
 					dataMap.put("HRDATE", hrDateObj);
 					dataMap.put("HRCOMMENT", hrComments);
 					dataMap.put("HRINITIALS", initials);
-					dataMap.put("HROVERALLRATE", hrOverallRate);*/
+					dataMap.put("HROVERALLRATE", hrOverallRate);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {
@@ -957,8 +700,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		return null;
 	}
 
-	public void insertSPEData(Connection conn,
-			LinkedHashMap<String, Object> dataMap) {
+	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		if (conn != null) {
 			try {
@@ -968,11 +710,9 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 				e1.printStackTrace();
 			}
 			String tableName = "AEM_STAFF_PERF_EVAL_2579";
-			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
-					tableName).append(" (");
+			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
-			for (Iterator<String> iter = dataMap.keySet().iterator(); iter
-					.hasNext();) {
+			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {
 				sql.append(iter.next());
 				placeholders.append("?");
 				if (iter.hasNext()) {
