@@ -362,10 +362,9 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 							addCriteriaSelection2 = eElement.getElementsByTagName("AdditionalCriteriaV2").item(0)
 									.getTextContent();
 							addCriteriaCom1 = eElement.getElementsByTagName("AddCriteria1").item(0).getTextContent();
-							log.error("val of com 1:"+addCriteriaCom1);
 							
 							addCriteriaCom2 = eElement.getElementsByTagName("AddCriteria2").item(0).getTextContent();
-							log.error("val of com 2:"+addCriteriaCom2);
+							
 							addCriteriaRating1 = eElement.getElementsByTagName("Additional1").item(0).getTextContent();
 							addCriteriaRating2 = eElement.getElementsByTagName("Additional2").item(0).getTextContent();
 							addCriteriaRating3 = eElement.getElementsByTagName("Additional3").item(0).getTextContent();
