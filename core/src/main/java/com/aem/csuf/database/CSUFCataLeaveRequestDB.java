@@ -209,7 +209,6 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("DEPT_ID", departmentID);
 					dataMap.put("BARGAINING_UNIT", bargainingUnit);
 					dataMap.put("ILLNESS_TYPE", illnessType);
-					dataMap.put("IllnessType", illnessType);
 					dataMap.put("LEAVE_TYPE", leaveType);
 					dataMap.put("LENGHT_OF_ILLNESS", lenghtOfIllness);
 					dataMap.put("ESTIMATED_SICK_LEAVE", estimatedSickLeave);
@@ -220,9 +219,21 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("NON_ELIGIBLE", nonEligibleCB);
 					dataMap.put("REASONS_FOR_NON_ELIGIBLE", reasons);
 					dataMap.put("STAFF_SIGN", staffUnitSign);
-					dataMap.put("STAFF_DATE", staffUnitDate);
+					
+					Object staffDateObj = null;
+					if (staffUnitDate != null && staffUnitDate != "") {
+						Date staffDateNew = Date.valueOf(staffUnitDate);
+						staffDateObj = staffDateNew;
+					}
+					dataMap.put("STAFF_DATE", staffDateObj);
 					dataMap.put("UNIT3_SIGN", unit3Sign);
-					dataMap.put("UNIT3_DATE", unit3Date);
+					
+					Object unit3DateObj = null;
+					if (unit3Date != null && unit3Date != "") {
+						Date unitDateNew = Date.valueOf(unit3Date);
+						unit3DateObj = unitDateNew;
+					}
+					dataMap.put("UNIT3_DATE",unit3DateObj);
 					dataMap.put("EMP_REPRESENTATIVE", empRepresentative);
 					dataMap.put("DEPARTMENT", department);
 					dataMap.put("PAYROLL", payroll);
@@ -290,7 +301,7 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_CATASTROPHIC_LEAVE_DONATION";
+			String tableName = "CATASTROPHIC_LEAVE_DONATION";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
 					tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
