@@ -37,13 +37,13 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 
 
 @Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=PayPlan10_12_11_12 Save in DB",
+		Constants.SERVICE_DESCRIPTION + "=Dental_Plan_Enrollmnt_Save in DB",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=PayPlan10_12_11_12DB" })
-public class PayPlan10_12_11_12DB implements WorkflowProcess{
-	
+		"process.label" + "=DentalPlanEnrollmentDB" })
+public class DentalPlanEnrollmentDB implements WorkflowProcess {
+
 	private static final Logger log = LoggerFactory
-			.getLogger(PayPlan10_12_11_12DB.class);
+			.getLogger(DentalPlanEnrollmentDB.class);
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -505,5 +505,10 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 			}
 		}
 	}
-
 }
+
+
+
+
+	
+

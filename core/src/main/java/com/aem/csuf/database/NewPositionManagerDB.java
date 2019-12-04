@@ -66,18 +66,18 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		String firstName = "";
 		String lastName = "";
 		String empRCD = "";
+		String scoPosition = "";
 		String cmsPosition = "";
 		String classification = "";
-		String scoPosition = "";
 		String range = "";
 		String department = "";
 		String deptID = "";
-		String cbid = "";
 		String workingTitle = "";
 		String appointmentType = "";
-		String supervisor = "";
-		String dateInitiated = "";
 		String timeBaseRB = "";
+		String cbid = "";
+		String dateInitiated = "";
+		String supervisor = "";
 		String appropriateAdmin = "";
 		String explanation1 = "";
 		String explanation2 = "";
@@ -185,32 +185,52 @@ public class NewPositionManagerDB implements WorkflowProcess{
 
 							reqNo = eElement.getElementsByTagName("ReqNo")
 									.item(0).getTextContent();
+							log.info("The value of Req. No="+reqNo);
+							
 							initials = eElement
 									.getElementsByTagName("Initials")
 									.item(0).getTextContent();
+							log.info("The value of Initials="+initials);
+							
 							hrDate = eElement
 									.getElementsByTagName("HRDate")
 									.item(0).getTextContent();
+							log.info("The value of hrDate="+hrDate);
+							
 							approvedClassification = eElement.getElementsByTagName("ApprovedClassification")
 									.item(0).getTextContent();
+							log.info("The value of Classification="+approvedClassification);
+							
 							mppCode = eElement.getElementsByTagName("MPPCode")
 									.item(0).getTextContent();
+							log.info("The value of MPP CODE="+mppCode);
+							
 							hrTitle = eElement
 									.getElementsByTagName("HRWorkingTitle").item(0)
 									.getTextContent();
+							log.info("The value of Title="+hrTitle);
+							
 							empId = eElement
 									.getElementsByTagName("EmplID").item(0)
 									.getTextContent();
-
+							log.info("The value of empID="+empId);
+							
 							firstName = eElement
 									.getElementsByTagName("IncumbentFirstName")
 									.item(0).getTextContent();
+							log.info("The value of First Name="+firstName);
 
 							lastName = eElement
 									.getElementsByTagName("IncumbentLastName")
 									.item(0).getTextContent();
+							log.info("The value of Last Name="+lastName);
+							
 							empRCD = eElement
 									.getElementsByTagName("EmplRCD")
+									.item(0).getTextContent();
+							
+							scoPosition = eElement
+									.getElementsByTagName("SCOPosition")
 									.item(0).getTextContent();
 
 							cmsPosition = eElement
@@ -220,9 +240,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 							classification = eElement
 									.getElementsByTagName("Classification")
 									.item(0).getTextContent();
-							scoPosition = eElement
-									.getElementsByTagName("SCOPosition")
-									.item(0).getTextContent();
+
 
 							range = eElement
 									.getElementsByTagName("Range")
@@ -236,24 +254,29 @@ public class NewPositionManagerDB implements WorkflowProcess{
 									.getElementsByTagName("DeptID").item(0)
 									.getTextContent();
 
-							cbid = eElement
-									.getElementsByTagName("CBID")
-									.item(0).getTextContent();
 							workingTitle = eElement
 									.getElementsByTagName("WorkingTitle")
 									.item(0).getTextContent();
+							
 							appointmentType = eElement
 									.getElementsByTagName("AppointmentType")
 									.item(0).getTextContent();
-							supervisor = eElement.getElementsByTagName("ManagementSupervisor")
+							
+							timeBaseRB = eElement
+									.getElementsByTagName("TimebaseRB").item(0)
+									.getTextContent();
+							
+							cbid = eElement
+									.getElementsByTagName("CBID")
 									.item(0).getTextContent();
 
 							dateInitiated = eElement
 									.getElementsByTagName("DateInitiated").item(0)
 									.getTextContent();
-							timeBaseRB = eElement
-									.getElementsByTagName("TimebaseRB").item(0)
-									.getTextContent();
+							
+							supervisor = eElement.getElementsByTagName("ManagementSupervisor")
+									.item(0).getTextContent();
+
 							appropriateAdmin = eElement
 									.getElementsByTagName("AppropriateAdministrator").item(0)
 									.getTextContent();
@@ -326,19 +349,19 @@ public class NewPositionManagerDB implements WorkflowProcess{
 									.item(0).getTextContent();
 							standingRB = eElement.getElementsByTagName("StandingRB")
 									.item(0).getTextContent();
-							deptHead = eElement.getElementsByTagName("DeptHead")
-									.item(0).getTextContent();							
-							deptHeadDate = eElement.getElementsByTagName("DeptHeadDate")
-									.item(0).getTextContent();
 							incumbent = eElement.getElementsByTagName("Incumbent")
 									.item(0).getTextContent();
 							incumbentDate = eElement.getElementsByTagName("IncumbentDate")
 									.item(0).getTextContent();
-							adminDate = eElement.getElementsByTagName("AdminDate")
-									.item(0).getTextContent();
 							deptHiringManager = eElement.getElementsByTagName("DeptHiringManager")
 									.item(0).getTextContent();
 							deptDate = eElement.getElementsByTagName("DeptDate")
+									.item(0).getTextContent();
+							deptHead = eElement.getElementsByTagName("DeptHead")
+									.item(0).getTextContent();							
+							deptHeadDate = eElement.getElementsByTagName("DeptHeadDate")
+									.item(0).getTextContent();
+							adminDate = eElement.getElementsByTagName("AdminDate")
 									.item(0).getTextContent();
 							vp = eElement.getElementsByTagName("VP")
 									.item(0).getTextContent();
@@ -346,88 +369,121 @@ public class NewPositionManagerDB implements WorkflowProcess{
 									.item(0).getTextContent();							
 							readCheck = eElement.getElementsByTagName("ReadCheck")
 									.item(0).getTextContent();
-							
+//							
 							}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
 
-					dataMap.put("EREQ_NO", reqNo);
+					dataMap.put("REQ_NO", reqNo);					
 					dataMap.put("INITIALS", initials);
-					dataMap.put("HR_DATE", Date.valueOf(hrDate));
-					dataMap.put("EMPL_RCD", approvedClassification);
-					dataMap.put("EXTENSION", mppCode);
-					dataMap.put("SCO_POSITION_NUMBER", hrTitle);
-					dataMap.put("TIMEBASE", empId);
-					dataMap.put("STATUS_MENU", firstName);
-					dataMap.put("CBID", lastName);
-					dataMap.put("CLASSIFICATION", empRCD);
-					dataMap.put("GRADE", cmsPosition);
-					dataMap.put("CMS_POSITION_NUMBER", classification);
-					dataMap.put("DEPARTMENT_NAME", scoPosition);
-					dataMap.put("DEPARTMENT_ID", range);
-					dataMap.put("10_12or11_12_REQUEST", department);
-					dataMap.put("PLAN_SELECTED", deptID);
-					dataMap.put("NAME1", cbid);
-					dataMap.put("MONTHOFF1", workingTitle);
-					dataMap.put("MONTHOFF2", appointmentType);
-					dataMap.put("EMP_DATE", supervisor);
-					dataMap.put("ADMIN_SIGN", Date.valueOf(dateInitiated));
-					dataMap.put("APPROVAL_RECOMMENDED_YES", timeBaseRB);
-					dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdmin);
-					dataMap.put("DATE1", explanation1);
-					dataMap.put("APPROVAL_GRANTED_YES", explanation2);
-					dataMap.put("VP_SIGNATURE", explanation3);
-					dataMap.put("DATE2", explanation4);
-					dataMap.put("ON_CYCLE", explanation5);
-					dataMap.put("OFF_CYCLE", explanation6);
-					dataMap.put("CURRENT_MONTHLY_SALARY", explanation7);
-					dataMap.put("ADJUSTED_SALARY", explanation8);
-					dataMap.put("DATE_DISCUSSED", explanation9);
-					dataMap.put("PAYPLAN10", complianceYes);
-					dataMap.put("PAYPLAN11", complianceNo);
-					dataMap.put("START_DATE", decisionYes);
-					dataMap.put("MONTH_SAL", decisionNo);
-					dataMap.put("DAYS_TO_WORK", bendingRB);
-					dataMap.put("POSSIBLE_WORK_DAYS", walkingRB);
-					dataMap.put("ANNUAL_SALARY", squattingRB);
-					dataMap.put("MONTH_SAL1", crawlingRB);
-					dataMap.put("MONTHS_TO_WORK", liftingRB);
-					dataMap.put("PROJECTED_EARNED_SALARY", kneelingRB);
-					dataMap.put("ANNUAL_SALARY1", climbingRB);
-					dataMap.put("PROJECTED_EARNED_SALARY1", graspingRB);
-					dataMap.put("SETTLEMENT_AMOUNT", pushingRB);
-					dataMap.put("1ST_MONTH_OFF", movementsRB);
-					dataMap.put("2ND_MONTH_OFF", reachingOverheadRB);
-					dataMap.put("START_DATE", discriminateColrsRB);
-					dataMap.put("MONTH_SAL", auditoryRequirements);
-					dataMap.put("DAYS_TO_WORK", balancing);
-					dataMap.put("POSSIBLE_WORK_DAYS", wearingRespiratorRB);
-					dataMap.put("ANNUAL_SALARY", sittingRB);
-					dataMap.put("MONTH_SAL1", driverRB);
-					dataMap.put("MONTHS_TO_WORK", standingRB);
-					dataMap.put("PROJECTED_EARNED_SALARY", deptHead);
-					dataMap.put("ANNUAL_SALARY1", deptHeadDate);
-					dataMap.put("PROJECTED_EARNED_SALARY1", incumbent);
-					dataMap.put("SETTLEMENT_AMOUNT", incumbentDate);
-					dataMap.put("1ST_MONTH_OFF", adminDate);
-					dataMap.put("2ND_MONTH_OFF", deptHiringManager);
-					dataMap.put("PROJECTED_EARNED_SALARY1", deptDate);
-					dataMap.put("SETTLEMENT_AMOUNT", vp);
-					dataMap.put("1ST_MONTH_OFF", vpDate);
-					dataMap.put("2ND_MONTH_OFF", readCheck);
-					
 
-//					Object vpDateObj = null;
-//					if (vpDate != null && vpDate != "") {
-//						Date vpDateNew = Date.valueOf(vpDate);
-//						vpDateObj = vpDateNew;
-//					}
-//					dataMap.put("VPDATE", vpDateObj);
-//					dataMap.put("VPCB", vpCB);
-//					dataMap.put("HR_DATE", Date.valueOf(hrDate));
-//					dataMap.put("INITIALS", initials);
-//					dataMap.put("HRCB", hrCB);
+					Object hrDateObj= null;
+					if(hrDate != null && hrDate != "") {
+						Date hrDateNew = Date.valueOf(hrDate);
+						hrDateObj = hrDateNew;
+					}
+					dataMap.put("HR_DATE", hrDateObj);
+					dataMap.put("APPROVED_CLASSIFICATION", approvedClassification);
+					dataMap.put("MPP_CODE", mppCode);
+					dataMap.put("HR_WORKING_TITLE", hrTitle);			
+					dataMap.put("EMP_ID", empId);		
+					dataMap.put("INCUMBENT_FIRST_NAME", firstName);
+					dataMap.put("INCUMBENT_LAST_NAME", lastName);
+					dataMap.put("EMP_RCD", empRCD);
+					dataMap.put("SCO_POSITION", scoPosition);
+					dataMap.put("CMS_POSITION", cmsPosition);
+					dataMap.put("CLASSIFICATION", classification);
+					dataMap.put("RANGE", range);
+					dataMap.put("DEPARTMENT", department);
+					dataMap.put("DEPT_ID", deptID);
+					dataMap.put("WORKING_TITLE", workingTitle);
+					dataMap.put("APPOINTMENT_TYPE", appointmentType);
+					dataMap.put("TIME_BASE_RB", timeBaseRB);
+					dataMap.put("CBID", cbid);
+					
+					Object dateInitiatedObj= null;
+					if(dateInitiated != null && dateInitiated != "") {
+						Date dateInitiatedNew = Date.valueOf(dateInitiated);
+						dateInitiatedObj = dateInitiatedNew;
+					}
+					dataMap.put("DATE_INITIATED", dateInitiatedObj);
+					dataMap.put("MANAGEMENT_SUPERVISOR", supervisor);
+					dataMap.put("APPROPRIATE_ADMINISTRATOR", appropriateAdmin);
+					dataMap.put("EXPLANATION1", explanation1);
+					dataMap.put("EXPLANATION2", explanation2);
+					dataMap.put("EXPLANATION3", explanation3);
+					dataMap.put("EXPLANATION4", explanation4);
+					dataMap.put("EXPLANATION5", explanation5);
+					dataMap.put("EXPLANATION6", explanation6);
+					dataMap.put("EXPLANATION7", explanation7);
+					dataMap.put("EXPLANATION8", explanation8);
+					dataMap.put("EXPLANATION9", explanation9);
+					dataMap.put("COMPLIANCE_YES", complianceYes);
+					dataMap.put("COMPLIANCE_NO", complianceNo);
+					dataMap.put("DECISION_Yes", decisionYes);
+					dataMap.put("DECISION_NO", decisionNo);
+					dataMap.put("BENDING_RB", bendingRB);
+					dataMap.put("WALKING_RB", walkingRB);
+					dataMap.put("SQUATTING_RB", squattingRB);
+					dataMap.put("UNEVEN_WALK_RB", unEvenWalkRB);
+					dataMap.put("CRAWLING_RB", crawlingRB);
+					dataMap.put("LIFITING_RB", liftingRB);
+					dataMap.put("KNEELING_RB", kneelingRB);
+					dataMap.put("CLIMBING_RB", climbingRB);
+					dataMap.put("GRASPING_RB", graspingRB);
+					dataMap.put("PUSHING_RB", pushingRB);
+					dataMap.put("MOVEMENTS_RB", movementsRB);
+					dataMap.put("REACHING_OVERHEAD_RB", reachingOverheadRB);
+					dataMap.put("DISCRIMINATE_COLORS_RB", discriminateColrsRB);
+					dataMap.put("AUDITORY_REQUIREMENTS", auditoryRequirements);
+					dataMap.put("BALANCING_RB", balancing);
+					dataMap.put("WEARING_RESPIRATOR_RB", wearingRespiratorRB);
+					dataMap.put("SITTING_RB", sittingRB);
+					dataMap.put("DRIVER_RB", driverRB);
+					dataMap.put("STANDING_RB", standingRB);
+					dataMap.put("INCUMBENT", incumbent);
+					
+					Object incumbentDateObj= null;
+					if(incumbentDate != null && incumbentDate != "") {
+						Date incumbentDateNew = Date.valueOf(incumbentDate);
+						incumbentDateObj = incumbentDateNew;
+					}
+					dataMap.put("INCUMBENT_DATE", incumbentDateObj);	
+					dataMap.put("DEPT_HIRING_MANAGER", deptHiringManager);
+					
+					Object deptDateObj= null;
+					if(deptDate != null && deptDate != "") {
+						Date deptDateNew = Date.valueOf(deptDate);
+						deptDateObj = deptDateNew;
+					}
+					dataMap.put("DEPT_DATE", deptDateObj);					
+					dataMap.put("DEPT_HEAD", deptHead);
+					
+					Object deptHeadDateObj= null;
+					if(deptHeadDate != null && deptHeadDate != "") {
+						Date deptHeadDateNew = Date.valueOf(deptHeadDate);
+						deptHeadDateObj = deptHeadDateNew;
+					}
+					dataMap.put("DEPT_HEAD_DATE", deptHeadDateObj);
+
+					
+					Object adminDateObj= null;
+					if(adminDate != null && adminDate != "") {
+						Date adminDateNew = Date.valueOf(adminDate);
+						adminDateObj = adminDateNew;
+					}
+					dataMap.put("ADMIN_DATE", adminDateObj);
+					dataMap.put("VP", vp);
+					
+					Object vpDateObj= null;
+					if(vpDate != null && vpDate != "") {
+						Date vpDateNew = Date.valueOf(vpDate);
+						vpDateObj = vpDateNew;
+					}
+					dataMap.put("VP_DATE", vpDateObj);
+					dataMap.put("READ_CHECK", readCheck);
+
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
@@ -451,7 +507,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		conn = getConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
-			insertMppAdminData(conn, dataMap);
+			insertNewPostionManagerData(conn, dataMap);
 		}
 	}
 
@@ -479,7 +535,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		return null;
 	}
 
-	public void insertMppAdminData(Connection conn,
+	public void insertNewPostionManagerData(Connection conn,
 			LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
@@ -493,7 +549,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "NewPositionManagerDB";
+			String tableName = "AEM_NEW_POSITION_MANAGERS";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
 					tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
