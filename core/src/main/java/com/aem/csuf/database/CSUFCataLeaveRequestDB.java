@@ -286,7 +286,11 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 		 */
 		return null;
 	}
-
+/**
+ * 
+ * @param conn
+ * @param dataMap
+ */
 	public void insertCataLeaveDonationData(Connection conn,
 			LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
@@ -354,10 +358,10 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 			}
 
 			try {
-				log.info("Before Prepared stmt");
+				log.info("Before Prepared Stmt Catastrophic Leave Request");
 				preparedStmt.execute();
 				conn.commit();
-				log.info("After Prepared stmt");
+				log.info("After Prepared Stmt Catastrophic Leave Request");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
@@ -373,7 +377,6 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 						log.error("SQLException=" + e.getMessage());
 						e.printStackTrace();
 					} catch (Exception e) {
-						log.error("Exception7");
 						log.error("Exception=" + e.getMessage());
 						e.printStackTrace();
 					}
