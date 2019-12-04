@@ -142,7 +142,7 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("STAFF_PERFORMANCE_EVALUATION.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_2,5,7,9.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);

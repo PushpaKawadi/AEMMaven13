@@ -35,6 +35,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -68,7 +69,7 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-			
+
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
@@ -83,31 +84,20 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 
+		String userIDSQL = ConfigManager.getValue("userIDSQL");
+
+		String lookupFields = ConfigManager.getValue("lookupFieldsUserIdLookup");
+
+		String[] fields = lookupFields.split(",");
+
+		userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
 		Statement oStatement = null;
 		try {
 
-			// String userIDSQL = ConfigManager.getValue(docType+"USERIDSQL");
-
-			String userIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, "
-					+ "B.GRADE, B.UNION_CD, D.SUPERVISOR_NAME AS SupervisorName, A.EMPLID, D.WORKING_TITLE AS SupervisorTitle "
-					+ "FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_EMP_CWID_NT_NAME C ON C.CWID = B.EMPLID LEFT "
-					+ "JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO WHERE C.USERID = '<<getUser_ID>>'";
-			// String lookupFields = ConfigManager.getValue(docType +
-			// "USERIDLOOKUPFIELDS");
-
-			String lookupFields = "FIRST_NAME,LAST_NAME,DEPTID,DEPTNAME,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,UNION_CD,EMPLID";
-			String[] fields = lookupFields.split(",");
-
-			userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
-
-			// LogManager.traceInfoMsg(sClassName, methodName, "UserID SQL : " +
-			// userIDSQL);
-
+			logger.info("inside try4");
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(userIDSQL);
-			logger.info("userIDSQL="+userIDSQL);
 
-			// if (oRresultSet.next()) {
 			while (oRresultSet.next()) {
 
 				employeeEvalDetails = new JSONObject();
@@ -125,20 +115,11 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 
 		} finally {
 			try {
-				if (oConnection != null){
+				if (oConnection != null) {
 					oConnection.close();
-					
+
 				}
-//				if (oStatement != null){
-//					oStatement.close();
-//					
-//				}
-//				if (oRresultSet != null){
-//					oRresultSet.close();
-//					
-//				}
-				//oStatement.close();
-				//oRresultSet.close();
+
 			} catch (Exception exp) {
 				exp.printStackTrace();
 			}

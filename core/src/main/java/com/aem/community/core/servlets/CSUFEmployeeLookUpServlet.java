@@ -69,10 +69,6 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 			cwid = req.getParameter("cwid");
 			logger.info("userid =" + userID);
 			logger.info("EmpID =" + cwid);
-			//DBDetails d = new DBDetails();
-			//Connection dbConnection = DBDetails.getConnection(dataSourceName);
-			//logger.error("Anagha="+dbConnection);
-  
 			conn = getConnection();
 		}
 
@@ -97,7 +93,7 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		String emplIDSQL = ConfigManager.getValue("emplIDSQL");
-		String lookupFields = ConfigManager.getValue("lookupFields");
+		String lookupFields = ConfigManager.getValue("lookupFieldsEmpLookup");
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
