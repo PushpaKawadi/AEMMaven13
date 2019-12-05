@@ -1,3 +1,4 @@
+
 package com.aem.community.core.servlets;
 
 import java.io.IOException;
@@ -22,7 +23,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -34,21 +34,26 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=New Position Manager Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getNewPositionManagerEmpLookup" })
-public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet{
-
+@Component(service = Servlet.class, property = {
+		Constants.SERVICE_DESCRIPTION + "=New Position Manager Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
+		"sling.servlet.paths=" + "/bin/getnewPositionLookup" })
+public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory.getLogger(NewPositionManagerEmpLookUpServlet.class);
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(SlingHttpServletRequest req,
+			SlingHttpServletResponse response) throws ServletException,
+			IOException {
 		Connection conn = null;
+
 		String userID = "";
-		String cwid = "";		
-		JSONArray newPositonDetails = null;
-		
-		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
+		String cwid = "";
+		// JSONObject emplEvalDetails = null;
+		JSONArray newManagerDetails = null;
+		if (req.getParameter("userID") != null
+				&& req.getParameter("userID") != ""
+				&& req.getParameter("cwid") != null
 				&& req.getParameter("cwid") != "") {
 			userID = req.getParameter("userID");
 			cwid = req.getParameter("cwid");
@@ -60,72 +65,59 @@ public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet{
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				newPositonDetails = getNewPositionDetails(cwid, conn, userID, "newPosition");
-				logger.info("emplEvalDetails ="+newPositonDetails);
-				
+				newManagerDetails = getnewPositionManagerDetails(cwid, conn, userID, "newPositionManager");
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			// Set JSON in String
-			response.getWriter().write(newPositonDetails.toString());
+			response.getWriter().write(newManagerDetails.toString());
 		}
 	}
 
-	public static JSONArray getNewPositionDetails(String cwid, Connection oConnection, String userID, String docType)
+	public static JSONArray getnewPositionManagerDetails(String cwid,
+			Connection oConnection, String userID, String docType)
 			throws Exception {
-
 		ResultSet oRresultSet = null;
-		//JSONObject employeeEvalDetails = new JSONObject();
-		
-		JSONObject newPositionDetails;
+		JSONObject newPositionManagerDetails;
 		JSONArray jArray = new JSONArray();
-		
-        String emplIDSQL = ConfigManager.getValue("newPositionManagerEmplSQL");
-        logger.info("The EMP query: " + emplIDSQL);
-        String lookupFields = ConfigManager.getValue("newPositionManagerEmpLookUpFields"); 
-        logger.info("The LOOKUP Fields are: " + lookupFields);
-        
-		
+		String emplIDSQL = ConfigManager.getValue("newPositionManagerEmplSQL");
+		logger.info("THE SQL QUERY IS: "+emplIDSQL);
+		String lookupFields = ConfigManager.getValue("newPositionManagerEmpLookUpFields");
+		logger.info("THE SQL QUERY IS: "+lookupFields);
 		String[] fields = lookupFields.split(",");
-		
 		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
-        emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-        logger.info("Valueee of emplIDSQL is: " + emplIDSQL);
-
-
+		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-				newPositionDetails = new JSONObject();
+				newPositionManagerDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					newPositionDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("newPositionDetails ="+newPositionDetails);
+					newPositionManagerDetails.put(fields[i],
+							oRresultSet.getString(fields[i]));
 				}
-				jArray.put(newPositionDetails);
+				jArray.put(newPositionManagerDetails);
 			}
-			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			newPositionDetails = null;
+			newPositionManagerDetails = null;
 		} finally {
 			try {
-				if (oConnection != null){
+				if (oConnection != null) {
 					oConnection.close();
-					
-				}
-				// oStatement.close();
-				// oRresultSet.close();
-			} catch (Exception exp) {
+					logger.info("Connection closed");
 
+				}
+			} catch (Exception e) {
+				logger.error("Exception in NewPositionManagerLookUpServlet="
+						+ e.getMessage());
+				e.getStackTrace();
 			}
 		}
-
 		return jArray;
 	}
 
@@ -143,12 +135,12 @@ public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet{
 			return con;
 
 		} catch (Exception e) {
-			logger.error("Conn Exception=" + e.getMessage());
+			logger.info("Conn Exception=" + e);
 			e.printStackTrace();
 		} finally {
 			try {
 				if (con != null) {
-					logger.info("Conn available=");
+					logger.info("Conn Exec=");
 				}
 			} catch (Exception exp) {
 				logger.info("Finally Exec=" + exp);
@@ -157,4 +149,5 @@ public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet{
 		}
 		return null;
 	}
+
 }

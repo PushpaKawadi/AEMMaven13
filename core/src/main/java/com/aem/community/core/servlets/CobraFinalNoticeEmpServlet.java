@@ -1,18 +1,4 @@
-/*
- *  Copyright 2015 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.aem.community.core.servlets;
 
 import java.io.IOException;
@@ -61,14 +47,6 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		//String userID = "";
 		String cwid = "";
 		JSONArray emplEvalDetails = null;
-//		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
-//				&& req.getParameter("cwid") != "") {
-//			userID = req.getParameter("userID");
-//			cwid = req.getParameter("cwid");
-//			logger.info("userid =" + userID);
-//			logger.info("EmpID =" + cwid);
-//			conn = getConnection();
-//		}
 		
 		if (req.getParameter("cwid") != null && req.getParameter("cwid") != "") {
 			//userID = req.getParameter("userID");
@@ -110,9 +88,7 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		
-		//String lookupFields = "FIRST_NAME,LAST_NAME,ADDRESS1,CITY,STATE,POSTAL,EMPL_RCD,DEPTNAME,JOBCODE";
-		//String emplIDSQL ="Select  A.FIRST_NAME, A.LAST_NAME,  A.ADDRESS1, A.CITY, A.STATE, A.POSTAL, B.EMPL_RCD, B.DEPTNAME, B.JOBCODE From  FUL_ECM_PERS_VW A, FUL_ECM_JOB2_VW B Where A.EMPLID = '<<Empl_ID>>' AND B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	
 		String emplIDSQL = ConfigManager.getValue("cobraEmplIDSQL");
 		String lookupFields = ConfigManager.getValue("cobraLookUpFields");
 		
@@ -120,7 +96,6 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		
 		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-
 
 		Statement oStatement = null;
 		try {
