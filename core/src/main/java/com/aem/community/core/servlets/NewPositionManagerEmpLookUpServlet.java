@@ -83,12 +83,14 @@ public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet 
 		JSONObject newPositionManagerDetails;
 		JSONArray jArray = new JSONArray();
 		String emplIDSQL = ConfigManager.getValue("newPositionManagerEmplSQL");
-		logger.info("THE SQL QUERY IS: "+emplIDSQL);
+		
 		String lookupFields = ConfigManager.getValue("newPositionManagerEmpLookUpFields");
-		logger.info("THE SQL QUERY IS: "+lookupFields);
+		
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		logger.info("THE SQL QUERY IS: "+emplIDSQL);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
@@ -96,6 +98,7 @@ public class NewPositionManagerEmpLookUpServlet extends SlingSafeMethodsServlet 
 			while (oRresultSet.next()) {
 				newPositionManagerDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
+					
 					newPositionManagerDetails.put(fields[i],
 							oRresultSet.getString(fields[i]));
 				}

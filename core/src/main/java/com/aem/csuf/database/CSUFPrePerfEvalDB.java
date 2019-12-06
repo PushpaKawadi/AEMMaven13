@@ -139,7 +139,9 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 							todayDate = eElement.getElementsByTagName("TodayDate").item(0).getTextContent();
 							supervisor = eElement.getElementsByTagName("Supervisor").item(0).getTextContent();
 							firstName = eElement.getElementsByTagName("FirstName").item(0).getTextContent();
+							log.error("First Name=" + firstName);
 							lastName = eElement.getElementsByTagName("LastName").item(0).getTextContent();
+							log.error("First Name=" + lastName);
 							deptName = eElement.getElementsByTagName("DeptName").item(0).getTextContent();
 							deptId = eElement.getElementsByTagName("DeptID").item(0).getTextContent();
 							evaluationCom1 = eElement.getElementsByTagName("Evaluation1").item(0).getTextContent();
