@@ -190,7 +190,7 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && empId != null) {
-			log.info("Read SudentPerfEval");
+			log.info("Read Catastrophic ");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");
