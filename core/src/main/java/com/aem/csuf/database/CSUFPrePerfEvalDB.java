@@ -88,7 +88,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
+			 log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -139,7 +139,9 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 							todayDate = eElement.getElementsByTagName("TodayDate").item(0).getTextContent();
 							supervisor = eElement.getElementsByTagName("Supervisor").item(0).getTextContent();
 							firstName = eElement.getElementsByTagName("FirstName").item(0).getTextContent();
+							log.error("First Name=" + firstName);
 							lastName = eElement.getElementsByTagName("LastName").item(0).getTextContent();
+							log.error("First Name=" + lastName);
 							deptName = eElement.getElementsByTagName("DeptName").item(0).getTextContent();
 							deptId = eElement.getElementsByTagName("DeptID").item(0).getTextContent();
 							evaluationCom1 = eElement.getElementsByTagName("Evaluation1").item(0).getTextContent();
@@ -160,6 +162,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 						}
 					}
+					log.info("outside=");
 					dataMap = new LinkedHashMap<String, Object>();
 					dataMap.put("EMPLID", empId);
 					Object todayDtObj = null;
@@ -168,6 +171,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 						todayDtObj = todayDateNew;
 					}
 					dataMap.put("TODAY_DT", todayDtObj);
+					log.info("outside1=");
 					dataMap.put("FIRSTNAME", firstName);
 					dataMap.put("LASTNAME", lastName);
 					dataMap.put("MIDNAME", midName);
@@ -177,6 +181,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 						Date reviewPeriodFromNew = Date.valueOf(reviewPeriodFrom);
 						reviewPeriodFromObj = reviewPeriodFromNew;
 					}
+					log.info("outside2=");
 					dataMap.put("REVIEW_FROM_DT", reviewPeriodFromObj);
 					Object reviewPeriodToObj = null;
 					if (reviewPeriodTo != null && reviewPeriodTo != "") {
@@ -200,6 +205,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 						Date empDateNew = Date.valueOf(empDate);
 						empSignDateObj = empDateNew;
 					}
+					log.info("outside3=");
 					dataMap.put("EMP_SIGN_DATE", empSignDateObj);
 					dataMap.put("EMP_SIGN", empSign);
 					dataMap.put("EMP_COMMMENT", empComments);
@@ -210,6 +216,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 						Date evalDateNew = Date.valueOf(evaluatorDate);
 						evalSignDateObj = evalDateNew;
 					}
+					log.info("outside4=");
 					dataMap.put("EVAL_SIGN_DATE", evalSignDateObj);
 					dataMap.put("EVAL_COMMENT", evalComments);
 
