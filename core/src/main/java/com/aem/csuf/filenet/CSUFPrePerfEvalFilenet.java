@@ -53,11 +53,11 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-//		String firstName = null;
-//		String lastName = null;
+		//String firstName = null;
+		//String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		//String rating = null;
+		// String rating = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -75,7 +75,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				
+
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
@@ -108,7 +108,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
@@ -142,7 +142,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Pre Performance Evaluation.pdf")) {
+			if (filePath.contains("Pre_Performance_Evaluation.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -180,23 +180,15 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"PrePerfEvalDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"PrePerfEvalDOR\"" + ","
+				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 
-		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && empId != null) {
 			log.info("Read SudentPerfEval");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");
 				url = new URL(filenetUrl);
-				// url = new URL("");
-
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
