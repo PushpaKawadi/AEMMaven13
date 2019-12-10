@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1575870610443
-Build-Jdk: 1.8.0_131
-Built-By: 104745
+Bnd-LastModified: 1575871457280
+Build-Jdk: 1.8.0_221
+Built-By: 105683
 Bundle-Description: Core bundle for AEMMaven13
 Bundle-ManifestVersion: 2
 Bundle-Name: AEMMaven13 - Core
