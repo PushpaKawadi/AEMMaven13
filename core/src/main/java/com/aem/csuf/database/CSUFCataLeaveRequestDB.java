@@ -305,7 +305,7 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "CATASTROPHIC_LEAVE_DONATION";
+			String tableName = "CATASTROPHIC_LEAVE_REQUEST";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
 					tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();

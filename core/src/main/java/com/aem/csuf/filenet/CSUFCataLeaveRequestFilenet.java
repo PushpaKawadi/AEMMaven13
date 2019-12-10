@@ -40,7 +40,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=PrePerfEvalDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=CatastrophicRequestDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCataLeaveRequestFilenet" })
 public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 
