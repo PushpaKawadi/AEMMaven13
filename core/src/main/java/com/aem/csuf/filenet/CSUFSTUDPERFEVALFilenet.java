@@ -40,8 +40,8 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=StudentPerfEvalDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=StudentPerfEvalDOR" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=StudentPerfEvalDOR",
+		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=StudentPerfEvalDOR" })
 public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSTUDPERFEVALFilenet.class);
@@ -57,7 +57,7 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		//String rating = null;
+		// String rating = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		// Get the payload path and iterate the path to find Data.xml, Use
@@ -116,7 +116,7 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//Lastname", doc,
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
@@ -142,7 +142,7 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Student Performance Evaluation.pdf")) {
+			if (filePath.contains("Student_Performance_Evaluation.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -181,15 +181,11 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"StudentPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"StudentPerfEvalDOR\"" + ","
+				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 
-		// log.error("encodedPDF="+encodedPDF);
+		// log.error("Json String:" + jsonString.toString());
+
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read SudentPerfEval");
 			URL url = null;
