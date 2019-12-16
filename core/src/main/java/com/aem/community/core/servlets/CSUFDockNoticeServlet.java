@@ -45,13 +45,13 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=Catastrophic Leave Request",
+		Constants.SERVICE_DESCRIPTION + "=Dock Notice",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
-		"sling.servlet.paths=" + "/bin/getCatastrophicLeaveRequest" })
-public class CSUFCatastrophicLeaveRequestServlet extends
+		"sling.servlet.paths=" + "/bin/getDockNotice" })
+public class CSUFDockNoticeServlet extends
 		SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFCatastrophicLeaveRequestServlet.class);
+			.getLogger(CSUFDockNoticeServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	public void doGet(SlingHttpServletRequest req,
@@ -90,9 +90,9 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		
-		String sqlQuery = ConfigManager.getValue("catastrophicLeaveRequest");
+		String sqlQuery = ConfigManager.getValue("dockNoticeUserIdSql");
 		logger.info("sqlQuery="+sqlQuery);
-		String lookupFields = ConfigManager.getValue("catastrophicFields");
+		String lookupFields = ConfigManager.getValue("dockNoticeFields");
 		logger.info("lookupFields="+lookupFields);
 		String[] fields = lookupFields.split(",");
 		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
@@ -122,7 +122,7 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 
 				}
 			} catch (Exception e) {
-				logger.error("Exception in CSUFCatastrophicLeaveRequestServlet="
+				logger.error("Exception in CSUFDockNoticeServlet="
 						+ e.getMessage());
 				e.getStackTrace();
 			}
