@@ -35,80 +35,105 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-
-@Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=Dental_Plan_Enrollmnt_Save in DB",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=DentalPlanEnrollmentDB" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Dental Plan Enrollment Save in DB",
+		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=DentalPlanEnrollmentDB" })
 public class DentalPlanEnrollmentDB implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(DentalPlanEnrollmentDB.class);
+	private static final Logger log = LoggerFactory.getLogger(DentalPlanEnrollmentDB.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
 		Connection conn = null;
 
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
 
-		String firstName = "";
-		String lastName = "";
-		String empId = "";
-		String empRCD = "";		
-		String extension = "";
-		String scoPositionNumber = "";
-		String timeBase = "";
-		String statusMenu = "";
-		String cbid = "";
-		String classification = "";
-		String grade = "";
-		String cmsPosition = "";
-		String departmentName = "";
-		String departmentID = "";
-		String payPlan = "";
-		String planSelected = "";
-		String name1 = "";
-		String monthOff1 = "";
-		String monthOff2 = "";
-		String empDate = "";
-		String adminSign = "";
-		String approvalRecommendedYes = "";
-		String appropriateAdminName = "";
-		String date1 = "";
-		String approvalGrantedYes = "";
-		String vpSignature = "";
-		String date2 = "";
-		String oncycle = "";
-		String offcycle = "";
-		String currentMonthSalary = "";
-		String adjustedSalary = "";
-		String dateDiscussed = "";
-		String payPlan10 = "";
-		String payPlan11 = "";
-		String startDate = "";
-		String monthSal = "";
-		String daysToWork = "";
-		String possibleWorkDays = "";
-		String annualSalary = "";
-		String monthSal1 = "";
-		String monthsToWork = "";
-		String projectedEarnedSalary = "";
-		String annualSalary1 = "";
-		String projectedEarnedSalary1 = "";
-		String settlementAmount = "";
-		String MonthOff1st = "";
-		String MonthOff2nd = "";
-		
-		
+		String action = "";
+		String fName = "";
+		String middleName = "";
+		String lName = "";
+		String address = "";
+		String city = "";
+		String state = "";
+		String zip = "";
+		String permanentEmp = "";
+		String sex = "";
+		String marritalStatus = "";
+		String socialSecNo = "";
+		String spouseSocialSecNo = "";
+		String nameOfDentalPlan = "";
+		String facilityNo = "";
+		String actionCode1 = "";
+		String enrolledPersonName1 = "";
+		String dob1 = "";
+		String familyRelationship1 = "";
+		String actionCode2 = "";
+		String enrolledPersonName2 = "";
+		String dob2 = "";
+		String familyRelationship2 = "";
+		String actionCode3 = "";
+		String enrolledPersonName3 = "";
+		String dob3 = "";
+		String familyRelationship3 = "";
+		String actionCode4 = "";
+		String enrolledPersonName4 = "";
+		String dob4 = "";
+		String familyRelationship4 = "";
+		String actionCode5 = "";
+		String enrolledPersonName5 = "";
+		String dob5 = "";
+		String familyRelationship5 = "";
+		String actionCode6 = "";
+		String enrolledPersonName6 = "";
+		String dob6 = "";
+		String familyRelationship6 = "";
+		String actionCode7 = "";
+		String enrolledPersonName7 = "";
+		String dob7 = "";
+		String familyRelationship7 = "";
+		String actionCode8 = "";
+		String enrolledPersonName8 = "";
+		String dob8 = "";
+		String familyRelationship8 = "";
+		String priorDentalPlanName = "";
+		String checkCB1 = "";
+		String checkCB2 = "";
+		String checkCB3 = "";
+		String empSignature = "";
+		String empSignedDate = "";
+		String empDEDCode1 = "";
+		String empDEDCode2 = "";
+		String dentalOrgCode = "";
+		String partyCode = "";
+		String payPeriod = "";
+		String stateShareAmount = "";
+		String empDeductionAmount = "";
+		String empDesignation = "";
+		String bargaininUnit = "";
+		String totalPremiumAmount = "";
+		String priorEmpDEDCode2 = "";
+		String priorEmpDEDCode1 = "";
+		String priorDentalOrgCode = "";
+		String priorPartyCode = "";
+		String permittingEventDate = "";
+		String permittingEventCode = "";
+		String electiveDateOfAction = "";
+		String agencyCode = "";
+		String unitCode = "";
+		String agencyName1 = "";
+		String agencyName2 = "";
+		String remarks = "";
+		String authorisedAgencySignature = "";
+		String telephoneNumber = "";
+		String dateRecievedInEmpOffice = "";
+
 		LinkedHashMap<String, Object> dataMap = null;
-		
+
 		Resource xmlNode = resolver.getResource(payloadPath);
-		
+
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		// Get the payload path and iterate the path to find Data.xml, Use
 		// Document
@@ -120,15 +145,13 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
+			log.info("filePath of Dental Plan=" + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				log.info("xmlFiles of Dental Plan=" + filePath);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -141,8 +164,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -156,8 +178,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					org.w3c.dom.NodeList nList = doc
-							.getElementsByTagName("afBoundData");
+					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
 					for (int temp = 0; temp < nList.getLength(); temp++) {
 						org.w3c.dom.Node nNode = nList.item(temp);
 
@@ -165,199 +186,380 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-							empId = eElement.getElementsByTagName("Empl_ID")
+							action = eElement.getElementsByTagName("action")
 									.item(0).getTextContent();
-							lastName = eElement
-									.getElementsByTagName("Last_Name")
-									.item(0).getTextContent();
-							firstName = eElement
-									.getElementsByTagName("First_Name")
-									.item(0).getTextContent();
-							empRCD = eElement.getElementsByTagName("Empl_RCD")
-									.item(0).getTextContent();
-							extension = eElement.getElementsByTagName("Extension")
-									.item(0).getTextContent();
-							scoPositionNumber = eElement
-									.getElementsByTagName("SCO_Position_Number").item(0)
-									.getTextContent();
-							timeBase = eElement
-									.getElementsByTagName("Timebase").item(0)
-									.getTextContent();
+									log.info("actionType Value is: " + action);
 
-							statusMenu = eElement
-									.getElementsByTagName("StatusMenu")
+							fName = eElement.getElementsByTagName("Fname")
 									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + fName);
 
-							cbid = eElement
-									.getElementsByTagName("CBID")
+							middleName = eElement.getElementsByTagName("MiddleName")
 									.item(0).getTextContent();
-							classification = eElement
-									.getElementsByTagName("Classification")
-									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + middleName);
 
-							grade = eElement
-									.getElementsByTagName("Grade")
+							lName = eElement.getElementsByTagName("Lname")
 									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + lName);
 
-							cmsPosition = eElement
-									.getElementsByTagName("CMS_Position_Number")
+							address = eElement.getElementsByTagName("Address")
 									.item(0).getTextContent();
-							departmentName = eElement
-									.getElementsByTagName("Department_Name")
-									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + address);
 
-							departmentID = eElement
-									.getElementsByTagName("Department_ID")
+							city = eElement.getElementsByTagName("City")
 									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + city);
 
-							payPlan = eElement
-									.getElementsByTagName("10/12 OR 11/12 Request")
+							state = eElement.getElementsByTagName("State")
 									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + state);
 
-							planSelected = eElement
-									.getElementsByTagName("Plan_Selected").item(0)
-									.getTextContent();
+							zip = eElement.getElementsByTagName("Zip")
+									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + zip);
 
-							name1 = eElement
-									.getElementsByTagName("Name1")
+							permanentEmp = eElement.getElementsByTagName("PermanentEmp")
 									.item(0).getTextContent();
-							monthOff1 = eElement
-									.getElementsByTagName("MonthOff1")
-									.item(0).getTextContent();
-							monthOff2 = eElement
-									.getElementsByTagName("MonthOff2")
-									.item(0).getTextContent();
-							empDate = eElement.getElementsByTagName("EmpDate")
-									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + permanentEmp);
 
-							adminSign = eElement
-									.getElementsByTagName("AdminSign").item(0)
-									.getTextContent();
-							approvalRecommendedYes = eElement
-									.getElementsByTagName("ApprovalRecommendedYes").item(0)
-									.getTextContent();
-							appropriateAdminName = eElement
-									.getElementsByTagName("Appropriate_Admin_Name").item(0)
-									.getTextContent();
+							sex = eElement.getElementsByTagName("Sex")
+									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + sex);
 
-							date1 = eElement.getElementsByTagName("Date1")
+							marritalStatus = eElement.getElementsByTagName("MarritalStatus")
 									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + marritalStatus);
 
-							approvalGrantedYes = eElement.getElementsByTagName("ApprovalGrantedYes")
+							socialSecNo = eElement.getElementsByTagName("SocialSecNo")
 									.item(0).getTextContent();
-							vpSignature = eElement.getElementsByTagName("VP_Signature")
-									.item(0).getTextContent();
-							date2	 = eElement.getElementsByTagName("Date2")
-									.item(0).getTextContent();
+									log.info("reductionHourdate Value is: " + socialSecNo);
 
-							oncycle = eElement.getElementsByTagName("OnCycle")
+							spouseSocialSecNo = eElement.getElementsByTagName("SpouseSocialSecNo")
 									.item(0).getTextContent();
+							log.info("reductionHourdate Value is: " + spouseSocialSecNo);
 
-							offcycle = eElement.getElementsByTagName("OffCycle")
+							nameOfDentalPlan = eElement.getElementsByTagName("NameOfDentalPlan")
 									.item(0).getTextContent();
-							currentMonthSalary = eElement
-									.getElementsByTagName("CurrentMonthlySalary").item(0)
-									.getTextContent();
-							adjustedSalary = eElement.getElementsByTagName("AdjustedSalary")
+							log.info("reductionHourdate Value is: " + nameOfDentalPlan);
+
+							facilityNo = eElement.getElementsByTagName("FacilityNo")
 									.item(0).getTextContent();
-							dateDiscussed = eElement.getElementsByTagName("DateDiscussed")
+						//	log.info("DeathOfEmployee Value is: " + DeathOfEmployee);
+
+							actionCode1 = eElement.getElementsByTagName("ActionCode1")
 									.item(0).getTextContent();
-							payPlan10 = eElement.getElementsByTagName("PayPlan10")
+							//log.info("EmployeeDeath Value is: " + EmployeeDeath);
+
+							enrolledPersonName1 = eElement.getElementsByTagName("EnrolledPersonName1")
 									.item(0).getTextContent();
-							payPlan11 = eElement.getElementsByTagName("PayPlan11")
+						//	log.info("Divorse Value is: " + Divorse);
+
+							dob1 = eElement.getElementsByTagName("DOB1")
 									.item(0).getTextContent();
-							startDate = eElement.getElementsByTagName("StartDate")
-									.item(0).getTextContent();
-							monthSal = eElement.getElementsByTagName("Month_Sal")
-									.item(0).getTextContent();
-							daysToWork = eElement.getElementsByTagName("Month_Sal")
-									.item(0).getTextContent();
-							possibleWorkDays = eElement.getElementsByTagName("Possible_work_days")
-									.item(0).getTextContent();
-							annualSalary = eElement.getElementsByTagName("Possible_work_days")
-									.item(0).getTextContent();
-							monthSal1 = eElement.getElementsByTagName("Month_Sal1")
-									.item(0).getTextContent();
-							monthsToWork = eElement.getElementsByTagName("Months_to_work")
-									.item(0).getTextContent();
-							projectedEarnedSalary = eElement.getElementsByTagName("Projected_Earned_Salary")
-									.item(0).getTextContent();
-							annualSalary1 = eElement.getElementsByTagName("AnnualSalary1")
-									.item(0).getTextContent();
-							projectedEarnedSalary1 = eElement.getElementsByTagName("Projected_Earned_Salary1")
-									.item(0).getTextContent();
-							settlementAmount = eElement.getElementsByTagName("Settlement_Amount")
-									.item(0).getTextContent();
-							MonthOff1st = eElement.getElementsByTagName("1st_Month_off")
-									.item(0).getTextContent();							
-							MonthOff2nd = eElement.getElementsByTagName("2nd_Month_offment2")
-									.item(0).getTextContent();
+						//	log.info("dateOfDivorse Value is: " + dateOfDivorse);
 							
-							}
+							familyRelationship1 = eElement.getElementsByTagName("FamilyRelationship1")
+									.item(0).getTextContent();
+							//log.info("lossOfDepChild Value is: " + lossOfDepChild);
+							
+							actionCode2 = eElement.getElementsByTagName("ActionCode2")
+									.item(0).getTextContent();
+						//	log.info("DepChildStatus Value is: " + DepChildStatus);
+							
+						enrolledPersonName2 = eElement.getElementsByTagName("EnrolledPersonName2")
+									.item(0).getTextContent();
+						//	log.info("dissolutionChk Value is: " + dissolutionChk);
+							
+							dob2 = eElement.getElementsByTagName("DOB2")
+									.item(0).getTextContent();
+						//	log.info("dissolutionDate Value is: " + dissolutionDate);
+							
+							familyRelationship2 = eElement.getElementsByTagName("FamilyRelationship2")
+									.item(0).getTextContent();
+						//	log.info("Months Value is: "+Months);
+							
+							actionCode3 = eElement.getElementsByTagName("ActionCode3")
+									.item(0).getTextContent();
+							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							enrolledPersonName3 = eElement.getElementsByTagName("EnrolledPersonName3")
+									.item(0).getTextContent();
+							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							dob3 = eElement.getElementsByTagName("DOB3")
+									.item(0).getTextContent();
+							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							familyRelationship3 = eElement.getElementsByTagName("FamilyRelationship3")
+									.item(0).getTextContent();
+							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							actionCode4 = eElement.getElementsByTagName("ActionCode4")
+									.item(0).getTextContent();
+						//	log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							enrolledPersonName4 = eElement.getElementsByTagName("EnrolledPersonName4")
+									.item(0).getTextContent();
+							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							dob4 = eElement.getElementsByTagName("DOB4")
+									.item(0).getTextContent();
+						//	log.info("ThePlan Value is: "+endOfEmployeementdate);
+							
+							familyRelationship4 = eElement.getElementsByTagName("FamilyRelationship4")
+									.item(0).getTextContent();
+							actionCode5 = eElement.getElementsByTagName("ActionCode5")
+									.item(0).getTextContent();
+							enrolledPersonName5 = eElement.getElementsByTagName("EnrolledPersonName5")
+									.item(0).getTextContent();
+							dob5 = eElement.getElementsByTagName("DOB5")
+									.item(0).getTextContent();
+							familyRelationship5 = eElement.getElementsByTagName("FamilyRelationship5")
+									.item(0).getTextContent();
+							actionCode6 = eElement.getElementsByTagName("ActionCode6")
+									.item(0).getTextContent();
+							enrolledPersonName6 = eElement.getElementsByTagName("EnrolledPersonName6")
+									.item(0).getTextContent();
+							dob6 = eElement.getElementsByTagName("DOB6")
+									.item(0).getTextContent();
+							familyRelationship6 = eElement.getElementsByTagName("FamilyRelationship6")
+									.item(0).getTextContent();
+							actionCode7 = eElement.getElementsByTagName("ActionCode7")
+									.item(0).getTextContent();
+							enrolledPersonName7 = eElement.getElementsByTagName("EnrolledPersonName7")
+									.item(0).getTextContent();
+							dob7 = eElement.getElementsByTagName("DOB7")
+									.item(0).getTextContent();
+							familyRelationship7 = eElement.getElementsByTagName("FamilyRelationship7")
+									.item(0).getTextContent();
+							actionCode8 = eElement.getElementsByTagName("ActionCode8")
+									.item(0).getTextContent();
+							enrolledPersonName8 = eElement.getElementsByTagName("EnrolledPersonName8")
+									.item(0).getTextContent();							
+							dob8 = eElement.getElementsByTagName("DOB8")
+									.item(0).getTextContent();
+							familyRelationship8 = eElement.getElementsByTagName("FamilyRelationship8")
+									.item(0).getTextContent();
+							priorDentalPlanName = eElement.getElementsByTagName("PriorDentalPlanName")
+									.item(0).getTextContent();
+							checkCB1 = eElement.getElementsByTagName("CheckCB1")
+									.item(0).getTextContent();
+							checkCB2 = eElement.getElementsByTagName("CheckCB2")
+									.item(0).getTextContent();
+							checkCB3 = eElement.getElementsByTagName("CheckCB3")
+									.item(0).getTextContent();
+							empSignature = eElement.getElementsByTagName("EmpSignature")
+									.item(0).getTextContent();
+							empSignedDate = eElement.getElementsByTagName("EmpSignedDate")
+									.item(0).getTextContent();
+							empDEDCode1 = eElement.getElementsByTagName("EmpDEDCode1")
+									.item(0).getTextContent();
+							empDEDCode2 = eElement.getElementsByTagName("EmpDEDCode2")
+									.item(0).getTextContent();
+							dentalOrgCode = eElement.getElementsByTagName("DentalOrgCode")
+									.item(0).getTextContent();
+							partyCode = eElement.getElementsByTagName("PartyCode")
+									.item(0).getTextContent();
+							payPeriod = eElement.getElementsByTagName("PayPeriod")
+									.item(0).getTextContent();
+							stateShareAmount = eElement.getElementsByTagName("StateShareAmount")
+									.item(0).getTextContent();
+							empDeductionAmount = eElement.getElementsByTagName("EmpDeductionAmount")
+									.item(0).getTextContent();
+							empDesignation = eElement.getElementsByTagName("EmpDesignation")
+							.item(0).getTextContent();
+							bargaininUnit = eElement.getElementsByTagName("BargaininUnit")
+									.item(0).getTextContent();
+							totalPremiumAmount = eElement.getElementsByTagName("TotalPremiumAmount")
+									.item(0).getTextContent();
+							priorEmpDEDCode2 = eElement.getElementsByTagName("PriorEmpDEDCode2")
+									.item(0).getTextContent();
+							priorEmpDEDCode1 = eElement.getElementsByTagName("PriorEmpDEDCode1")
+									.item(0).getTextContent();
+							priorDentalOrgCode = eElement.getElementsByTagName("PriorDentalOrgCode")
+									.item(0).getTextContent();
+							priorPartyCode = eElement.getElementsByTagName("PriorPartyCode")
+									.item(0).getTextContent();
+							permittingEventDate	= eElement.getElementsByTagName("PermittingEventDate")
+							.item(0).getTextContent();	
+							permittingEventCode = eElement.getElementsByTagName("PermittingEventCode")
+									.item(0).getTextContent();
+							electiveDateOfAction = eElement.getElementsByTagName("ElectiveDateOfAction")
+									.item(0).getTextContent();
+							agencyCode = eElement.getElementsByTagName("AgencyCode")
+									.item(0).getTextContent();
+							unitCode = eElement.getElementsByTagName("UnitCode")
+									.item(0).getTextContent();
+							agencyName1 = eElement.getElementsByTagName("AgencyName1")
+									.item(0).getTextContent();
+							agencyName2 = eElement.getElementsByTagName("AgencyName2")
+									.item(0).getTextContent();
+							remarks = eElement.getElementsByTagName("Remarks")
+									.item(0).getTextContent();
+							authorisedAgencySignature = eElement.getElementsByTagName("AuthorisedAgencySignature")
+									.item(0).getTextContent();
+							telephoneNumber = eElement.getElementsByTagName("TelephoneNumber")
+									.item(0).getTextContent();
+							dateRecievedInEmpOffice = eElement.getElementsByTagName("DateRecievedInEmpOffice")
+									.item(0).getTextContent();
+						}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
 
-					dataMap.put("EMPL_ID", empId);
-					dataMap.put("LAST_NAME", lastName);
-					dataMap.put("FIRST_NAME", firstName);
-					dataMap.put("EMPL_RCD", empRCD);
-					dataMap.put("EXTENSION", extension);
-					dataMap.put("SCO_POSITION_NUMBER", scoPositionNumber);
-					dataMap.put("TIMEBASE", timeBase);
-					dataMap.put("STATUS_MENU", statusMenu);
-					dataMap.put("CBID", cbid);
-					dataMap.put("CLASSIFICATION", classification);
-					dataMap.put("GRADE", grade);
-					dataMap.put("CMS_POSITION_NUMBER", cmsPosition);
-					dataMap.put("DEPARTMENT_NAME", departmentName);
-					dataMap.put("DEPARTMENT_ID", departmentID);
-					dataMap.put("10_12or11_12_REQUEST", payPlan);
-					dataMap.put("PLAN_SELECTED", planSelected);
-					dataMap.put("NAME1", name1);
-					dataMap.put("MONTHOFF1", monthOff1);
-					dataMap.put("MONTHOFF2", monthOff2);
+					dataMap.put("TYPE_OF_ACTION", action);
+					dataMap.put("FNAME", fName);
+					dataMap.put("MIDDLENAME", middleName);
+					dataMap.put("LNAME", lName);
+					dataMap.put("ADDRESS", address);
+					dataMap.put("CITY", city);
+					dataMap.put("STATE", state);
+					dataMap.put("ZIP", zip);
+					dataMap.put("PERMANENT_EMP", permanentEmp);
+					dataMap.put("SEX", sex);					
+					dataMap.put("MARRITAL_STATUS", marritalStatus);
+					dataMap.put("SOCIAL_SEC_NO", socialSecNo);					
+					dataMap.put("SPOUSE_SOCIAL_SEC_NO", spouseSocialSecNo);		
+					dataMap.put("NAME_OF_DENAL_PLAN", nameOfDentalPlan);
+					dataMap.put("FACILITY_NO", facilityNo);
+					dataMap.put("ACTION_CODE1", actionCode1);
+					dataMap.put("ENROLLED_PERSON_NAME1", enrolledPersonName1);
 					
-					Object empDateObj = null;
-					if (empDate != null && empDate != "") {
-						Date empDateNew = Date.valueOf(empDate);
-						empDateObj = empDateNew;
+					Object dob1Obj= null;
+					if(dob1 != null && dob1 != "") {
+						Date dob1New = Date.valueOf(dob1);
+						dob1Obj = dob1New;
 					}
-					dataMap.put("EMP_DATE", empDateObj);
-					dataMap.put("ADMIN_SIGN", adminSign);
-					dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
-					dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName);
-					dataMap.put("DATE1", Date.valueOf(date1));
-					dataMap.put("APPROVAL_GRANTED_YES", approvalGrantedYes);
-					dataMap.put("VP_SIGNATURE", vpSignature);
-					dataMap.put("DATE2", Date.valueOf(date2));
-					dataMap.put("ON_CYCLE", Date.valueOf(oncycle));
-					dataMap.put("OFF_CYCLE", Date.valueOf(offcycle));
-					dataMap.put("CURRENT_MONTHLY_SALARY", currentMonthSalary);
-					dataMap.put("ADJUSTED_SALARY", adjustedSalary);
-					dataMap.put("DATE_DISCUSSED", Date.valueOf(dateDiscussed));
-					dataMap.put("PAYPLAN10", payPlan10);
-					dataMap.put("PAYPLAN11", payPlan11);
+					dataMap.put("DOB1", dob1Obj);
+					dataMap.put("FAMILY_RELATIONSHIP1", familyRelationship1);
 					
-					Object startDateObj = null;
-					if (startDate != null && startDate != "") {
-						Date startDateNew = Date.valueOf(startDate);
-						startDateObj = startDateNew;
+					dataMap.put("ACTION_CODE2", actionCode2);
+					dataMap.put("ENROLLED_PERSON_NAME2", enrolledPersonName2);
+					
+					Object dob2Obj= null;
+					if(dob2 != null && dob2 != "") {
+						Date dob2New = Date.valueOf(dob2);
+						dob2Obj = dob2New;
 					}
-					dataMap.put("START_DATE", startDateObj);
-					dataMap.put("MONTH_SAL", monthSal);
-					dataMap.put("DAYS_TO_WORK", daysToWork);
-					dataMap.put("POSSIBLE_WORK_DAYS", possibleWorkDays);
-					dataMap.put("ANNUAL_SALARY", annualSalary);
-					dataMap.put("MONTH_SAL1", monthSal1);
-					dataMap.put("MONTHS_TO_WORK", monthsToWork);
-					dataMap.put("PROJECTED_EARNED_SALARY", projectedEarnedSalary);
-					dataMap.put("ANNUAL_SALARY1", annualSalary1);
-					dataMap.put("PROJECTED_EARNED_SALARY1", projectedEarnedSalary1);
-					dataMap.put("SETTLEMENT_AMOUNT", settlementAmount);
-					dataMap.put("1ST_MONTH_OFF", MonthOff1st);
-					dataMap.put("2ND_MONTH_OFF", MonthOff2nd);
+					dataMap.put("DOB2", dob2Obj);
+					dataMap.put("FAMILY_RELATIONSHIP2", familyRelationship2);
+					dataMap.put("ACTION_CODE3", actionCode3);
+					dataMap.put("ENROLLED_PERSON_NAME3", enrolledPersonName3);
 
+					Object dob3Obj= null;
+					if(dob3 != null && dob3 != "") {
+						Date dob3New = Date.valueOf(dob3);
+						dob3Obj = dob3New;
+					}
+					dataMap.put("DOB3", dob3Obj);
+					dataMap.put("FAMILY_RELATIONSHIP3", familyRelationship3);
+					dataMap.put("ACTION_CODE4", actionCode4);
+					dataMap.put("ENROLLED_PERSON_NAME4", enrolledPersonName4);
+
+					Object dob4Obj= null;
+					if(dob4 != null && dob4 != "") {
+						Date dob4New = Date.valueOf(dob4);
+						dob4Obj = dob4New;
+					}
+					dataMap.put("DOB4", dob4Obj);
+					dataMap.put("FAMILY_RELATIONSHIP4", familyRelationship4);
+					dataMap.put("ACTION_CODE5", actionCode5);
+					dataMap.put("ENROLLED_PERSON_NAME5", enrolledPersonName5);
+					
+					Object dob5Obj= null;
+					if(dob5 != null && dob5 != "") {
+						Date dob5New = Date.valueOf(dob5);
+						dob5Obj = dob5New;
+					}
+					dataMap.put("DOB5", dob5Obj);
+				
+					dataMap.put("FAMILY_RELATIONSHIP5", familyRelationship5);
+					dataMap.put("ACTION_CODE6", actionCode6);
+					dataMap.put("ENROLLED_PERSON_NAME6", enrolledPersonName6);
+
+					Object dob6Obj= null;
+					if(dob6 != null && dob6 != "") {
+						Date dob6New = Date.valueOf(dob6);
+						dob6Obj = dob6New;
+					}
+					dataMap.put("DOB6", dob6Obj);
+					dataMap.put("FAMILY_RELATIONSHIP6", familyRelationship6);
+					dataMap.put("ACTION_CODE7", actionCode7);
+					dataMap.put("ENROLLED_PERSON_NAME7", enrolledPersonName7);
+
+					Object dob7Obj= null;
+					if(dob7 != null && dob7 != "") {
+						Date dob7New = Date.valueOf(dob7);
+						dob7Obj = dob7New;
+					}
+					dataMap.put("DOB7", dob7Obj);
+					dataMap.put("FAMILY_RELATIONSHIP7", familyRelationship7);
+					dataMap.put("ACTION_CODE8", actionCode8);
+					dataMap.put("ENROLLED_PERSON_NAME8", enrolledPersonName8);
+
+					Object dob8Obj= null;
+					if(dob8 != null && dob8 != "") {
+						Date dob8New = Date.valueOf(dob8);
+						dob8Obj = dob8New;
+					}
+					dataMap.put("DOB8", dob8Obj);
+					dataMap.put("FAMILY_RELATIONSHIP8", familyRelationship8);
+					dataMap.put("PRIOR_DENTAL_PLAN_NAME", priorDentalPlanName);
+					dataMap.put("CB1", checkCB1);
+					dataMap.put("CB2", checkCB2);
+					dataMap.put("CB3", checkCB3);
+			
+					dataMap.put("EMP_SIGNATURE", empSignature);
+
+					Object empSignedDateObj= null;
+					if(empSignedDate != null && empSignedDate != "") {
+						Date empSignedDateNew = Date.valueOf(empSignedDate);
+						empSignedDateObj = empSignedDateNew;
+					}
+					dataMap.put("EMP_SIGNED_DATE", empSignedDateObj);
+					dataMap.put("EMP_DED_CODE1", empDEDCode1);
+					dataMap.put("EMP_DED_CODE2", empDEDCode2);
+					dataMap.put("DENTAL_ORG_CODE", dentalOrgCode);
+					dataMap.put("PARTY_CODE", partyCode);
+					dataMap.put("PAY_PERIOD", payPeriod);
+					dataMap.put("STATE_SHARE_AMOUNT", stateShareAmount);
+					dataMap.put("EMP_DEDUCTION_AMOUNT", empDeductionAmount);
+					dataMap.put("EMP_DESIGNATION", empDesignation);
+					dataMap.put("BARGAIN_IN_UNIT", bargaininUnit);
+					dataMap.put("TOTAL_PREMIUM_AMOUNT", totalPremiumAmount);
+					dataMap.put("PRIOR_EMP_DED_CODE1", priorEmpDEDCode1);
+					dataMap.put("PRIOR_EMP_DED_CODE2", priorEmpDEDCode2);
+					dataMap.put("PRIOR_DENTAL_ORG_CODE", priorDentalOrgCode);
+					dataMap.put("PRIOR_PARTY_CODE", priorPartyCode);
+
+					Object permittingEventDateObj= null;
+					if(permittingEventDate != null && permittingEventDate != "") {
+						Date permittingEventDateNew = Date.valueOf(permittingEventDate);
+						permittingEventDateObj = permittingEventDateNew;
+					}
+					dataMap.put("PERMITTING_EVENT_DATE", permittingEventDateObj);
+					dataMap.put("PERMITTING_EVENT_CODE", permittingEventCode);
+
+					Object delectiveDateOfActionObj= null;
+					if(electiveDateOfAction != null && electiveDateOfAction != "") {
+						Date delectiveDateOfActionNew = Date.valueOf(electiveDateOfAction);
+						delectiveDateOfActionObj = delectiveDateOfActionNew;
+					}
+					dataMap.put("ELECTIVE_DATE_OF_ACTION", delectiveDateOfActionObj);
+					dataMap.put("AGENCY_CODE", agencyCode);
+					dataMap.put("UNIT_CODE", unitCode);
+					dataMap.put("AGENCY_NAME1", agencyName1);
+					dataMap.put("AGENCY_NAME2", agencyName2);
+					dataMap.put("REMARK", remarks);
+					dataMap.put("AUTHORISED_AGENCY_SIGNATURE", authorisedAgencySignature);
+					dataMap.put("TELEPHONE_NUMBER", telephoneNumber);
+
+					Object dateRecievedInEmpOfficeObj= null;
+					if(dateRecievedInEmpOffice != null && dateRecievedInEmpOffice != "") {
+						Date dateRecievedInEmpOfficeNew = Date.valueOf(dateRecievedInEmpOffice);
+						dateRecievedInEmpOfficeObj = dateRecievedInEmpOfficeNew;
+					}
+					dataMap.put("DATE_RECEIVED_IN_EMP_OFFICE", dateRecievedInEmpOfficeObj);
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
@@ -381,7 +583,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 		conn = getConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
-			insertPayPlan10_12_11_12Data(conn, dataMap);
+			insertDentalPlanData(conn, dataMap);
 		}
 	}
 
@@ -403,14 +605,13 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 			log.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
 		} /*
-		 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
-		 * (Exception exp) { exp.printStackTrace(); } }
-		 */
+			 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
+			 * (Exception exp) { exp.printStackTrace(); } }
+			 */
 		return null;
 	}
 
-	public void insertPayPlan10_12_11_12Data(Connection conn,
-			LinkedHashMap<String, Object> dataMap) {
+	public void insertDentalPlanData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {
@@ -423,12 +624,11 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_10_12_11_12PayPlan";
-			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
-					tableName).append(" (");
+			String tableName = "AEM_DENTAL_PLAN_ENROLLMENT";
+			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
+			log.info("The SQL COMMAN IS=" + sql);
 			StringBuilder placeholders = new StringBuilder();
-			for (Iterator<String> iter = dataMap.keySet().iterator(); iter
-					.hasNext();) {
+			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {
 				sql.append(iter.next());
 				placeholders.append("?");
 				if (iter.hasNext()) {
@@ -467,6 +667,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 							preparedStmt.setString(++i, null);
 						}
 					}
+					log.info("The Vlaue is=" + value);
 				}
 			} catch (SQLException e) {
 				log.error("SQLException=" + e.getMessage());
@@ -506,9 +707,3 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 		}
 	}
 }
-
-
-
-
-	
-

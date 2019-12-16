@@ -40,45 +40,48 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=DentalPlanEnrollmentDOR",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=DentalPlanEnrollmentDOR" })
-public class DentalPlanEnrollmentFilenet implements WorkflowProcess{
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=dentalPlanEnrollmentFileNet", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=dentalPlanEnrollmentFileNet" })
+public class DentalPlanEnrollmentFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(MppEmpSelfEvalFilenet.class);
+	private static final Logger log = LoggerFactory.getLogger(DentalPlanEnrollmentFilenet.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
+
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
 		String firstName = null;
+		String middleName = null;
 		String lastName = null;
+		String socialSecurityNumber = null;
 		String encodedPDF = null;
-		String empId = null;
-		
+
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-
+		// Get the payload path and iterate the path to find Data.xml, Use
+		// Document
+		// factory to parse the xml and fetch the required values for the
+		// filenet
+		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
+			log.info("filePath====== " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				log.info("xmlFiles=======" + filePath);
+				// /
+				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -91,41 +94,37 @@ public class DentalPlanEnrollmentFilenet implements WorkflowProcess{
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
 					} catch (ParserConfigurationException e1) {
-						log.info("ParserConfigurationException=" + e1);
+						log.info("ParserConfigurationException=====" + e1);
 						e1.printStackTrace();
 					}
 					try {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
-						log.info("IOException=" + e1);
+						log.info("IOException======" + e1);
 						e1.printStackTrace();
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Empl_ID", doc, XPathConstants.NODE);
-						empId = empIdNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//First_Name", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//Fname", doc,
+								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Last_Name", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node mnNode = (org.w3c.dom.Node) xpath.evaluate("//MiddleName", doc,
+								XPathConstants.NODE);
+						middleName = mnNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//Lname", doc,
+								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						/*org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//HrOverallRate", doc,
-										XPathConstants.NODE);
-						rating = ratingNode.getFirstChild().getNodeValue();*/
+						org.w3c.dom.Node sSecurityNumber = (org.w3c.dom.Node) xpath.evaluate("//SpouseSocialSecNo", doc,
+								XPathConstants.NODE);
+						socialSecurityNumber = sSecurityNumber.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -145,18 +144,16 @@ public class DentalPlanEnrollmentFilenet implements WorkflowProcess{
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Dental Plan Enrollment.pdf")) {
-				log.info("filePath =" + filePath);
+			if (filePath.contains("Dental_Plan_Enrollment.pdf")) {
+				log.info("filePath ======" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
+						log.info("encodedPDF===="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -185,21 +182,20 @@ public class DentalPlanEnrollmentFilenet implements WorkflowProcess{
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"First_Name\": \"" + firstName + "\","
-				+ "\"Last_Name\": \"" + lastName + "\"," + "\"Empl_ID\": \""
-				+ empId + "\"," + "\","
-				+ "\"AttachmentType\": " + "\"DentalPlanEnrollmentDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
+		String jsonString = "{" + "\"Fname\": \"" + firstName + "\"," + "\"MiddleName\": \"" + middleName + "\","
+				+ "\"Lname\": \"" + lastName + "\"," + "\"SpouseSocialSecNo\": \"" + socialSecurityNumber + "\"," + "\"AttachmentType\": "
+				+ "\"FinalDentalPlanEnrollmentDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		// log.error("Json String:" + jsonString.toString());
+		
+		log.error("firstName="+firstName);
+		log.error("lastName="+middleName);
+		log.error("lastName="+lastName);
+		log.error("SSN="+socialSecurityNumber);
+		log.error("Json String:" + jsonString.toString());
 
-		// log.error("encodedPDF="+encodedPDF);
+		log.error("encodedPDF===="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read Cobra Final Notice");
+			log.info("Read dentalPlanEnrollment");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");
