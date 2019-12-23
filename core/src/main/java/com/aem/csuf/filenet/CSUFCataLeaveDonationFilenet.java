@@ -111,6 +111,7 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
+						
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
 								XPathConstants.NODE);
