@@ -61,7 +61,7 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess {
 		String timeBase = "";
 		String statusMenu  = "";
 		String cbid  = "";
-		String classification = "";
+		String classifications = "";
 		String grade = "";
 		String cmsPositionNumber = "";
 		String departmentName = "";
@@ -157,163 +157,198 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-							empId = eElement.getElementsByTagName("Empl_ID")
+							empId = eElement.getElementsByTagName("empl_ID")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + empId);
+									log.info("empId Value is: " + empId);
 
-							lastName = eElement.getElementsByTagName("Last_Name")
+							firstName = eElement.getElementsByTagName("first_Name")
 									.item(0).getTextContent();
+									log.info("first_NameValue is: " + firstName);
 
-							firstName = eElement.getElementsByTagName("First_Name")
+							lastName = eElement.getElementsByTagName("last_Name")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + firstName);
+									log.info("last_Name Value is: " + lastName);							
 
-							empRCD = eElement.getElementsByTagName("Empl_RCD")
+							empRCD = eElement.getElementsByTagName("empl_RCD")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + empRCD);
+									log.info("empRCD Value is: " + empRCD);
 
-							extension = eElement.getElementsByTagName("Extension")
+							extension = eElement.getElementsByTagName("extension")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + extension);
+									log.info("extension Value is: " + extension);
 
-							scoPositionNumber = eElement.getElementsByTagName("SCO_Position_Number")
+							scoPositionNumber = eElement.getElementsByTagName("scoPositionNumber")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + scoPositionNumber);
+									log.info("scoPositionNumber Value is: " + scoPositionNumber);
 
-							timeBase = eElement.getElementsByTagName("Timebase")
+							timeBase = eElement.getElementsByTagName("timebase")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + timeBase);
+									log.info("timeBase Value is: " + timeBase);
 
-							statusMenu = eElement.getElementsByTagName("StatusMenu")
+							statusMenu = eElement.getElementsByTagName("statusMenu")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + statusMenu);
+									log.info("statusMenu Value is: " + statusMenu);
 
-							cbid = eElement.getElementsByTagName("CBID")
+							cbid = eElement.getElementsByTagName("cbid")
 									.item(0).getTextContent();
-									log.info("reductionHourdate Value is: " + cbid);
+									log.info("cbid Value is: " + cbid);
 
-							classification = eElement.getElementsByTagName("Classification")
+							classifications = eElement.getElementsByTagName("classification")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + classification);
+							log.info("classification Value is: " + classifications);
 
-							grade = eElement.getElementsByTagName("Grade")
+							grade = eElement.getElementsByTagName("grade")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + grade);		
+							log.info("grade Value is: " + grade);		
 
-							cmsPositionNumber = eElement.getElementsByTagName("CMS_Position_Number")
+							cmsPositionNumber = eElement.getElementsByTagName("cmsPositionNumber")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + cmsPositionNumber);		
+							log.info("cmsPositionNumber Value is: " + cmsPositionNumber);		
 
-							departmentName = eElement.getElementsByTagName("Department_Name")
+							departmentName = eElement.getElementsByTagName("departmentName")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + departmentName);
+							log.info("departmentName Value is: " + departmentName);
 
-							departmentID = eElement.getElementsByTagName("Department_ID")
+							departmentID = eElement.getElementsByTagName("departmentID")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + departmentID);
+							log.info("departmentID Value is: " + departmentID);
 
-							payPlanCHK = eElement.getElementsByTagName("PayPlan_CHK")
-									.item(0).getTextContent();
-						//	log.info("reductionHourdate Value is: " + reductionHourdate);
-
-							effectiveDate = eElement.getElementsByTagName("EfffectiveDate")
-									.item(0).getTextContent();
-						//	log.info("DeathOfEmployee Value is: " + DeathOfEmployee);
-
-							planSelected = eElement.getElementsByTagName("Plan_Selected")
-									.item(0).getTextContent();
-							//log.info("EmployeeDeath Value is: " + EmployeeDeath);
-
-							name1 = eElement.getElementsByTagName("Name1")
-									.item(0).getTextContent();
-						//	log.info("Divorse Value is: " + Divorse);
-
-							monthOff1 = eElement.getElementsByTagName("MonthOff1")
-									.item(0).getTextContent();
-							//log.info("dateOfDivorse Value is: " + dateOfDivorse);
-							
-							monthOff2 = eElement.getElementsByTagName("MonthOff2")
-									.item(0).getTextContent();
-							//log.info("lossOfDepChild Value is: " + lossOfDepChild);
-							
-							employeeSignature = eElement.getElementsByTagName("EmployeeSignature")
-									.item(0).getTextContent();
-							//log.info("DepChildStatus Value is: " + DepChildStatus);
-							
-							empDate = eElement.getElementsByTagName("EmpDate")
-									.item(0).getTextContent();
-						//log.info("dissolutionChk Value is: " + dissolutionChk);
-							
-							onCycle = eElement.getElementsByTagName("OnCycle")
-									.item(0).getTextContent();
-							//log.info("dissolutionDate Value is: " + dissolutionDate);
-							
-							offCycle = eElement.getElementsByTagName("OffCycle")
-									.item(0).getTextContent();
-							//log.info("Months Value is: "+Months);
-							
-							currentMonthSalary = eElement.getElementsByTagName("CurrentMonthlySalary")
-									.item(0).getTextContent();
-							//log.info("ThePlan Value is: "+endOfEmployeementdate);
-							
-							adjustedSalary = eElement.getElementsByTagName("AdjustedSalary")
-									.item(0).getTextContent();
-							//log.info("ThePlan Value is: "+endOfEmployeementdate);
-							
-							dateDiscussed = eElement.getElementsByTagName("DateDiscussed")
-									.item(0).getTextContent();
-							//log.info("ThePlan Value is: "+endOfEmployeementdate);
-							
-							payPlan11 = eElement.getElementsByTagName("PayPlan11")
-									.item(0).getTextContent();
-							//log.info("ThePlan Value is: "+endOfEmployeementdate);
-							
-							payPlan10 = eElement.getElementsByTagName("PayPlan10")
-									.item(0).getTextContent();
-						//	log.info("ThePlan Value is: "+endOfEmployeementdate);
-							
-							startDate = eElement.getElementsByTagName("StartDate")
+							payPlanCHK = eElement.getElementsByTagName("payPlanCHK")
 							.item(0).getTextContent();
-							//log.info("ThePlan Value is: "+endOfEmployeementdate);
+						log.info("payPlanCHK Value is: " + payPlanCHK);
+
+							effectiveDate = eElement.getElementsByTagName("effectiveDate")
+									.item(0).getTextContent();
+							log.info("effectiveDate Value is: " + effectiveDate);
+
+							planSelected = eElement.getElementsByTagName("planSelected")
+									.item(0).getTextContent();
+							log.info("planSelected Value is: " + planSelected);
+
+							name1 = eElement.getElementsByTagName("name1")
+									.item(0).getTextContent();
+							log.info("name1 Value is: " + name1);
+
+							monthOff1 = eElement.getElementsByTagName("monthOff1")
+							.item(0).getTextContent();
+							log.info("monthOff1 Value is: " + monthOff1);
+
+							monthOff2 = eElement.getElementsByTagName("monthOff2")
+							.item(0).getTextContent();
+							log.info("monthOff2 Value is: " + monthOff2);
+
+							employeeSignature = eElement.getElementsByTagName("employeeSignature")
+							.item(0).getTextContent();
+							log.info("employeeSignature Value is: " + employeeSignature);
+
+							empDate = eElement.getElementsByTagName("empDate")
+							.item(0).getTextContent();
+							log.info("empDate Value is: " + empDate);
+
+							onCycle = eElement.getElementsByTagName("onCycle")
+							.item(0).getTextContent();
+							log.info("OnCycle Value is: " + onCycle);
+
+							offCycle = eElement.getElementsByTagName("offCycle")
+							.item(0).getTextContent();
+							log.info("offCycle Value is: " + offCycle);
+
+							currentMonthSalary = eElement.getElementsByTagName("currentMonthlySalary")
+							.item(0).getTextContent();
+							log.info("currentMonthSalary Value is: " + currentMonthSalary);
+
+							adjustedSalary = eElement.getElementsByTagName("adjustedSalary")
+							.item(0).getTextContent();
+							log.info("adjustedSalary Value is: " + adjustedSalary);
+			
+							dateDiscussed = eElement.getElementsByTagName("dateDiscussed")
+							.item(0).getTextContent();
+							log.info("dateDiscussed Value is: " + dateDiscussed);
+
+							payPlan10 = eElement.getElementsByTagName("payPlan10")
+							.item(0).getTextContent();
+							log.info("payPlan10 Value is: " + payPlan10);
 							
-							monthSal = eElement.getElementsByTagName("Month_Sal")
-									.item(0).getTextContent();
-						//	log.info("ThePlan Value is: "+endOfEmployeementdate);
+							payPlan11 = eElement.getElementsByTagName("payPlan11")
+							.item(0).getTextContent();
+							log.info("payPlan11 Value is: " + payPlan11);
+
+							startDate = eElement.getElementsByTagName("startDate")
+							.item(0).getTextContent();
+							log.info("StartDate Value is: " + startDate);
 							
-							daysToWork = eElement.getElementsByTagName("Days_to_work")
-									.item(0).getTextContent();
-							annualSalary = eElement.getElementsByTagName("AnnualSalary")
-									.item(0).getTextContent();
-							possibleWorkDays = eElement.getElementsByTagName("Possible_work_days")
-									.item(0).getTextContent();
-							monthSal1 = eElement.getElementsByTagName("Month_Sal1")
-									.item(0).getTextContent();
-							monthsToWork = eElement.getElementsByTagName("Months_to_work")
-									.item(0).getTextContent();
-							projectedEarnedSalary = eElement.getElementsByTagName("Projected_Earned_Salary")
-									.item(0).getTextContent();
-							annualSalary1 = eElement.getElementsByTagName("AnnualSalary1")
-									.item(0).getTextContent();
-							projectedEarnedSalary1 = eElement.getElementsByTagName("Projected_Earned_Salary1")
-									.item(0).getTextContent();
-							settlementAmount = eElement.getElementsByTagName("Settlement_Amount")
-									.item(0).getTextContent();
-							firstMonthOff = eElement.getElementsByTagName("First_Month_off")
-									.item(0).getTextContent();
-							secondMonthOff = eElement.getElementsByTagName("Second_Month_off")
-									.item(0).getTextContent();
-							approvalRecommendedYes = eElement.getElementsByTagName("ApprovalRecommendedYes")
-									.item(0).getTextContent();
-							appropriateAdminName = eElement.getElementsByTagName("Appropriate_Admin_Name")
-									.item(0).getTextContent();
-							date1 = eElement.getElementsByTagName("Date1")
-									.item(0).getTextContent();
-							approvedGrantedYes = eElement.getElementsByTagName("ApprovalGrantedYes")
-									.item(0).getTextContent();							
-							vpSignature = eElement.getElementsByTagName("VP_Signature")
-									.item(0).getTextContent();
-							date2 = eElement.getElementsByTagName("Date2")
-									.item(0).getTextContent();
+							monthSal = eElement.getElementsByTagName("monthSal")
+							.item(0).getTextContent();
+							log.info("monthSal Value is: " + monthSal);
+							
+							daysToWork = eElement.getElementsByTagName("daystowork")
+							.item(0).getTextContent();
+							log.info("daystowork Value is: " + daysToWork);
+							
+							annualSalary = eElement.getElementsByTagName("annualSalary")
+							.item(0).getTextContent();
+							log.info("annualSalary Value is: " + annualSalary);
+
+							possibleWorkDays = eElement.getElementsByTagName("possibleworkdays")
+							.item(0).getTextContent();
+							log.info("possibleWorkDays Value is: " + possibleWorkDays);
+
+							monthSal1 = eElement.getElementsByTagName("monthSal1")
+							.item(0).getTextContent();
+							log.info("monthSal1 Value is: " + monthSal1);
+						
+							monthsToWork = eElement.getElementsByTagName("monthstowork")
+							.item(0).getTextContent();
+							log.info("monthsToWork Value is: " + monthsToWork);
+
+							projectedEarnedSalary = eElement.getElementsByTagName("projectedEarnedSalary")
+							.item(0).getTextContent();
+							log.info("projectedEarnedSalary Value is: " + projectedEarnedSalary);
+
+							annualSalary1 = eElement.getElementsByTagName("annualSalary1")
+							.item(0).getTextContent();
+							log.info("annualSalary1 Value is: " + annualSalary1);	
+							
+							projectedEarnedSalary1 = eElement.getElementsByTagName("projectedEarnedSalary1")
+							.item(0).getTextContent();
+							log.info("projectedEarnedSalary1 Value is: " + projectedEarnedSalary1);
+						
+							settlementAmount = eElement.getElementsByTagName("settlementAmount")
+							.item(0).getTextContent();
+							log.info("settlementAmount Value is: " + settlementAmount);
+
+							firstMonthOff = eElement.getElementsByTagName("firstMonthOff")
+							.item(0).getTextContent();
+							log.info("firstMonthOff Value is: " + firstMonthOff);
+
+							
+							secondMonthOff = eElement.getElementsByTagName("secondMonthOff")
+							.item(0).getTextContent();
+							log.info("secondMonthOff Value is: " + secondMonthOff);
+
+							approvalRecommendedYes = eElement.getElementsByTagName("approvalRecommendedYes")
+							.item(0).getTextContent();
+							log.info("approvalRecommendedYes Value is: " + approvalRecommendedYes);
+
+							appropriateAdminName = eElement.getElementsByTagName("appropriateAdminName")
+							.item(0).getTextContent();
+							log.info("appropriateAdminName Value is: " + appropriateAdminName);
+
+							date1 = eElement.getElementsByTagName("date1")
+							.item(0).getTextContent();
+							log.info("date1 Value is: " + date1);
+
+							approvedGrantedYes = eElement.getElementsByTagName("approvalGrantedYes")
+							.item(0).getTextContent();
+							log.info("approvalGrantedYes Value is: " + approvedGrantedYes);
+
+							vpSignature = eElement.getElementsByTagName("vpSignature")
+							.item(0).getTextContent();
+							log.info("vpSignature Value is: " + vpSignature);
+										
+							date2 = eElement.getElementsByTagName("date2")
+							.item(0).getTextContent();
+							log.info("date2 Value is: " + date2);
 												
 						}
 					}
@@ -330,12 +365,12 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess {
 					dataMap.put("TIMEBASE", timeBase);
 					dataMap.put("STATUS_MENU", statusMenu);
 					dataMap.put("CBID", cbid);
-					dataMap.put("CLASSIFICATION", classification);
+					dataMap.put("CLASSIFICATIONS", classifications);
 					dataMap.put("GRADE", grade);					
 					dataMap.put("CMS_POSITION_NUMBER", cmsPositionNumber);
 					dataMap.put("DEPARTMENT_NAME", departmentName);					
-					dataMap.put("DEPARTMENT_ID", departmentID);					
-					dataMap.put("PAYPLAN_CHK", payPlanCHK);
+					dataMap.put("DEPARTMENT_ID", departmentID);	
+					dataMap.put("PAYPLAN_CHK", payPlanCHK);				
 
 					Object effectiveDateObj= null;
 					if(effectiveDate != null && effectiveDate != "") {
@@ -366,8 +401,8 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess {
 						dateDiscussedObj = dateDiscussedNew;
 					}
 					dataMap.put("DATE_DISCUSSED", dateDiscussedObj);
+						dataMap.put("PAYPLAN10", payPlan10);
 					dataMap.put("PAYPLAN11", payPlan11);
-					dataMap.put("PAYPLAN10", payPlan10);
 
 					Object dstartDateObj= null;
 					if(startDate != null && startDate != "") {
@@ -470,7 +505,8 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_10_12_11_12_PayPlan";
+			String tableName = "AEM_PayPlan";
+			log.info("Table Name is: "+tableName);
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			log.info("THE SQL QUERY IS="+sql);
 			StringBuilder placeholders = new StringBuilder();

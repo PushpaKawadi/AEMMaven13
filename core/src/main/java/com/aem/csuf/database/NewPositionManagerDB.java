@@ -56,12 +56,6 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		Document doc = null;
 		InputStream is = null;
 
-		String reqNo = "";
-		String initials = "";
-		String hrDate = "";
-		String approvedClassification = "";		
-		String mppCode = "";
-		String hrTitle = "";
 		String empId = "";
 		String firstName = "";
 		String lastName = "";
@@ -120,6 +114,12 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		String deptDate = "";
 		String vp = "";
 		String vpDate = "";
+		String reqNo = "";
+		String initials = "";
+		String hrDate = "";
+		String approvedClassification = "";		
+		String mppCode = "";
+		String hrTitle = "";
 		String readCheck = "";
 		
 		
@@ -138,10 +138,10 @@ public class NewPositionManagerDB implements WorkflowProcess{
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
+			log.info("filePath NewPosition= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
+				log.info("xmlFiles NewPosition=" + filePath);
 				Node subNode = resolver.getResource(filePath).adaptTo(
 						Node.class);
 				try {
@@ -181,104 +181,73 @@ public class NewPositionManagerDB implements WorkflowProcess{
 
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
+							log.info("Inside Data.xml");
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-							reqNo = eElement.getElementsByTagName("ReqNo")
-									.item(0).getTextContent();
-							log.info("The value of Req. No="+reqNo);
-							
-							initials = eElement
-									.getElementsByTagName("Initials")
-									.item(0).getTextContent();
-							log.info("The value of Initials="+initials);
-							
-							hrDate = eElement
-									.getElementsByTagName("HRDate")
-									.item(0).getTextContent();
-							log.info("The value of hrDate="+hrDate);
-							
-							approvedClassification = eElement.getElementsByTagName("ApprovedClassification")
-									.item(0).getTextContent();
-							log.info("The value of Classification="+approvedClassification);
-							
-							mppCode = eElement.getElementsByTagName("MPPCode")
-									.item(0).getTextContent();
-							log.info("The value of MPP CODE="+mppCode);
-							
-							hrTitle = eElement
-									.getElementsByTagName("HRWorkingTitle").item(0)
-									.getTextContent();
-							log.info("The value of Title="+hrTitle);
-							
-							empId = eElement
-									.getElementsByTagName("EmplID").item(0)
+							empId = eElement.getElementsByTagName("EmplID").item(0)
 									.getTextContent();
 							log.info("The value of empID="+empId);
 							
-							firstName = eElement
-									.getElementsByTagName("IncumbentFirstName")
+							firstName = eElement.getElementsByTagName("IncumbentFirstName")
 									.item(0).getTextContent();
 							log.info("The value of First Name="+firstName);
 
-							lastName = eElement
-									.getElementsByTagName("IncumbentLastName")
+							lastName = eElement.getElementsByTagName("IncumbentLastName")
 									.item(0).getTextContent();
 							log.info("The value of Last Name="+lastName);
 							
-							empRCD = eElement
-									.getElementsByTagName("EmplRCD")
+							empRCD = eElement.getElementsByTagName("EmplRCD")
 									.item(0).getTextContent();
+									log.info("The value of empRCD="+empRCD);
 							
-							scoPosition = eElement
-									.getElementsByTagName("SCOPosition")
+							scoPosition = eElement.getElementsByTagName("SCOPosition")
 									.item(0).getTextContent();
+									log.info("The value of scoPosition="+scoPosition);
 
-							cmsPosition = eElement
-									.getElementsByTagName("CMSPosition")
+							cmsPosition = eElement.getElementsByTagName("CMSPosition")
 									.item(0).getTextContent();
+									log.info("The value of cmsPosition="+cmsPosition);
 
-							classification = eElement
-									.getElementsByTagName("Classification")
+							classification = eElement.getElementsByTagName("Classification")
 									.item(0).getTextContent();
+									log.info("The value of classification="+classification);
 
 
-							range = eElement
-									.getElementsByTagName("Range")
+							range = eElement.getElementsByTagName("Range")
 									.item(0).getTextContent();
+									log.info("The value of range="+range);
 
-							department = eElement
-									.getElementsByTagName("Department")
+							department = eElement.getElementsByTagName("Department")
 									.item(0).getTextContent();
+									log.info("The value of department="+department);
 
-							deptID = eElement
-									.getElementsByTagName("DeptID").item(0)
+							deptID = eElement.getElementsByTagName("DeptID").item(0)
 									.getTextContent();
+									log.info("The value of deptID="+deptID);
 
-							workingTitle = eElement
-									.getElementsByTagName("WorkingTitle")
+							workingTitle = eElement.getElementsByTagName("WorkingTitle")
 									.item(0).getTextContent();
+									log.info("The value of workingTitle="+workingTitle);
 							
-							appointmentType = eElement
-									.getElementsByTagName("AppointmentType")
+							appointmentType = eElement.getElementsByTagName("AppointmentType")
 									.item(0).getTextContent();
+									log.info("The value AppointmentType="+appointmentType);
 							
-							timeBaseRB = eElement
-									.getElementsByTagName("TimebaseRB").item(0)
+							timeBaseRB = eElement.getElementsByTagName("TimebaseRB").item(0)
 									.getTextContent();
+									log.info("The value TimeBase="+timeBaseRB);
 							
-							cbid = eElement
-									.getElementsByTagName("CBID")
+							cbid = eElement.getElementsByTagName("CBID")
 									.item(0).getTextContent();
+									log.info("The value of CBID"+cbid);
 
-							dateInitiated = eElement
-									.getElementsByTagName("DateInitiated").item(0)
+							dateInitiated = eElement.getElementsByTagName("DateInitiated").item(0)
 									.getTextContent();
 							
 							supervisor = eElement.getElementsByTagName("ManagementSupervisor")
 									.item(0).getTextContent();
 
-							appropriateAdmin = eElement
-									.getElementsByTagName("AppropriateAdministrator").item(0)
+							appropriateAdmin = eElement.getElementsByTagName("AppropriateAdministrator").item(0)
 									.getTextContent();
 
 							explanation1 = eElement.getElementsByTagName("Explanation1")
@@ -296,77 +265,130 @@ public class NewPositionManagerDB implements WorkflowProcess{
 
 							explanation6 = eElement.getElementsByTagName("Explanation6")
 									.item(0).getTextContent();
-							explanation7 = eElement
-									.getElementsByTagName("Explanation7").item(0)
+
+							explanation7 = eElement.getElementsByTagName("Explanation7").item(0)
 									.getTextContent();
+
 							explanation8 = eElement.getElementsByTagName("Explanation8")
 									.item(0).getTextContent();
+
 							explanation9 = eElement.getElementsByTagName("Explanation9")
 									.item(0).getTextContent();
+
 							complianceYes = eElement.getElementsByTagName("ComplianceYes")
 									.item(0).getTextContent();
+
 							complianceNo = eElement.getElementsByTagName("ComplianceNo")
 									.item(0).getTextContent();
+
 							decisionYes = eElement.getElementsByTagName("DecisionYes")
 									.item(0).getTextContent();
+
 							decisionNo = eElement.getElementsByTagName("DecisionNo")
 									.item(0).getTextContent();
+
 							bendingRB = eElement.getElementsByTagName("BendingBR")
 									.item(0).getTextContent();
+
 							walkingRB = eElement.getElementsByTagName("WalkingRB")
 									.item(0).getTextContent();
+
 							squattingRB = eElement.getElementsByTagName("SquattingRB")
 									.item(0).getTextContent();
+
 							unEvenWalkRB = eElement.getElementsByTagName("UnevenWalkRB")
 									.item(0).getTextContent();
+
 							crawlingRB = eElement.getElementsByTagName("CrawlingRB")
 									.item(0).getTextContent();
+
 							liftingRB = eElement.getElementsByTagName("LiftingRB")
 									.item(0).getTextContent();
+
 							kneelingRB = eElement.getElementsByTagName("KneelingRB")
 									.item(0).getTextContent();
+
 							climbingRB = eElement.getElementsByTagName("ClimbingRB")
 									.item(0).getTextContent();
+
 							graspingRB = eElement.getElementsByTagName("GraspingRB")
 									.item(0).getTextContent();
+
 							pushingRB = eElement.getElementsByTagName("PushingRB")
 									.item(0).getTextContent();
+
 							movementsRB = eElement.getElementsByTagName("MovementsRB")
-									.item(0).getTextContent();							
+									.item(0).getTextContent();
+
 							reachingOverheadRB = eElement.getElementsByTagName("ReachingOverheadRB")
 									.item(0).getTextContent();
+
 							discriminateColrsRB = eElement.getElementsByTagName("DiscriminateColorsRB")
 									.item(0).getTextContent();
+
 							auditoryRequirements = eElement.getElementsByTagName("AuditoryRequirements")
 									.item(0).getTextContent();
+
 							balancing = eElement.getElementsByTagName("Balancing")
 									.item(0).getTextContent();
+
 							wearingRespiratorRB = eElement.getElementsByTagName("WearingRespiratorRB")
 									.item(0).getTextContent();
+
 							sittingRB = eElement.getElementsByTagName("SittingRB")
 									.item(0).getTextContent();
+
 							driverRB = eElement.getElementsByTagName("DriverRB")
 									.item(0).getTextContent();
+									
 							standingRB = eElement.getElementsByTagName("StandingRB")
 									.item(0).getTextContent();
+
 							incumbent = eElement.getElementsByTagName("Incumbent")
 									.item(0).getTextContent();
+
 							incumbentDate = eElement.getElementsByTagName("IncumbentDate")
 									.item(0).getTextContent();
+
 							deptHiringManager = eElement.getElementsByTagName("DeptHiringManager")
 									.item(0).getTextContent();
+
 							deptDate = eElement.getElementsByTagName("DeptDate")
 									.item(0).getTextContent();
+
 							deptHead = eElement.getElementsByTagName("DeptHead")
-									.item(0).getTextContent();							
+									.item(0).getTextContent();	
+
 							deptHeadDate = eElement.getElementsByTagName("DeptHeadDate")
 									.item(0).getTextContent();
+
 							adminDate = eElement.getElementsByTagName("AdminDate")
 									.item(0).getTextContent();
+
 							vp = eElement.getElementsByTagName("VP")
 									.item(0).getTextContent();
+
 							vpDate = eElement.getElementsByTagName("VPDate")
-									.item(0).getTextContent();							
+									.item(0).getTextContent();	
+
+									reqNo = eElement.getElementsByTagName("ReqNo")
+									.item(0).getTextContent();	
+
+							initials = eElement.getElementsByTagName("Initials")
+									.item(0).getTextContent();	
+
+							hrDate = eElement.getElementsByTagName("HRDate")
+									.item(0).getTextContent();	
+
+							approvedClassification = eElement.getElementsByTagName("ApprovedClassification")
+									.item(0).getTextContent();	
+
+							mppCode = eElement.getElementsByTagName("MPPCode")
+									.item(0).getTextContent();	
+
+							hrTitle = eElement.getElementsByTagName("HRWorkingTitle").item(0)
+									.getTextContent();
+							
 							readCheck = eElement.getElementsByTagName("ReadCheck")
 									.item(0).getTextContent();
 //							
@@ -374,19 +396,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
-
-					dataMap.put("REQ_NO", reqNo);					
-					dataMap.put("INITIALS", initials);
-
-					Object hrDateObj= null;
-					if(hrDate != null && hrDate != "") {
-						Date hrDateNew = Date.valueOf(hrDate);
-						hrDateObj = hrDateNew;
-					}
-					dataMap.put("HR_DATE", hrDateObj);
-					dataMap.put("APPROVED_CLASSIFICATION", approvedClassification);
-					dataMap.put("MPP_CODE", mppCode);
-					dataMap.put("HR_WORKING_TITLE", hrTitle);			
+			
 					dataMap.put("EMP_ID", empId);		
 					dataMap.put("INCUMBENT_FIRST_NAME", firstName);
 					dataMap.put("INCUMBENT_LAST_NAME", lastName);
@@ -482,6 +492,18 @@ public class NewPositionManagerDB implements WorkflowProcess{
 						vpDateObj = vpDateNew;
 					}
 					dataMap.put("VP_DATE", vpDateObj);
+					dataMap.put("REQ_NO", reqNo);					
+					dataMap.put("INITIALS", initials);
+
+					Object hrDateObj= null;
+					if(hrDate != null && hrDate != "") {
+						Date hrDateNew = Date.valueOf(hrDate);
+						hrDateObj = hrDateNew;
+					}
+					dataMap.put("HR_DATE", hrDateObj);
+					dataMap.put("APPROVED_CLASSIFICATION", approvedClassification);
+					dataMap.put("MPP_CODE", mppCode);
+					dataMap.put("HR_WORKING_TITLE", hrTitle);
 					dataMap.put("READ_CHECK", readCheck);
 
 
