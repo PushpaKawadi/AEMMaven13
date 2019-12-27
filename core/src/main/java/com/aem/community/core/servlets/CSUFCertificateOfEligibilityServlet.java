@@ -97,6 +97,7 @@ public class CSUFCertificateOfEligibilityServlet extends SlingSafeMethodsServlet
 		String[] fields = lookupFields.split(",");
 		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		logger.error("emplIDSQL="+emplIDSQL);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
@@ -106,6 +107,8 @@ public class CSUFCertificateOfEligibilityServlet extends SlingSafeMethodsServlet
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
 				}
+				
+				logger.error("employeeEvalDetails="+employeeEvalDetails);
 				jArray.put(employeeEvalDetails);
 			}
 		} catch (Exception oEx) {
