@@ -54,6 +54,7 @@ public class CSUFCertificateOfEligibilityServlet extends SlingSafeMethodsServlet
 	private final static Logger logger = LoggerFactory.getLogger(CSUFCertificateOfEligibilityServlet.class);
 	private static final long serialVersionUID = 1L;
 
+	
 	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
