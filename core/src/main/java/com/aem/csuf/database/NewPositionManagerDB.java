@@ -68,7 +68,8 @@ public class NewPositionManagerDB implements WorkflowProcess{
 		String deptID = "";
 		String workingTitle = "";
 		String appointmentType = "";
-		String timeBaseRB = "";
+		String Fulltime = "";
+		String Parttime = "";
 		String cbid = "";
 		String dateInitiated = "";
 		String supervisor = "";
@@ -233,164 +234,217 @@ public class NewPositionManagerDB implements WorkflowProcess{
 									.item(0).getTextContent();
 									log.info("The value AppointmentType="+appointmentType);
 							
-							timeBaseRB = eElement.getElementsByTagName("TimebaseRB").item(0)
-									.getTextContent();
-									log.info("The value TimeBase="+timeBaseRB);
+							Fulltime = eElement.getElementsByTagName("FullTime")
+									.item(0).getTextContent();
+									log.info("The value FullTime="+Fulltime);
+
+							Parttime = eElement.getElementsByTagName("FullTime")
+									.item(0).getTextContent();
+									log.info("The value Parttime="+Parttime);		
 							
 							cbid = eElement.getElementsByTagName("CBID")
 									.item(0).getTextContent();
 									log.info("The value of CBID"+cbid);
 
-							dateInitiated = eElement.getElementsByTagName("DateInitiated").item(0)
-									.getTextContent();
+							dateInitiated = eElement.getElementsByTagName("DateInitiated")
+									.item(0).getTextContent();
+									log.info("The value of dateInitiated"+dateInitiated);
 							
 							supervisor = eElement.getElementsByTagName("ManagementSupervisor")
 									.item(0).getTextContent();
+									log.info("The value of supervisor"+supervisor);
 
-							appropriateAdmin = eElement.getElementsByTagName("AppropriateAdministrator").item(0)
-									.getTextContent();
+							appropriateAdmin = eElement.getElementsByTagName("AppropriateAdministrator")
+									.item(0).getTextContent();
+									log.info("The value of appropriateAdmin"+appropriateAdmin);
 
 							explanation1 = eElement.getElementsByTagName("Explanation1")
 									.item(0).getTextContent();
+									log.info("The value of explanation1"+explanation1);
 
 							explanation2 = eElement.getElementsByTagName("Explanation2")
 									.item(0).getTextContent();
+									log.info("The value of explanation2"+explanation2);
+
 							explanation3 = eElement.getElementsByTagName("Explanation3")
 									.item(0).getTextContent();
+									log.info("The value of explanation3"+explanation3);
+
 							explanation4	 = eElement.getElementsByTagName("Explanation4")
 									.item(0).getTextContent();
+									log.info("The value of explanation4"+explanation4);									
 
 							explanation5 = eElement.getElementsByTagName("Explanation5")
 									.item(0).getTextContent();
+									log.info("The value of explanation5"+explanation5);
 
 							explanation6 = eElement.getElementsByTagName("Explanation6")
 									.item(0).getTextContent();
+									log.info("The value of explanation6"+explanation6);
 
-							explanation7 = eElement.getElementsByTagName("Explanation7").item(0)
-									.getTextContent();
+							explanation7 = eElement.getElementsByTagName("Explanation7")
+									.item(0).getTextContent();
+									log.info("The value of explanation7"+explanation7);
 
 							explanation8 = eElement.getElementsByTagName("Explanation8")
 									.item(0).getTextContent();
+									log.info("The value of explanation8"+explanation8);
 
 							explanation9 = eElement.getElementsByTagName("Explanation9")
 									.item(0).getTextContent();
+									log.info("The value of explanation9"+explanation9);
 
 							complianceYes = eElement.getElementsByTagName("ComplianceYes")
 									.item(0).getTextContent();
+									log.info("The value of complianceYes"+complianceYes);
 
 							complianceNo = eElement.getElementsByTagName("ComplianceNo")
 									.item(0).getTextContent();
+									log.info("The value of complianceNo"+complianceNo);
 
 							decisionYes = eElement.getElementsByTagName("DecisionYes")
 									.item(0).getTextContent();
+									log.info("The value of decisionYes"+decisionYes);
 
 							decisionNo = eElement.getElementsByTagName("DecisionNo")
 									.item(0).getTextContent();
+									log.info("The value of decisionNo"+decisionNo);
 
 							bendingRB = eElement.getElementsByTagName("BendingBR")
 									.item(0).getTextContent();
+									log.info("The value of bendingRB"+bendingRB);
 
 							walkingRB = eElement.getElementsByTagName("WalkingRB")
 									.item(0).getTextContent();
+									log.info("The value of walkingRB"+walkingRB);
 
 							squattingRB = eElement.getElementsByTagName("SquattingRB")
 									.item(0).getTextContent();
+									log.info("The value of squattingRB"+squattingRB);
 
 							unEvenWalkRB = eElement.getElementsByTagName("UnevenWalkRB")
 									.item(0).getTextContent();
+									log.info("The value of unEvenWalkRB"+unEvenWalkRB);
 
 							crawlingRB = eElement.getElementsByTagName("CrawlingRB")
 									.item(0).getTextContent();
+									log.info("The value of crawlingRB"+crawlingRB);
 
 							liftingRB = eElement.getElementsByTagName("LiftingRB")
 									.item(0).getTextContent();
+									log.info("The value of liftingRB"+liftingRB);
 
 							kneelingRB = eElement.getElementsByTagName("KneelingRB")
 									.item(0).getTextContent();
+									log.info("The value of kneelingRB"+kneelingRB);
 
 							climbingRB = eElement.getElementsByTagName("ClimbingRB")
 									.item(0).getTextContent();
+									log.info("The value of climbingRB"+climbingRB);
 
 							graspingRB = eElement.getElementsByTagName("GraspingRB")
 									.item(0).getTextContent();
+									log.info("The value of graspingRB"+graspingRB);
 
 							pushingRB = eElement.getElementsByTagName("PushingRB")
 									.item(0).getTextContent();
+									log.info("The value of pushingRB"+pushingRB);
 
 							movementsRB = eElement.getElementsByTagName("MovementsRB")
 									.item(0).getTextContent();
+									log.info("The value of movementsRB"+movementsRB);
 
 							reachingOverheadRB = eElement.getElementsByTagName("ReachingOverheadRB")
 									.item(0).getTextContent();
+									log.info("The value of reachingOverheadRB"+reachingOverheadRB);
 
 							discriminateColrsRB = eElement.getElementsByTagName("DiscriminateColorsRB")
 									.item(0).getTextContent();
+									log.info("The value of discriminateColrsRB"+discriminateColrsRB);									
 
 							auditoryRequirements = eElement.getElementsByTagName("AuditoryRequirements")
 									.item(0).getTextContent();
+									log.info("The value of auditoryRequirements"+auditoryRequirements);
 
 							balancing = eElement.getElementsByTagName("Balancing")
 									.item(0).getTextContent();
+									log.info("The value of balancing"+balancing);
 
 							wearingRespiratorRB = eElement.getElementsByTagName("WearingRespiratorRB")
 									.item(0).getTextContent();
+									log.info("The value of wearingRespiratorRB"+wearingRespiratorRB);
 
 							sittingRB = eElement.getElementsByTagName("SittingRB")
 									.item(0).getTextContent();
+									log.info("The value of sittingRB"+sittingRB);
 
 							driverRB = eElement.getElementsByTagName("DriverRB")
 									.item(0).getTextContent();
+									log.info("The value of driverRB"+driverRB);
 									
 							standingRB = eElement.getElementsByTagName("StandingRB")
 									.item(0).getTextContent();
+									log.info("The value of standingRB"+standingRB);
 
 							incumbent = eElement.getElementsByTagName("Incumbent")
 									.item(0).getTextContent();
+									log.info("The value of incumbent"+incumbent);
 
 							incumbentDate = eElement.getElementsByTagName("IncumbentDate")
 									.item(0).getTextContent();
+									log.info("The value of incumbentDate"+incumbentDate);
 
 							deptHiringManager = eElement.getElementsByTagName("DeptHiringManager")
 									.item(0).getTextContent();
+									log.info("The value of deptHiringManager"+deptHiringManager);
 
 							deptDate = eElement.getElementsByTagName("DeptDate")
 									.item(0).getTextContent();
+									log.info("The value of deptDate"+deptDate);
 
 							deptHead = eElement.getElementsByTagName("DeptHead")
 									.item(0).getTextContent();	
+									log.info("The value of deptHead"+deptHead);
 
 							deptHeadDate = eElement.getElementsByTagName("DeptHeadDate")
 									.item(0).getTextContent();
+									log.info("The value of deptHeadDate"+deptHeadDate);
 
 							adminDate = eElement.getElementsByTagName("AdminDate")
 									.item(0).getTextContent();
+									log.info("The value of adminDate"+adminDate);
 
 							vp = eElement.getElementsByTagName("VP")
 									.item(0).getTextContent();
+									log.info("The value of vp"+vp);
 
 							vpDate = eElement.getElementsByTagName("VPDate")
-									.item(0).getTextContent();	
+									.item(0).getTextContent();
+									log.info("The value of vpDate"+vpDate);	
 
 									reqNo = eElement.getElementsByTagName("ReqNo")
-									.item(0).getTextContent();	
+									.item(0).getTextContent();
+									log.info("The value of reqNo"+reqNo);	
 
 							initials = eElement.getElementsByTagName("Initials")
-									.item(0).getTextContent();	
+									.item(0).getTextContent();
+									log.info("The value of initials"+initials);	
 
 							hrDate = eElement.getElementsByTagName("HRDate")
 									.item(0).getTextContent();	
+									log.info("The value of hrDate"+hrDate);
 
 							approvedClassification = eElement.getElementsByTagName("ApprovedClassification")
-									.item(0).getTextContent();	
+									.item(0).getTextContent();
+									log.info("The value of approvedClassification"+approvedClassification);	
 
 							mppCode = eElement.getElementsByTagName("MPPCode")
 									.item(0).getTextContent();	
+									log.info("The value of mppCode"+mppCode);
 
 							hrTitle = eElement.getElementsByTagName("HRWorkingTitle").item(0)
 									.getTextContent();
-							
-							readCheck = eElement.getElementsByTagName("ReadCheck")
-									.item(0).getTextContent();
+									log.info("The value of hrTitle"+hrTitle);
 //							
 							}
 					}
@@ -409,7 +463,8 @@ public class NewPositionManagerDB implements WorkflowProcess{
 					dataMap.put("DEPT_ID", deptID);
 					dataMap.put("WORKING_TITLE", workingTitle);
 					dataMap.put("APPOINTMENT_TYPE", appointmentType);
-					dataMap.put("TIME_BASE_RB", timeBaseRB);
+					dataMap.put("FULL_TIME", Fulltime);
+					dataMap.put("PART_TIME", Parttime);
 					dataMap.put("CBID", cbid);
 					
 					Object dateInitiatedObj= null;
@@ -504,8 +559,6 @@ public class NewPositionManagerDB implements WorkflowProcess{
 					dataMap.put("APPROVED_CLASSIFICATION", approvedClassification);
 					dataMap.put("MPP_CODE", mppCode);
 					dataMap.put("HR_WORKING_TITLE", hrTitle);
-					dataMap.put("READ_CHECK", readCheck);
-
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
@@ -571,7 +624,7 @@ public class NewPositionManagerDB implements WorkflowProcess{
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_NEW_POSITION_MANAGERS";
+			String tableName = "AEM_NEW_POSITION_MANAGER";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
 					tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
