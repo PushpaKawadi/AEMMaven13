@@ -1,13 +1,7 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
-Bnd-LastModified: 1577442999300
+Bnd-LastModified: 1577449924839
 Build-Jdk: 1.8.0_221
 Built-By: 105683
-=======
-Bnd-LastModified: 1577424851438
-Build-Jdk: 1.8.0_131
-Built-By: 104745
->>>>>>> 2a90051b051194590c06b170ac178bd00f7605db
 Bundle-Description: Bundles for Integration Tests for AEMMaven13
 Bundle-ManifestVersion: 2
 Bundle-Name: AEMMaven13 - Integration Tests Bundles

@@ -17,12 +17,12 @@
       <artifactId>aemfd-client-sdk</artifactId>
       <version>6.3.0</version>
     </dependency>
-     <dependency>
+   <dependency>
       <groupId>com.adobe.aem</groupId>
       <artifactId>uber-jar</artifactId>
-     <!-- <version>6.4.0</version>-->
+      <!-- <version>6.4.0</version> -->
       <classifier>apis</classifier>
-      <scope>provided</scope>
+     <scope>provided</scope>
     </dependency>
     <dependency>
       <groupId>org.apache.geronimo.specs</groupId>
@@ -54,11 +54,11 @@
       <groupId>javax.servlet</groupId>
       <artifactId>servlet-api</artifactId>
     </dependency>
-    <dependency>
+  <!--  <dependency>
       <groupId>com.adobe.aem</groupId>
       <artifactId>uber-jar</artifactId>
       <classifier>apis</classifier>
-    </dependency>
+    </dependency> -->
     <dependency>
       <groupId>org.apache.sling</groupId>
       <artifactId>org.apache.sling.models.api</artifactId>
