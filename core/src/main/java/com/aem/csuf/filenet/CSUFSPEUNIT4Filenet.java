@@ -151,7 +151,7 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
+						//log.info("encodedPDF="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
