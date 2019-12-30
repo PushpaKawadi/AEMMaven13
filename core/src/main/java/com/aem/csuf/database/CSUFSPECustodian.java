@@ -35,8 +35,8 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE Save in DB", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=SPE2579Save" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE Custodian Save in DB", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=SPECustodianSave" })
 public class CSUFSPECustodian implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPECustodian.class);
@@ -50,7 +50,6 @@ public class CSUFSPECustodian implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
 		String ratingPeriodFrom = "";
 		String ratingPeriodTo = "";
 		String empId = "";
@@ -357,9 +356,9 @@ public class CSUFSPECustodian implements WorkflowProcess {
 							athleticsEmpRating1 = eElement.getElementsByTagName("AtMeets").item(0).getTextContent();
 							athleticsEmpRating2 = eElement.getElementsByTagName("AtDoesnotMeet").item(0)
 									.getTextContent();
-							addCriteriaSelection1 = eElement.getElementsByTagName("AdditionalCriteria").item(0)
+							addCriteriaSelection1 = eElement.getElementsByTagName("AddCriteriaImpToPos_1").item(0)
 									.getTextContent();
-							addCriteriaSelection2 = eElement.getElementsByTagName("AdditionalCriteriaV2").item(0)
+							addCriteriaSelection2 = eElement.getElementsByTagName("AddCriteriaImpToPos_2").item(0)
 									.getTextContent();
 							addCriteriaCom1 = eElement.getElementsByTagName("AddCriteria1").item(0).getTextContent();
 							log.error("val of com 1:"+addCriteriaCom1);
@@ -412,24 +411,24 @@ public class CSUFSPECustodian implements WorkflowProcess {
 							evalPrintedName = eElement.getElementsByTagName("EvaluatorsPrintedName").item(0)
 									.getTextContent();
 							evalSign = eElement.getElementsByTagName("EvaluatorsSignature").item(0).getTextContent();
-							evalSignDate = eElement.getElementsByTagName("EvalSignDate").item(0).getTextContent();
+							evalSignDate = eElement.getElementsByTagName("evaluatorDate").item(0).getTextContent();
 							evalComments = eElement.getElementsByTagName("evalComments").item(0).getTextContent();
 							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
-							empSignDate = eElement.getElementsByTagName("Date_3").item(0).getTextContent();
-							empComment = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+							empSignDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
+							empComment = eElement.getElementsByTagName("empComments").item(0).getTextContent();
 							waivePeriod = eElement.getElementsByTagName("WaivePeriod").item(0).getTextContent();
 							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
 							adminPrintedName = eElement.getElementsByTagName("AdministratorsPrintedName").item(0)
 									.getTextContent();
 							adminSign = eElement.getElementsByTagName("AdministratorSignature").item(0)
 									.getTextContent();
-							adminSignDate = eElement.getElementsByTagName("Date_2").item(0).getTextContent();
-							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
+							adminSignDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
+							adminComments = eElement.getElementsByTagName("AdminComments").item(0).getTextContent();
+							reviewerComments = eElement.getElementsByTagName("ReviewerComments").item(0)
 									.getTextContent();
 							hrCB = eElement.getElementsByTagName("HRCB").item(0).getTextContent();
-							hrComments = eElement.getElementsByTagName("HrComment").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("hrComments").item(0).getTextContent();
 							hrOverallRate = eElement.getElementsByTagName("HrOverallRate").item(0).getTextContent();
 
 						}
@@ -709,7 +708,7 @@ public class CSUFSPECustodian implements WorkflowProcess {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
 			}
-			String tableName = "AEM_STAFF_PERF_EVAL_2579";
+			String tableName = "AEM_STAFF_PERF_EVAL_CUSTODIAN";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
 			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {
