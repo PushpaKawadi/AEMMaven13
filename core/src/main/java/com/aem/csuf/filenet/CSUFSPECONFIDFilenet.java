@@ -108,15 +108,15 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffFirstName", doc,
 								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffLastName", doc,
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
@@ -188,7 +188,7 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		log.error("Json String:" + jsonString.toString());
+		//log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {

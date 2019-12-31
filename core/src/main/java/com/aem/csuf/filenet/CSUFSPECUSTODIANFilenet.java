@@ -142,7 +142,7 @@ public class CSUFSPECUSTODIANFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Staff_Performance_Evaluation_Confidential_Distributed.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_Custodian_Distributed.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);

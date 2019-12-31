@@ -67,14 +67,14 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
+		    
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
-				// /
+				
+				// 
 				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
@@ -142,7 +142,8 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("STAFF_PERFORMANCE_EVALUATION_UNIT8.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_Unit8.pdf")) {
+				
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -180,6 +181,7 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
+		log.info("before json string");
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
 				+ "\"CWID\": \"" + empId + "\"," + "\"Rating\": \"" + rating + "\"," + "\"AttachmentType\": "
 				+ "\"SPEUnit8DOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
@@ -188,7 +190,7 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+		log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
