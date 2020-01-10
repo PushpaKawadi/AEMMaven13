@@ -232,37 +232,37 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 									.item(0).getTextContent();
 							log.info("applicantLastName Value is: " + applicantLastName);
 							
-							applicantStudentID = eElement.getElementsByTagName("applicantStudentID")
-									.item(0).getTextContent();
-							log.info("applicantStudentID Value is: " + applicantStudentID);
+							// applicantStudentID = eElement.getElementsByTagName("applicantStudentID")
+							// 		.item(0).getTextContent();
+							// log.info("applicantStudentID Value is: " + applicantStudentID);
 							
-							applicantAddress = eElement.getElementsByTagName("applicantAddress")
-									.item(0).getTextContent();
-							log.info("applicantAddress Value is: " + applicantAddress);
+							// applicantAddress = eElement.getElementsByTagName("applicantAddress")
+							// 		.item(0).getTextContent();
+							// log.info("applicantAddress Value is: " + applicantAddress);
 							
-							applicantCity = eElement.getElementsByTagName("applicantCity")
-									.item(0).getTextContent();
-							log.info("applicantCity Value is: " + applicantCity);
+							// applicantCity = eElement.getElementsByTagName("applicantCity")
+							// 		.item(0).getTextContent();
+							// log.info("applicantCity Value is: " + applicantCity);
 							
-							applicantState = eElement.getElementsByTagName("applicantState")
-									.item(0).getTextContent();
-							log.info("applicantState Value is: " + applicantState);
+							// applicantState = eElement.getElementsByTagName("applicantState")
+							// 		.item(0).getTextContent();
+							// log.info("applicantState Value is: " + applicantState);
 							
-							applicantDateOfBirth = eElement.getElementsByTagName("applicantDateOfBirth")
-									.item(0).getTextContent();
-							log.info("applicantDateOfBirth Value is: "+applicantDateOfBirth);
+							// applicantDateOfBirth = eElement.getElementsByTagName("applicantDateOfBirth")
+							// 		.item(0).getTextContent();
+							// log.info("applicantDateOfBirth Value is: "+applicantDateOfBirth);
 							
-							applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
-									.item(0).getTextContent();
-							log.info("applicantEmailAddress Value is: "+applicantEmailAddress);
+							// applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
+							// 		.item(0).getTextContent();
+							// log.info("applicantEmailAddress Value is: "+applicantEmailAddress);
 							
-							applicantPhone = eElement.getElementsByTagName("applicantPhone")
-									.item(0).getTextContent();
-							log.info("applicantPhone Value is: "+applicantPhone);
+							// applicantPhone = eElement.getElementsByTagName("applicantPhone")
+							// 		.item(0).getTextContent();
+							// log.info("applicantPhone Value is: "+applicantPhone);
 							
-							alternatePhone = eElement.getElementsByTagName("alternatePhone")
-									.item(0).getTextContent();
-							log.info("alternatePhone Value is: "+alternatePhone);
+							// alternatePhone = eElement.getElementsByTagName("alternatePhone")
+							// 		.item(0).getTextContent();
+							// log.info("alternatePhone Value is: "+alternatePhone);
 							
 							// relationToEmployee = eElement.getElementsByTagName("relationToEmployee")
 							// 		.item(0).getTextContent();
@@ -292,73 +292,73 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
                             //         .item(0).getTextContent();
                             //         log.info("yearSemester Value is: " + yearSemester);
 
-                            // courseTitle1 = eElement.getElementsByTagName("courseTitle1")
-                            //         .item(0).getTextContent();
-                            //         log.info("courseTitle1 Value is: " + courseTitle1);
+                            courseTitle1 = eElement.getElementsByTagName("courseTitle1")
+                                    .item(0).getTextContent();
+                                    log.info("courseTitle1 Value is: " + courseTitle1);
                             
-                            // courseTitle2 = eElement.getElementsByTagName("courseTitle2")
-                            //         .item(0).getTextContent();
-                            //         log.info("courseTitle2 Value is: " + courseTitle2);
+                            courseTitle2 = eElement.getElementsByTagName("courseTitle2")
+                                    .item(0).getTextContent();
+                                    log.info("courseTitle2 Value is: " + courseTitle2);
                                     
-                            // onlineCourse1Yes = eElement.getElementsByTagName("onlineCourse1Yes")
-                            //         .item(0).getTextContent();
-                            //         log.info("onlineCourse1Yes Value is: " + onlineCourse1Yes);
+                            onlineCourse1Yes = eElement.getElementsByTagName("onlineCourse1Yes")
+                                    .item(0).getTextContent();
+                                    log.info("onlineCourse1Yes Value is: " + onlineCourse1Yes);
                                     
-                            // onlineCourse2Yes = eElement.getElementsByTagName("onlineCourse2Yes")
-                            //         .item(0).getTextContent();
-                            //         log.info("onlineCourse2Yes Value is: " + onlineCourse2Yes);
+                            onlineCourse2Yes = eElement.getElementsByTagName("onlineCourse2Yes")
+                                    .item(0).getTextContent();
+                                    log.info("onlineCourse2Yes Value is: " + onlineCourse2Yes);
                                     
-                            // onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No")
-                            //         .item(0).getTextContent();
-                            //         log.info("onlineCourse1No Value is: " + onlineCourse1No);
+                            onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No")
+                                    .item(0).getTextContent();
+                                    log.info("onlineCourse1No Value is: " + onlineCourse1No);
                                     
-                            // onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No")
-                            //         .item(0).getTextContent();
-                            //         log.info("onlineCourse2No Value is: " + onlineCourse2No);
+                            onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No")
+                                    .item(0).getTextContent();
+                                    log.info("onlineCourse2No Value is: " + onlineCourse2No);
                                     
-                            // employeeComments = eElement.getElementsByTagName("employeeCommet")
-                            //         .item(0).getTextContent();
-                            //         log.info("employeeComments Value is: " + employeeComments);
+                            employeeComments = eElement.getElementsByTagName("employeeCommet")
+                                    .item(0).getTextContent();
+                                    log.info("employeeComments Value is: " + employeeComments);
                                     
-                            // initials = eElement.getElementsByTagName("initials")
-                            //         .item(0).getTextContent();
-                            //         log.info("initials Value is: " + initials);
+                            initials = eElement.getElementsByTagName("initials")
+                                    .item(0).getTextContent();
+                                    log.info("initials Value is: " + initials);
                                     
-                            // employeeSignature = eElement.getElementsByTagName("employeeSignature")
-                            //         .item(0).getTextContent();
-                            //         log.info("employeeSignature Value is: " + employeeSignature);
+                            employeeSignature = eElement.getElementsByTagName("employeeSignature")
+                                    .item(0).getTextContent();
+                                    log.info("employeeSignature Value is: " + employeeSignature);
                                     
-                            // employeeDate = eElement.getElementsByTagName("employeeDate")
-                            //         .item(0).getTextContent();
-                            //         log.info("employeeDate Value is: " + employeeDate);
+                            employeeDate = eElement.getElementsByTagName("employeeDate")
+                                    .item(0).getTextContent();
+                                    log.info("employeeDate Value is: " + employeeDate);
                                     
-                            // hrComments = eElement.getElementsByTagName("hrComments")
-                            //         .item(0).getTextContent();
-                            //         log.info("hrComments Value is: " + hrComments);
+                            hrComments = eElement.getElementsByTagName("hrComments")
+                                    .item(0).getTextContent();
+                                    log.info("hrComments Value is: " + hrComments);
                                     
-                            // feeWaiverGranted = eElement.getElementsByTagName("feeWaiverGranted")
-                            //         .item(0).getTextContent();	
-                            //         log.info("feeWaiverGranted Value is: " + feeWaiverGranted);
+                            feeWaiverGranted = eElement.getElementsByTagName("feeWaiverGranted")
+                                    .item(0).getTextContent();	
+                                    log.info("feeWaiverGranted Value is: " + feeWaiverGranted);
                                     						
-                            // feeWaiverDenied = eElement.getElementsByTagName("feeWaiverDenied")
-                            //         .item(0).getTextContent();
-                            //         log.info("feeWaiverDenied Value is: " + feeWaiverDenied);
+                            feeWaiverDenied = eElement.getElementsByTagName("feeWaiverDenied")
+                                    .item(0).getTextContent();
+                                    log.info("feeWaiverDenied Value is: " + feeWaiverDenied);
                                     
-                            // term = eElement.getElementsByTagName("term")
-                            //         .item(0).getTextContent();
-                            //         log.info("term Value is: " + term);
+                            term = eElement.getElementsByTagName("term")
+                                    .item(0).getTextContent();
+                                    log.info("term Value is: " + term);
                                     
-                            // edde = eElement.getElementsByTagName("edde")
-                            //         .item(0).getTextContent();
-                            //         log.info("edde Value is: " + edde);
+                            edde = eElement.getElementsByTagName("edde")
+                                    .item(0).getTextContent();
+                                    log.info("edde Value is: " + edde);
                                     
-                            // hrSignature = eElement.getElementsByTagName("hrSignature")
-                            //         .item(0).getTextContent();
-                            //         log.info("hrSignature Value is: " + hrSignature);
+                            hrSignature = eElement.getElementsByTagName("hrSignature")
+                                    .item(0).getTextContent();
+                                    log.info("hrSignature Value is: " + hrSignature);
                                     
-                            // hrDate = eElement.getElementsByTagName("hrDate")
-                            //         .item(0).getTextContent();
-                            //         log.info("hrDate Value is: " + hrDate);
+                            hrDate = eElement.getElementsByTagName("hrDate")
+                                    .item(0).getTextContent();
+                                    log.info("hrDate Value is: " + hrDate);
 													
 						}
 					}
@@ -383,14 +383,20 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("LEAVES_NO", leavesNo);				
 					dataMap.put("APPLICANT_FIRST_NAME", applicantFirstName);
 					dataMap.put("APPLICANT_LAST_NAME", applicantLastName);
-					dataMap.put("APPLICANT_STUDENTID", applicantStudentID);
-					dataMap.put("APPLICANT_ADDRESS", applicantAddress);
-					dataMap.put("APPLICANT_CITY", applicantCity);
-					dataMap.put("APPLICANT_STATE", applicantState);					
-					dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirth);
-					dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
-					dataMap.put("APPLICANT_HOME_PHONE", applicantPhone);
-					dataMap.put("APPLICANT_ALTERNATE_PHONE", alternatePhone);
+					// dataMap.put("APPLICANT_STUDENTID", applicantStudentID);
+					// dataMap.put("APPLICANT_ADDRESS", applicantAddress);
+					// dataMap.put("APPLICANT_CITY", applicantCity);
+					// dataMap.put("APPLICANT_STATE", applicantState);				
+					
+					// Object applicantDateOfBirthObj= null;
+                    // if(employeeDate != null && employeeDate != "") {
+					// 	Date applicantDateOfBirthNew = Date.valueOf(applicantDateOfBirth);
+					// 	applicantDateOfBirthObj = applicantDateOfBirthNew;
+					// }	
+					// dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirthObj);
+					// dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
+					// dataMap.put("APPLICANT_HOME_PHONE", applicantPhone);
+					// dataMap.put("APPLICANT_ALTERNATE_PHONE", alternatePhone);
 					// dataMap.put("RELATION_TO_EMPLOYEE", relationToEmployee);
 					// dataMap.put("STUDENT_TYPE", studentType);
 					// dataMap.put("CLASS_STANDING", classStanding);
@@ -398,33 +404,33 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					// dataMap.put("CAMPUS_OF_ENROLLMENT", campusOfEnrollment);
 					// dataMap.put("DEGREE_PROGRAM", degreeProgram);
 					// dataMap.put("YEAR_SEMESTER", yearSemester);
-					// dataMap.put("COURSE_TITLE1", courseTitle1);					
-					// dataMap.put("ONLINE_COURSE1_YES", onlineCourse1Yes);					
-					// dataMap.put("ONLINE_COURSE1_NO", onlineCourse2No);
-					// dataMap.put("COURSE_TITLE2", courseTitle2);
-					// dataMap.put("ONLINE_COURSE2_YES", onlineCourse2Yes);
-					// dataMap.put("ONLINE_COURSE2_NO", onlineCourse2No);
-					// dataMap.put("EMPLOYEE_COMMENT", employeeComments);
-					// dataMap.put("INITIALS", initials);
-                    // dataMap.put("EMPLOYEE_SIGNATURE", employeeSignature);
-                    // Object hemployeeDateObj= null;
-                    // if(employeeDate != null && employeeDate != "") {
-					// 	Date demployeeDateNew = Date.valueOf(employeeDate);
-					// 	hemployeeDateObj = demployeeDateNew;
-					// }					
-					// dataMap.put("EMPLOYEE_DATE", hemployeeDateObj);
-					// dataMap.put("HR_COMMENTS", hrComments);
-					// dataMap.put("FEE_WAIVER_GRANTED", feeWaiverGranted);
-					// dataMap.put("FEE_WAIVER_DENIED", feeWaiverDenied);
-					// dataMap.put("TERM", term);
-					// dataMap.put("EDDE", edde);
-                    // dataMap.put("HR_SIGNATURE", hrSignature);
-                    // Object hrDateObj= null;
-                    // if(hrDate != null && hrDate != "") {
-					// 	Date dhrDateNew = Date.valueOf(hrDate);
-					// 	hrDateObj = dhrDateNew;
-					// }
-					// dataMap.put("HR_DATE", hrDateObj);		
+					dataMap.put("COURSE_TITLE1", courseTitle1);					
+					dataMap.put("ONLINE_COURSE1_YES", onlineCourse1Yes);					
+					dataMap.put("ONLINE_COURSE1_NO", onlineCourse2No);
+					dataMap.put("COURSE_TITLE2", courseTitle2);
+					dataMap.put("ONLINE_COURSE2_YES", onlineCourse2Yes);
+					dataMap.put("ONLINE_COURSE2_NO", onlineCourse2No);
+					dataMap.put("EMPLOYEE_COMMENT", employeeComments);
+					dataMap.put("INITIALS", initials);
+                    dataMap.put("EMPLOYEE_SIGNATURE", employeeSignature);
+                    Object hemployeeDateObj= null;
+                    if(employeeDate != null && employeeDate != "") {
+						Date demployeeDateNew = Date.valueOf(employeeDate);
+						hemployeeDateObj = demployeeDateNew;
+					}					
+					dataMap.put("EMPLOYEE_DATE", hemployeeDateObj);
+					dataMap.put("HR_COMMENTS", hrComments);
+					dataMap.put("FEE_WAIVER_GRANTED", feeWaiverGranted);
+					dataMap.put("FEE_WAIVER_DENIED", feeWaiverDenied);
+					dataMap.put("TERM", term);
+					dataMap.put("EDDE", edde);
+                    dataMap.put("HR_SIGNATURE", hrSignature);
+                    Object hrDateObj= null;
+                    if(hrDate != null && hrDate != "") {
+						Date dhrDateNew = Date.valueOf(hrDate);
+						hrDateObj = dhrDateNew;
+					}
+					dataMap.put("HR_DATE", hrDateObj);		
 
 
 				} catch (SAXException e) {

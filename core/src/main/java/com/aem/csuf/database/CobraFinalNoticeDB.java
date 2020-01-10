@@ -393,24 +393,39 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 									.item(0).getTextContent();
 							healthChk = eElement.getElementsByTagName("chkHealth")
 									.item(0).getTextContent();
+									log.info("healthChk Value is: "+healthChk);
+
 							healthPlan4 = eElement.getElementsByTagName("HealthPlan4")
 									.item(0).getTextContent();
+
 							VisionChk = eElement.getElementsByTagName("chkVision")
 									.item(0).getTextContent();
+									log.info("VisionChk Value is: "+VisionChk);
+
 							vision4 = eElement.getElementsByTagName("Vision4")
 									.item(0).getTextContent();
-							declineChk = eElement.getElementsByTagName("chkDecline")
-									.item(0).getTextContent();
-							decline = eElement.getElementsByTagName("Decline")
-									.item(0).getTextContent();
+
 							Dentalchk = eElement.getElementsByTagName("chkDental")
 									.item(0).getTextContent();
+									log.info("Dentalchk Value is: "+Dentalchk);
+
 							dentalPlan4 = eElement.getElementsByTagName("DentalPlan4")
-									.item(0).getTextContent();
+									.item(0).getTextContent();		
+
 							health1chk = eElement.getElementsByTagName("chkHealth1")
 									.item(0).getTextContent();
+									log.info("health1chk Value is: "+health1chk);
+
 							hcra4 = eElement.getElementsByTagName("HCRA4")
+									.item(0).getTextContent();		
+
+							declineChk = eElement.getElementsByTagName("chkDecline")
 									.item(0).getTextContent();
+									log.info("declineChk Value is: "+declineChk);
+
+							decline = eElement.getElementsByTagName("Decline")
+									.item(0).getTextContent();
+						
 							medicarePartAYes = eElement.getElementsByTagName("MedicarePartAEntitledYes")
 									.item(0).getTextContent();
 							medicarePartANo = eElement.getElementsByTagName("MedicarePartAEntitledNo")
@@ -555,7 +570,7 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 						dob1Obj = dob1New;
 					}
 					dataMap.put("DOB1", dob1Obj);
-					dataMap.put("RELATIONSHIP_TO_EMP2", relationshipToEmp1);
+					dataMap.put("RELATIONSHIP_TO_EMP1", relationshipToEmp1);
 					dataMap.put("SSN1", ssn1);
 					dataMap.put("DEPENDENT_NAME2", dependentName2);
 					
