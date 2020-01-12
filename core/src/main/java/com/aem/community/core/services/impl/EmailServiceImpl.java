@@ -10,7 +10,7 @@ import javax.mail.internet.AddressException;
 import javax.mail.internet.InternetAddress;
 import javax.mail.util.ByteArrayDataSource;
 
-import org.apache.commons.lang.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang.text.StrLookup;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.HtmlEmail;
@@ -82,7 +82,7 @@ public final class EmailServiceImpl implements EmailService {
 		List<InternetAddress> bccaddresses = new ArrayList<InternetAddress>(emailBean.getBccAddress().size());
 		for (String recipient : emailBean.getBccAddress()) {
 			try {
-				if (!recipient.equals(StringUtils.EMPTY)) {
+				if (StringUtils.isNotBlank(recipient)) {
 					bccaddresses.add(new InternetAddress(recipient));
 				}
 			} catch (AddressException e) {

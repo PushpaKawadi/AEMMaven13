@@ -24,7 +24,16 @@ import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.apache.sling.api.resource.ValueMap;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.EmailService;
+import com.aem.community.core.services.GlobalConfigService;
+import com.day.cq.mailer.MailService;
+
+import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -39,17 +48,43 @@ import java.io.IOException;
            property={
                    Constants.SERVICE_DESCRIPTION + "=Simple Demo Servlet",
                    "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-                   "sling.servlet.resourceTypes="+ "AEMMaven13/components/structure/page",
-                   "sling.servlet.extensions=" + "txt"
+                   "sling.servlet.resourceTypes="+ "AEMMaven131/components/structure/page",
+                   "sling.servlet.extensions=" + "html"
            })
 public class SimpleServlet extends SlingSafeMethodsServlet {
 
-    private static final long serialVersionUid = 1L;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;	
+    
+    @Reference
+	private GlobalConfigService globalConfigService;
+    
+    @Reference
+	private MailService mailService;
+    
+    @Reference
+	private EmailService emailService;
+    
+    /** Default log. */
+	protected final Logger log = LoggerFactory.getLogger(this.getClass());
 
     @Override
     protected void doGet(final SlingHttpServletRequest req,
             final SlingHttpServletResponse resp) throws ServletException, IOException {
         final Resource resource = req.getResource();
+        Session session = globalConfigService.getAdminSession();
+        if(null != session) {
+        	log.debug(" Session Attribute 1 ".concat(session.getUserID()));
+        	try {
+				log.debug(" Session Attribute 2 ".concat(session.getRootNode().getPath()));
+			} catch (RepositoryException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }        
+        
         resp.setContentType("text/plain");
         resp.getWriter().write("Title = " + resource.adaptTo(ValueMap.class).get("jcr:title"));
     }

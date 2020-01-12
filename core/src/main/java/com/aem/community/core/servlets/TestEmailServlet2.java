@@ -2,12 +2,14 @@ package com.aem.community.core.servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.rmi.ServerException;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.Servlet;
+import javax.servlet.ServletException;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -24,8 +26,8 @@ import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.vo.EmailServiceVO;
 
 @Component(service = Servlet.class, property = { "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/testEmail" })
-public class TestEmailServlet extends SlingAllMethodsServlet {
+		"sling.servlet.paths=" + "/bin/testEmail2" })
+public class TestEmailServlet2 extends SlingAllMethodsServlet {
 
 	/**
 	 * 
@@ -41,12 +43,14 @@ public class TestEmailServlet extends SlingAllMethodsServlet {
 	@Reference
 	private GlobalConfigService globalConfigService;
 
-	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
-			throws ServerException, IOException {
-		log.debug("entered TestEmailServlet doGet method");
+	@Override
+	protected void doGet(final SlingHttpServletRequest request, final SlingHttpServletResponse response)
+			throws ServletException, IOException {
+		log.debug("entered TestEmailServlet2 doGet method");
 		PrintWriter out = response.getWriter();
 
 		try {
+
 			String toEmail = request.getParameter("toEmail");
 			String ccEmail = request.getParameter("ccEmail");
 			String bccEmail = request.getParameter("bccEmail");
@@ -65,13 +69,19 @@ public class TestEmailServlet extends SlingAllMethodsServlet {
 
 			emailVO.addToAddress(toEmail);
 			emailVO.setToName("Test Email Recipient");
-			emailVO.setFromAddress("ajeet.chhonkar@thoughtfocus.com");
-			emailVO.setFromName("Ajeet Chhonkar");
-			emailVO.setSubject("Test Email Subject");
+			emailVO.setFromAddress("manish.08.hbti@gmail.com");
+			emailVO.setFromName("Manish Kumar Singh");
+			emailVO.setSubject("Test Email From CSUF AEM Application");
 			emailVO.setTemplatePath((StringUtils.isNotBlank(templatePath) ? templatePath
-					: "/etc/notification/email/recertification/remove-supervisee-email-template.html"));
+					: "/etc/notification/email/csuf/sample-email-template.html"));
 
 			emailVO.setUseCQGateway(false);
+			
+			Map<String, String> templateVaribles = new HashMap<>();
+			templateVaribles.put("senderEmail", "manish.08.hbti@gmail.com");
+			templateVaribles.put("recipientName", emailVO.getToName());	
+			
+			emailVO.setTemplateVaribles(templateVaribles);
 
 			log.debug("emailVO : ".concat(emailVO.toString()));
 
@@ -80,16 +90,18 @@ public class TestEmailServlet extends SlingAllMethodsServlet {
 			if (null != emailFailureList && emailFailureList.size() > 0) {
 				out.write("Email sending failed to the recipients: ".concat(emailFailureList.toString()));
 			} else if (null != emailFailureList && emailFailureList.size() == 0) {
-				out.write("Email sent successfully");
+				out.write("Email sent successfully to ".concat(toEmail));
 			} else {
 				out.write("Email sending failed");
 			}
+
+			//out.write("hello");
 		} catch (Exception e) {
-			log.debug("Exception in TestEmailServlet : ".concat(Arrays.toString(e.getStackTrace())));
+			log.debug("Exception in TestEmailServlet2 : ".concat(Arrays.toString(e.getStackTrace())));
 
 		}
 
-		log.debug("exit TestEmailServlet doGet method");
+		log.debug("exit TestEmailServlet2 doGet method");
 	}
 
 }
