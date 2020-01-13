@@ -204,6 +204,7 @@ public class CourseWithdrawalInfoServletNew extends SlingSafeMethodsServlet {
 					
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
+					
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM",oRresultSet.getString("STRM"));
