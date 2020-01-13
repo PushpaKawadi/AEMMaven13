@@ -39,6 +39,5 @@ public class EmailAttachmentVO {
 		this.description = description;
 	}
 	
-	
 
 }

@@ -26,8 +26,8 @@ import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.vo.EmailServiceVO;
 
 @Component(service = Servlet.class, property = { "sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/testEmail2" })
-public class TestEmailServlet2 extends SlingAllMethodsServlet {
+		"sling.servlet.paths=" + "/bin/testEmail3" })
+public class TestEmailServlet3 extends SlingAllMethodsServlet {
 
 	/**
 	 * 
@@ -53,43 +53,37 @@ public class TestEmailServlet2 extends SlingAllMethodsServlet {
 
 			String toEmail = request.getParameter("toEmail");
 			String ccEmail = request.getParameter("ccEmail");
-			//String bccEmail = request.getParameter("bccEmail");
+			String bccEmail = request.getParameter("bccEmail");
 			String templatePath = request.getParameter("templatePath");
 
 			EmailServiceVO emailVO = new EmailServiceVO();
-			//emailVO.setAttachment(null);
+			emailVO.setAttachment(null);
 
-			//List<String> bccList = new ArrayList<>();
-			// bccList.add(bccEmail);
-			// emailVO.setBccAddress(bccList);
+			List<String> bccList = new ArrayList<>();
+			bccList.add(bccEmail);
+			emailVO.setBccAddress(bccList);
 
 			List<String> ccList = new ArrayList<>();
 			ccList.add(ccEmail);
 			emailVO.setCcAddress(ccList);
 
 			emailVO.addToAddress(toEmail);
-			emailVO.setToName("Test Email Recipient");
-			emailVO.setFromAddress("csuf@fullerton.edu");
-			//emailVO.setFromName("Manish Kumar Singh");
+			emailVO.setToName("Test Email");
+			emailVO.setFromAddress("ajeet.chhonkar@thoughtfocus.com");
+			emailVO.setFromName("Ajeet Singh Chhonkar");
 			emailVO.setSubject("Test Email From CSUF AEM Application");
 			emailVO.setTemplatePath((StringUtils.isNotBlank(templatePath) ? templatePath
-					: "/etc/notification/email/csuf/sample-email-template.html"));
+					: "/etc/notification/email/csuf templates/SampleEmailTemplate.txt"));
 
 			emailVO.setUseCQGateway(false);
 			
 			Map<String, String> templateVaribles = new HashMap<>();
-			templateVaribles.put("senderEmail", "csuf@fullerton.edu");
+			//templateVaribles.put("senderEmail", "manish.08.hbti@gmail.com");
 			templateVaribles.put("recipientName", emailVO.getToName());	
 			
 			emailVO.setTemplateVaribles(templateVaribles);
 
 			log.debug("emailVO : ".concat(emailVO.toString()));
-
-				
-			// log.info("Instructor Email in SEND EMAIL Method: " + instructorEmail);
-			// log.info("Chair Email in SEND EMAIL Method: " + chairEmail);
-			// log.info("Instructor Name in SEND EMAIL Method: "+instName);
-			// log.info("Course Number in SEND EMAIL Method: "+ CourseName);
 
 			List<String> emailFailureList = emailService.sendEmail(emailVO);
 
@@ -103,11 +97,11 @@ public class TestEmailServlet2 extends SlingAllMethodsServlet {
 
 			//out.write("hello");
 		} catch (Exception e) {
-			log.debug("Exception in TestEmailServlet2 : ".concat(Arrays.toString(e.getStackTrace())));
+			log.debug("Exception in TestEmailServlet3 : ".concat(Arrays.toString(e.getStackTrace())));
 
 		}
 
-		log.debug("exit TestEmailServlet2 doGet method");
+		log.debug("exit TestEmailServlet3 doGet method");
 	}
 
 }
