@@ -67,13 +67,13 @@ public class TestEmailServlet2 extends SlingAllMethodsServlet {
 			ccList.add(ccEmail);
 			emailVO.setCcAddress(ccList);
 
-			emailVO.addToAddress(toEmail);
+			emailVO.addToAddress(StringUtils.isNotBlank(toEmail) ? toEmail : "ajeet.chhonkar@thoughtfocus.com");
 			emailVO.setToName("Test Email Recipient");
 			emailVO.setFromAddress("csuf@fullerton.edu");
 			//emailVO.setFromName("Manish Kumar Singh");
 			emailVO.setSubject("Test Email From CSUF AEM Application");
 			emailVO.setTemplatePath((StringUtils.isNotBlank(templatePath) ? templatePath
-					: "/etc/notification/email/csuf/sample-email-template.html"));
+					: "/etc/notification/email/csuf/email-approve.html"));
 
 			emailVO.setUseCQGateway(false);
 			
