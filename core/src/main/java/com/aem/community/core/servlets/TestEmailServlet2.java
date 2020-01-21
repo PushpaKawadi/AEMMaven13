@@ -63,17 +63,20 @@ public class TestEmailServlet2 extends SlingAllMethodsServlet {
 			// bccList.add(bccEmail);
 			// emailVO.setBccAddress(bccList);
 
-			List<String> ccList = new ArrayList<>();
-			ccList.add(ccEmail);
-			emailVO.setCcAddress(ccList);
+			// List<String> ccList = new ArrayList<>();
+			// ccList.add(ccEmail);
+			// emailVO.setCcAddress(ccList);
 
 			emailVO.addToAddress(StringUtils.isNotBlank(toEmail) ? toEmail : "ajeet.chhonkar@thoughtfocus.com");
+
+			emailVO.addCcAddress(StringUtils.isNotBlank(ccEmail) ? ccEmail : "singhaj326@hotmail.com");
+
 			emailVO.setToName("Test Email Recipient");
-			emailVO.setFromAddress("csuf@fullerton.edu");
-			//emailVO.setFromName("Manish Kumar Singh");
+			emailVO.setFromAddress("arscworkflow@fullerton.edu");
+			emailVO.setFromName("Manish Kumar Singh");
 			emailVO.setSubject("Test Email From CSUF AEM Application");
 			emailVO.setTemplatePath((StringUtils.isNotBlank(templatePath) ? templatePath
-					: "/etc/notification/email/csuf/email-approve.html"));
+					: "/etc/notification/email/csuf/email-approve.txt"));
 
 			emailVO.setUseCQGateway(false);
 			

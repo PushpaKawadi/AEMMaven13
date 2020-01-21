@@ -7,9 +7,12 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang3.StringUtils;
 
+/**
+ * @author 105876
+ *
+ */
 public class EmailServiceVO {
 	/**
 	 * template variable key
@@ -22,21 +25,25 @@ public class EmailServiceVO {
 	private String concern;
 	private String fromAddress;
 	private String fromName;
-	private List<String> toAddress = new ArrayList<String>();
-	private List<String> ccAddress = new ArrayList<String>();
-	private List<String> bccAddress = new ArrayList<String>();
-	private List<String> replyAddress = new ArrayList<String>();
+	private List<String> toAddress = new ArrayList<>();
+	private List<String> ccAddress = new ArrayList<>();
+	private List<String> bccAddress = new ArrayList<>();
+	private List<String> replyAddress = new ArrayList<>();
 	private String bounceAddress;
 	private String charset = "ISO-8859-1";
 	private String contentType;
-	private List<EmailAttachmentVO> attachment = new ArrayList<EmailAttachmentVO>();
+	private List<EmailAttachmentVO> attachment = new ArrayList<>();
 	private String toName;
-	private Map<String, String> templateVaribles = new HashMap<String, String>();
+	private Map<String, String> templateVaribles = new HashMap<>();
 	private String templatePath;
 	private boolean useCQGateway = false;
-
-	public EmailServiceVO() {
-	}
+	private String htmlMessage;
+	private String textMessage;
+	private boolean hasEmbeddedImage = false;
+	private boolean isStartTLS = false;
+	private String embeddedImagePath;
+	private String embeddedImageDescription;
+	private String embeddedContentType;	
 
 	public String getSubject() {
 		return concern;
@@ -180,8 +187,7 @@ public class EmailServiceVO {
 
 	public void setUseCQGateway(boolean useCQGateway) {
 		this.useCQGateway = useCQGateway;
-	}
-	
+	}	
 
 	// Initialize default variables from bean
 	protected void defaultTemplateVariables() {
@@ -190,43 +196,91 @@ public class EmailServiceVO {
 		templateVaribles.put(TO_NAME, toName);
 	}
 
-	public String printString() {
-		String s1 = ToStringBuilder.reflectionToString(this);
-		String s2 = s1;
-		int p1 = s1.indexOf("password="); // Replace password with XXXX
-		try {
-			if (p1 > -1) {
-				p1 = p1 + 9;
-				int p2 = s1.indexOf(",", p1);
-				s2 = s1.substring(0, p1) + "XXXX" + s1.substring(p2, s1.length());
-			}
-		} catch (Exception e) {
-			if (p1 > -1)
-				s2 = "";
-		}
-		return s2;
+	public String getHtmlMessage() {
+		return htmlMessage;
+	}
+
+	public void setHtmlMessage(String htmlMessage) {
+		this.htmlMessage = htmlMessage;
+	}
+
+	public String getTextMessage() {
+		return textMessage;
+	}
+
+	public void setTextMessage(String textMessage) {
+		this.textMessage = textMessage;
+	}	
+
+	public boolean hasEmbeddedImage() {
+		return hasEmbeddedImage;
+	}
+
+	public void setEmbeddedImage(boolean hasEmbeddedImage) {
+		this.hasEmbeddedImage = hasEmbeddedImage;
+	}
+
+	public boolean isStartTLS() {
+		return isStartTLS;
+	}
+
+	public void setStartTLS(boolean isStartTLS) {
+		this.isStartTLS = isStartTLS;
+	}	
+
+	public String getEmbeddedImagePath() {
+		return embeddedImagePath;
+	}
+
+	public void setEmbeddedImagePath(String embeddedImagePath) {
+		this.embeddedImagePath = embeddedImagePath;
+	}
+
+	public String getEmbeddedImageDescription() {
+		return embeddedImageDescription;
+	}
+
+	public void setEmbeddedImageDescription(String embeddedImageDescription) {
+		this.embeddedImageDescription = embeddedImageDescription;
+	}
+
+	public String getEmbeddedContentType() {
+		return embeddedContentType;
+	}
+
+	public void setEmbeddedContentType(String embeddedContentType) {
+		this.embeddedContentType = embeddedContentType;
 	}
 
 	public boolean isValid() {
-		if (StringUtils.isEmpty(templatePath) || toAddress.size() == 0)
-			return false;
-		return true;
+		return (StringUtils.isNotEmpty(templatePath) && !toAddress.isEmpty());			
 	}
 
-	/* (non-Javadoc)
-	 * @see java.lang.Object#toString()
-	 */
 	@Override
 	public String toString() {
 		final int maxLen = 10;
-		return "EmailServiceVO [" + (fromAddress != null ? "fromAddress=" + fromAddress + ", " : "")
+		return "EmailServiceVO [" + (concern != null ? "concern=" + concern + ", " : "")
+				+ (fromAddress != null ? "fromAddress=" + fromAddress + ", " : "")
 				+ (fromName != null ? "fromName=" + fromName + ", " : "")
 				+ (toAddress != null ? "toAddress=" + toString(toAddress, maxLen) + ", " : "")
+				+ (ccAddress != null ? "ccAddress=" + toString(ccAddress, maxLen) + ", " : "")
+				+ (bccAddress != null ? "bccAddress=" + toString(bccAddress, maxLen) + ", " : "")
+				+ (replyAddress != null ? "replyAddress=" + toString(replyAddress, maxLen) + ", " : "")
+				+ (bounceAddress != null ? "bounceAddress=" + bounceAddress + ", " : "")
+				+ (charset != null ? "charset=" + charset + ", " : "")
+				+ (contentType != null ? "contentType=" + contentType + ", " : "")
+				+ (attachment != null ? "attachment=" + toString(attachment, maxLen) + ", " : "")
 				+ (toName != null ? "toName=" + toName + ", " : "")
 				+ (templateVaribles != null ? "templateVaribles=" + toString(templateVaribles.entrySet(), maxLen) + ", "
 						: "")
 				+ (templatePath != null ? "templatePath=" + templatePath + ", " : "") + "useCQGateway=" + useCQGateway
-				+ "]";
+				+ ", " + (htmlMessage != null ? "htmlMessage=" + htmlMessage + ", " : "")
+				+ (textMessage != null ? "textMessage=" + textMessage + ", " : "") + "hasEmbeddedImage="
+				+ hasEmbeddedImage + ", isStartTLS=" + isStartTLS + ", "
+				+ (embeddedImagePath != null ? "embeddedImageURL=" + embeddedImagePath + ", " : "")
+				+ (embeddedImageDescription != null ? "embeddedImageDescription=" + embeddedImageDescription + ", "
+						: "")
+				+ (embeddedContentType != null ? "embeddedContentType=" + embeddedContentType : "") + "]";
 	}
 
 	private String toString(Collection<?> collection, int maxLen) {
@@ -240,6 +294,5 @@ public class EmailServiceVO {
 		}
 		builder.append("]");
 		return builder.toString();
-	}
-
+	}	
 }
