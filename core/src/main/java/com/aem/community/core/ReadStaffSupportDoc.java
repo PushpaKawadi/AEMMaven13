@@ -208,7 +208,7 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 									+ "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
 									+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \""
 									+ termDescription + "\"," + "\"Attachment\": \"" + docEncoded1 + "\","
-									+ "\"AttachmentType\": " + "\"InstructorSupportingDocument\"" + ","
+									+ "\"AttachmentType\": " + "\"SupportingDocument\"" + ","
 									+ "\"AttachmentMimeType\": " + instructorMimeType + "," + "\"WithdrawalType\": \""
 									+ WithdrawalType + "\"}";
 
@@ -323,7 +323,7 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 									+ lastName + "\"," + "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID
 									+ "\"," + "\"Major\": \"" + major + "\"," + "\"TermCode\": \"" + termCode + "\","
 									+ "\"TermDescription\": \"" + termDescription + "\"," + "\"Attachment\": \""
-									+ docEncoded2 + "\"," + "\"AttachmentType\": " + "\"ChairSupportingDocument\"" + ","
+									+ docEncoded2 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","
 									+ "\"AttachmentMimeType\": " + chairMimeType + "," + "\"WithdrawalType\": \""
 									+ WithdrawalType + "\"}";
 
