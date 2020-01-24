@@ -157,7 +157,9 @@ public class CourseWithdrawalInfoServletNew extends SlingSafeMethodsServlet {
 			// CRSEFIELDS=CWID,FNAME,LNAME,MAJOR_DESCR,CAREER,CRSE_NAME,CLASS_NBR,UNT_TAKEN,INSTR_NAME
 
 			//String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '2197'";
-			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '2203'";
+			//String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '2203'";
+			
+			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>'";
 			
 			//String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
 			// String lookupFields = ConfigManager.getValue("CRSEFIELDS");
