@@ -212,7 +212,7 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 									+ "\"AttachmentMimeType\": " + instructorMimeType + "," + "\"WithdrawalType\": \""
 									+ WithdrawalType + "\"}";
 
-							if (docEncoded2 != null && lastName != null && firstName != null) {
+							if (docEncoded1 != null && lastName != null && firstName != null) {
 								log.error("Read Instructor doc");
 								URL url = null;
 								try {
