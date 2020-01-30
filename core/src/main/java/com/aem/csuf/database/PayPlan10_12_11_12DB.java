@@ -327,15 +327,45 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 					dataMap.put("ADMIN_SIGN", adminSign);
 					dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
 					dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName);
-					dataMap.put("DATE1", Date.valueOf(date1));
+
+					Object date1Obj = null;
+					if (date1 != null && date1 != "") {
+						Date date1New = Date.valueOf(date1);
+						date1Obj = date1New;
+					}
+					dataMap.put("DATE1", date1Obj);
 					dataMap.put("APPROVAL_GRANTED_YES", approvalGrantedYes);
 					dataMap.put("VP_SIGNATURE", vpSignature);
-					dataMap.put("DATE2", Date.valueOf(date2));
-					dataMap.put("ON_CYCLE", Date.valueOf(oncycle));
-					dataMap.put("OFF_CYCLE", Date.valueOf(offcycle));
+
+					Object date2Obj = null;
+					if (date2 != null && date2 != "") {
+						Date date2New = Date.valueOf(date2);
+						date2Obj = date2New;
+					}
+					dataMap.put("DATE2", date2Obj);
+
+					Object oncycleObj = null;
+					if (oncycle != null && oncycle != "") {
+						Date oncycleNew = Date.valueOf(oncycle);
+						oncycleObj = oncycleNew;
+					}
+					dataMap.put("ON_CYCLE", oncycleObj);
+
+					Object offcycleObj = null;
+					if (offcycle != null && offcycle != "") {
+						Date offcycleNew = Date.valueOf(offcycle);
+						offcycleObj = offcycleNew;
+					}
+					dataMap.put("OFF_CYCLE", offcycleObj);
 					dataMap.put("CURRENT_MONTHLY_SALARY", currentMonthSalary);
 					dataMap.put("ADJUSTED_SALARY", adjustedSalary);
-					dataMap.put("DATE_DISCUSSED", Date.valueOf(dateDiscussed));
+
+					Object dateDiscussedObj = null;
+					if (dateDiscussed != null && dateDiscussed != "") {
+						Date dateDiscussedNew = Date.valueOf(dateDiscussed);
+						dateDiscussedObj = dateDiscussedNew;
+					}
+					dataMap.put("DATE_DISCUSSED", dateDiscussedObj);
 					dataMap.put("PAYPLAN10", payPlan10);
 					dataMap.put("PAYPLAN11", payPlan11);
 					
