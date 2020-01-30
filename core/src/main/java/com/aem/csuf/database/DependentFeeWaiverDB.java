@@ -101,7 +101,6 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 		String edde = "";
 		String hrSignature = "";
 		String hrDate = "";
-		
 
 		LinkedHashMap<String, Object> dataMap = null;
 
@@ -159,69 +158,52 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
+							lastName = eElement.getElementsByTagName("lastName").item(0).getTextContent();
+							log.info("lastName Value is: " + lastName);
 
-							lastName = eElement.getElementsByTagName("lastName")
-                                    .item(0).getTextContent();
-                                    log.info("lastName Value is: " + lastName);
+							firstName = eElement.getElementsByTagName("firstName").item(0).getTextContent();
+							log.info("firstName Value is: " + firstName);
 
-							firstName = eElement.getElementsByTagName("firstName")
-                                    .item(0).getTextContent();
-                                    log.info("firstName Value is: " + firstName);
+							empID = eElement.getElementsByTagName("empID").item(0).getTextContent();
+							log.info("empID Value is: " + empID);
 
-                            empID = eElement.getElementsByTagName("empID")
-                                    .item(0).getTextContent();
-                                    log.info("empID Value is: " + empID);
+							departmentID = eElement.getElementsByTagName("departmentID").item(0).getTextContent();
+							log.info("departmentID Value is: " + departmentID);
 
-                            departmentID = eElement.getElementsByTagName("departmentID")
-                                    .item(0).getTextContent();
-                                    log.info("departmentID Value is: " + departmentID);
+							extension = eElement.getElementsByTagName("extension").item(0).getTextContent();
+							log.info("extension Value is: " + extension);
 
-                            extension = eElement.getElementsByTagName("extension")
-                                    .item(0).getTextContent();
-                                    log.info("extension Value is: " + extension);
+							bargainingUnit = eElement.getElementsByTagName("bargainingUnit").item(0).getTextContent();
+							log.info("bargainingUnit Value is: " + bargainingUnit);
 
-                            bargainingUnit = eElement.getElementsByTagName("bargainingUnit")
-                                    .item(0).getTextContent();
-                                    log.info("bargainingUnit Value is: " + bargainingUnit);
+							jobCode = eElement.getElementsByTagName("jobCode").item(0).getTextContent();
+							log.info("jobCode Value is: " + jobCode);
 
-                            jobCode = eElement.getElementsByTagName("jobCode")
-                                    .item(0).getTextContent();
-                                    log.info("jobCode Value is: " + jobCode);
+							fullTime = eElement.getElementsByTagName("fullTime").item(0).getTextContent();
+							log.info("fullTime Value is: " + fullTime);
 
-                            fullTime = eElement.getElementsByTagName("fullTime")
-                                    .item(0).getTextContent();
-                                    log.info("fullTime Value is: " + fullTime);
+							partTime = eElement.getElementsByTagName("partTime").item(0).getTextContent();
+							log.info("partTime Value is: " + partTime);
 
-                            partTime = eElement.getElementsByTagName("partTime")
-                                    .item(0).getTextContent();
-                                    log.info("partTime Value is: " + partTime);
+							tenure = eElement.getElementsByTagName("tenure").item(0).getTextContent();
+							log.info("tenure Value is: " + tenure);
 
-                            tenure = eElement.getElementsByTagName("tenure")
-                                    .item(0).getTextContent();
-                                    log.info("tenure Value is: " + tenure);
+							perm = eElement.getElementsByTagName("perm").item(0).getTextContent();
+							log.info("perm Value is: " + perm);
 
-                            perm = eElement.getElementsByTagName("perm")
-                                    .item(0).getTextContent();
-                                    log.info("perm Value is: " + perm);
+							probationary = eElement.getElementsByTagName("probationary").item(0).getTextContent();
+							log.info("probationary Value is: " + probationary);
 
-                            probationary = eElement.getElementsByTagName("probationary")
-                                    .item(0).getTextContent();
-                                    log.info("probationary Value is: " + probationary);
-
-                            others = eElement.getElementsByTagName("others")
-									.item(0).getTextContent();
+							others = eElement.getElementsByTagName("others").item(0).getTextContent();
 							log.info("others Value is: " + others);
 
-							termStatus = eElement.getElementsByTagName("temStatus")
-									.item(0).getTextContent();
+							termStatus = eElement.getElementsByTagName("temStatus").item(0).getTextContent();
 							log.info("termStatus Value is: " + termStatus);
 
-							leavesYes = eElement.getElementsByTagName("leavesYes")
-									.item(0).getTextContent();
+							leavesYes = eElement.getElementsByTagName("leavesYes").item(0).getTextContent();
 							log.info("leavesYes Value is: " + leavesYes);
 
-							leavesNo = eElement.getElementsByTagName("leavesNo")
-									.item(0).getTextContent();
+							leavesNo = eElement.getElementsByTagName("leavesNo").item(0).getTextContent();
 							log.info("leavesNo Value is: " + leavesNo);
 
 							applicantFirstName = eElement.getElementsByTagName("applicantFirstName")
@@ -231,135 +213,123 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 							applicantLastName = eElement.getElementsByTagName("applicantLastName")
 									.item(0).getTextContent();
 							log.info("applicantLastName Value is: " + applicantLastName);
-							
-							// applicantStudentID = eElement.getElementsByTagName("applicantStudentID")
-							// 		.item(0).getTextContent();
-							// log.info("applicantStudentID Value is: " + applicantStudentID);
-							
-							// applicantAddress = eElement.getElementsByTagName("applicantAddress")
-							// 		.item(0).getTextContent();
-							// log.info("applicantAddress Value is: " + applicantAddress);
-							
-							// applicantCity = eElement.getElementsByTagName("applicantCity")
-							// 		.item(0).getTextContent();
-							// log.info("applicantCity Value is: " + applicantCity);
-							
-							// applicantState = eElement.getElementsByTagName("applicantState")
-							// 		.item(0).getTextContent();
-							// log.info("applicantState Value is: " + applicantState);
-							
-							// applicantDateOfBirth = eElement.getElementsByTagName("applicantDateOfBirth")
-							// 		.item(0).getTextContent();
-							// log.info("applicantDateOfBirth Value is: "+applicantDateOfBirth);
-							
-							// applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
-							// 		.item(0).getTextContent();
-							// log.info("applicantEmailAddress Value is: "+applicantEmailAddress);
-							
-							// applicantPhone = eElement.getElementsByTagName("applicantPhone")
-							// 		.item(0).getTextContent();
-							// log.info("applicantPhone Value is: "+applicantPhone);
-							
-							// alternatePhone = eElement.getElementsByTagName("alternatePhone")
-							// 		.item(0).getTextContent();
-							// log.info("alternatePhone Value is: "+alternatePhone);
-							
-							// relationToEmployee = eElement.getElementsByTagName("relationToEmployee")
-							// 		.item(0).getTextContent();
-							// log.info("relationToEmployee Value is: "+relationToEmployee);
-							
-							// studentType = eElement.getElementsByTagName("studentType")
-							// 		.item(0).getTextContent();
-							// log.info("studentType Value is: "+studentType);
-							
-                            // classStanding = eElement.getElementsByTagName("classStanding")
-                            //         .item(0).getTextContent();
-							// log.info("classStanding Value is: "+classStanding);
-							
-							// semster = eElement.getElementsByTagName("semster")
-							// 		.item(0).getTextContent();
-							// 		log.info("semster Value is: "+semster);
-							
-                            // campusOfEnrollment = eElement.getElementsByTagName("campusOfEnrollment")
-                            //         .item(0).getTextContent();
-                            //         log.info("campusOfEnrollment Value is: " + campusOfEnrollment);
-                                    
-                            // degreeProgram = eElement.getElementsByTagName("degreeProgram")
-                            //         .item(0).getTextContent();
-                            //         log.info("degreeProgram Value is: " + degreeProgram);
-                                    
-                            // yearSemester = eElement.getElementsByTagName("yearSemester")
-                            //         .item(0).getTextContent();
-                            //         log.info("yearSemester Value is: " + yearSemester);
 
-                            courseTitle1 = eElement.getElementsByTagName("courseTitle1")
-                                    .item(0).getTextContent();
-                                    log.info("courseTitle1 Value is: " + courseTitle1);
-                            
-                            courseTitle2 = eElement.getElementsByTagName("courseTitle2")
-                                    .item(0).getTextContent();
-                                    log.info("courseTitle2 Value is: " + courseTitle2);
-                                    
-                            onlineCourse1Yes = eElement.getElementsByTagName("onlineCourse1Yes")
-                                    .item(0).getTextContent();
-                                    log.info("onlineCourse1Yes Value is: " + onlineCourse1Yes);
-                                    
-                            onlineCourse2Yes = eElement.getElementsByTagName("onlineCourse2Yes")
-                                    .item(0).getTextContent();
-                                    log.info("onlineCourse2Yes Value is: " + onlineCourse2Yes);
-                                    
-                            onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No")
-                                    .item(0).getTextContent();
-                                    log.info("onlineCourse1No Value is: " + onlineCourse1No);
-                                    
-                            onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No")
-                                    .item(0).getTextContent();
-                                    log.info("onlineCourse2No Value is: " + onlineCourse2No);
-                                    
-                            employeeComments = eElement.getElementsByTagName("employeeCommet")
-                                    .item(0).getTextContent();
-                                    log.info("employeeComments Value is: " + employeeComments);
-                                    
-                            initials = eElement.getElementsByTagName("initials")
-                                    .item(0).getTextContent();
-                                    log.info("initials Value is: " + initials);
-                                    
-                            employeeSignature = eElement.getElementsByTagName("employeeSignature")
-                                    .item(0).getTextContent();
-                                    log.info("employeeSignature Value is: " + employeeSignature);
-                                    
-                            employeeDate = eElement.getElementsByTagName("employeeDate")
-                                    .item(0).getTextContent();
-                                    log.info("employeeDate Value is: " + employeeDate);
-                                    
-                            hrComments = eElement.getElementsByTagName("hrComments")
-                                    .item(0).getTextContent();
-                                    log.info("hrComments Value is: " + hrComments);
-                                    
-                            feeWaiverGranted = eElement.getElementsByTagName("feeWaiverGranted")
-                                    .item(0).getTextContent();	
-                                    log.info("feeWaiverGranted Value is: " + feeWaiverGranted);
-                                    						
-                            feeWaiverDenied = eElement.getElementsByTagName("feeWaiverDenied")
-                                    .item(0).getTextContent();
-                                    log.info("feeWaiverDenied Value is: " + feeWaiverDenied);
-                                    
-                            term = eElement.getElementsByTagName("term")
-                                    .item(0).getTextContent();
-                                    log.info("term Value is: " + term);
-                                    
-                            edde = eElement.getElementsByTagName("edde")
-                                    .item(0).getTextContent();
-                                    log.info("edde Value is: " + edde);
-                                    
-                            hrSignature = eElement.getElementsByTagName("hrSignature")
-                                    .item(0).getTextContent();
-                                    log.info("hrSignature Value is: " + hrSignature);
-                                    
-                            hrDate = eElement.getElementsByTagName("hrDate")
-                                    .item(0).getTextContent();
-                                    log.info("hrDate Value is: " + hrDate);
-													
+							 applicantStudentID = eElement.getElementsByTagName("applicantStudentID")
+							 .item(0).getTextContent();
+							 log.info("applicantStudentID Value is: " + applicantStudentID);
+							 
+							 applicantAddress = eElement.getElementsByTagName("applicantAddress")
+							 .item(0).getTextContent();
+							 log.info("applicantEmailAddress Value is: "+applicantAddress);
+							 
+							 applicantCity = eElement.getElementsByTagName("applicantCity")
+							 .item(0).getTextContent();
+							 log.info("applicantPhone Value is: "+applicantCity);
+
+							 applicantState = eElement.getElementsByTagName("applicantState")
+							 .item(0).getTextContent();
+							 log.info("alternatePhone Value is: "+applicantState);
+							 
+							 applicantDateOfBirth = eElement.getElementsByTagName("applicantDateOfBirth")
+							 .item(0).getTextContent();
+							 log.info("applicantDateOfBirth Value is: "+applicantDateOfBirth);
+
+//							 applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
+//							 .item(0).getTextContent();
+//							 log.info("applicantAddress Value is: " + applicantAddress);
+
+							 applicantPhone = eElement.getElementsByTagName("applicantPhone")
+							 .item(0).getTextContent();
+							 log.info("applicantCity Value is: " + applicantPhone);
+
+							 alternatePhone = eElement.getElementsByTagName("alternatePhone")
+							 .item(0).getTextContent();
+							 log.info("applicantState Value is: " + alternatePhone);
+
+							 relationToEmployee = eElement.getElementsByTagName("relationToEmployee")
+							 .item(0).getTextContent();
+							 log.info("relationToEmployee Value is: "+relationToEmployee);
+
+							 studentType = eElement.getElementsByTagName("studentType")
+							 .item(0).getTextContent();
+							 log.info("studentType Value is: "+studentType);
+
+							 classStanding = eElement.getElementsByTagName("classStanding")
+							 .item(0).getTextContent();
+							 log.info("classStanding Value is: "+classStanding);
+
+							 semster = eElement.getElementsByTagName("semster")
+							 .item(0).getTextContent();
+							 log.info("semster Value is: "+semster);
+
+							 campusOfEnrollment = eElement.getElementsByTagName("campusOfEnrollment")
+							 .item(0).getTextContent();
+							 log.info("campusOfEnrollment Value is: " + campusOfEnrollment);
+
+							 degreeProgram = eElement.getElementsByTagName("degreeProgram")
+							 .item(0).getTextContent();
+							 log.info("degreeProgram Value is: " + degreeProgram);
+
+							 yearSemester = eElement.getElementsByTagName("yearSemester")
+							 .item(0).getTextContent();
+							 log.info("yearSemester Value is: " + yearSemester);
+
+							courseTitle1 = eElement.getElementsByTagName("courseTitle1").item(0).getTextContent();
+							log.info("courseTitle1 Value is: " + courseTitle1);
+
+							onlineCourse1Yes = eElement.getElementsByTagName("onlineCourse1Yes").item(0)
+									.getTextContent();
+							log.info("onlineCourse1Yes Value is: " + onlineCourse1Yes);
+
+							onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No").item(0).getTextContent();
+							log.info("onlineCourse1No Value is: " + onlineCourse1No);
+
+							courseTitle2 = eElement.getElementsByTagName("courseTitle2").item(0).getTextContent();
+							log.info("courseTitle2 Value is: " + courseTitle2);
+
+							onlineCourse2Yes = eElement.getElementsByTagName("onlineCourse2Yes").item(0)
+									.getTextContent();
+							log.info("onlineCourse2Yes Value is: " + onlineCourse2Yes);
+
+							onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No").item(0).getTextContent();
+							log.info("onlineCourse2No Value is: " + onlineCourse2No);
+
+							feeWaiverGranted = eElement.getElementsByTagName("feeWaiverGranted").item(0)
+									.getTextContent();
+							log.info("feeWaiverGranted Value is: " + feeWaiverGranted);
+							
+							term = eElement.getElementsByTagName("term").item(0).getTextContent();
+							log.info("term Value is: " + term);
+
+							edde = eElement.getElementsByTagName("edde").item(0).getTextContent();
+							log.info("edde Value is: " + edde);
+
+							feeWaiverDenied = eElement.getElementsByTagName("feeWaiverDenied").item(0).getTextContent();
+							log.info("feeWaiverDenied Value is: " + feeWaiverDenied);					
+
+							hrComments = eElement.getElementsByTagName("hrComments").item(0).getTextContent();
+							log.info("hrComments Value is: " + hrComments);
+
+							hrSignature = eElement.getElementsByTagName("hrSignature").item(0).getTextContent();
+							log.info("hrSignature Value is: " + hrSignature);
+
+							hrDate = eElement.getElementsByTagName("hrDate").item(0).getTextContent();
+							log.info("hrDate Value is: " + hrDate);
+
+							employeeComments = eElement.getElementsByTagName("employeeCommet").item(0)
+									.getTextContent();
+							log.info("employeeComments Value is: " + employeeComments);
+
+							initials = eElement.getElementsByTagName("initials").item(0).getTextContent();
+							log.info("initials Value is: " + initials);
+
+							employeeSignature = eElement.getElementsByTagName("employeeSignature").item(0)
+									.getTextContent();
+							log.info("employeeSignature Value is: " + employeeSignature);
+
+							employeeDate = eElement.getElementsByTagName("employeeDate").item(0).getTextContent();
+							log.info("employeeDate Value is: " + employeeDate);
+
 						}
 					}
 
@@ -368,70 +338,67 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("FIRST_NAME", firstName);
 					dataMap.put("LAST_NAME", lastName);
 					dataMap.put("EMP_ID", empID);
-					dataMap.put("DEPARTMENT_NAME", departmentID);					
+					dataMap.put("DEPARTMENT_NAME", departmentID);
 					dataMap.put("EXTENSION", extension);
 					dataMap.put("BARGAINING_UNIT", bargainingUnit);
 					dataMap.put("JOB_CODE", jobCode);
 					dataMap.put("FULL_TIME", fullTime);
 					dataMap.put("PART_TIME", partTime);
-					dataMap.put("TENURE", tenure);					
-					dataMap.put("PERM", perm);					
-					dataMap.put("PROBATIONARY", probationary);					
-					dataMap.put("OTHERS", others);					
-					dataMap.put("TEM_STATUS", term);		
+					dataMap.put("TENURE", tenure);
+					dataMap.put("PERM", perm);
+					dataMap.put("PROBATIONARY", probationary);
+					dataMap.put("OTHER", others);
+					dataMap.put("TERM_STATUS", termStatus);
 					dataMap.put("LEAVES_YES", leavesYes);
-					dataMap.put("LEAVES_NO", leavesNo);				
+					dataMap.put("LEAVES_NO", leavesYes);
+					
 					dataMap.put("APPLICANT_FIRST_NAME", applicantFirstName);
 					dataMap.put("APPLICANT_LAST_NAME", applicantLastName);
-					// dataMap.put("APPLICANT_STUDENTID", applicantStudentID);
-					// dataMap.put("APPLICANT_ADDRESS", applicantAddress);
-					// dataMap.put("APPLICANT_CITY", applicantCity);
-					// dataMap.put("APPLICANT_STATE", applicantState);				
-					
-					// Object applicantDateOfBirthObj= null;
-                    // if(employeeDate != null && employeeDate != "") {
-					// 	Date applicantDateOfBirthNew = Date.valueOf(applicantDateOfBirth);
-					// 	applicantDateOfBirthObj = applicantDateOfBirthNew;
-					// }	
-					// dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirthObj);
-					// dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
-					// dataMap.put("APPLICANT_HOME_PHONE", applicantPhone);
-					// dataMap.put("APPLICANT_ALTERNATE_PHONE", alternatePhone);
-					// dataMap.put("RELATION_TO_EMPLOYEE", relationToEmployee);
-					// dataMap.put("STUDENT_TYPE", studentType);
-					// dataMap.put("CLASS_STANDING", classStanding);
-					// dataMap.put("SEMESTER", semster);
-					// dataMap.put("CAMPUS_OF_ENROLLMENT", campusOfEnrollment);
-					// dataMap.put("DEGREE_PROGRAM", degreeProgram);
-					// dataMap.put("YEAR_SEMESTER", yearSemester);
-					dataMap.put("COURSE_TITLE1", courseTitle1);					
-					dataMap.put("ONLINE_COURSE1_YES", onlineCourse1Yes);					
+					dataMap.put("APPLICANT_STUDENT_ID", applicantStudentID);
+					dataMap.put("APPLICANT_ADDRESS", applicantAddress);
+					dataMap.put("APPLICANT_CITY", applicantCity);
+					dataMap.put("APPLICANT_STATE", applicantState);
+					dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirth);
+					//dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
+					dataMap.put("APPLICANT_HOME_PHONE", applicantPhone);
+					dataMap.put("APPLICANT_ALTERNATE_PHONE", alternatePhone);
+					dataMap.put("RELATION_TO_EMPLOYEE", relationToEmployee);
+					dataMap.put("STUDENT_TYPE", studentType);
+					dataMap.put("CLASS_STANDING", classStanding);
+					dataMap.put("SEMESTER", semster);
+					dataMap.put("CAMPUS_OF_ENROLLMENT", campusOfEnrollment);
+					dataMap.put("DEGREE_PROGRAM", degreeProgram);
+					dataMap.put("YEAR_SEMESTER", yearSemester);				
+
+					dataMap.put("COURSE_TITLE1", onlineCourse2Yes);
+					dataMap.put("ONLINE_COURSE1_YES", onlineCourse1No);
 					dataMap.put("ONLINE_COURSE1_NO", onlineCourse2No);
-					dataMap.put("COURSE_TITLE2", courseTitle2);
-					dataMap.put("ONLINE_COURSE2_YES", onlineCourse2Yes);
+					dataMap.put("COURSE_TITLE2", onlineCourse2Yes);
+					dataMap.put("ONLINE_COURSE2_YES", onlineCourse1No);
 					dataMap.put("ONLINE_COURSE2_NO", onlineCourse2No);
-					dataMap.put("EMPLOYEE_COMMENT", employeeComments);
-					dataMap.put("INITIALS", initials);
-                    dataMap.put("EMPLOYEE_SIGNATURE", employeeSignature);
-                    Object hemployeeDateObj= null;
-                    if(employeeDate != null && employeeDate != "") {
-						Date demployeeDateNew = Date.valueOf(employeeDate);
-						hemployeeDateObj = demployeeDateNew;
-					}					
-					dataMap.put("EMPLOYEE_DATE", hemployeeDateObj);
-					dataMap.put("HR_COMMENTS", hrComments);
 					dataMap.put("FEE_WAIVER_GRANTED", feeWaiverGranted);
 					dataMap.put("FEE_WAIVER_DENIED", feeWaiverDenied);
 					dataMap.put("TERM", term);
 					dataMap.put("EDDE", edde);
-                    dataMap.put("HR_SIGNATURE", hrSignature);
-                    Object hrDateObj= null;
-                    if(hrDate != null && hrDate != "") {
-						Date dhrDateNew = Date.valueOf(hrDate);
-						hrDateObj = dhrDateNew;
-					}
-					dataMap.put("HR_DATE", hrDateObj);		
+					dataMap.put("HR_COMMENT", hrComments);
+					dataMap.put("HR_SIGNATURE", hrSignature);
 
+					Object hrDateObj = null;
+					if (hrDate != null && hrDate != "") {
+						Date hrDateNew = Date.valueOf(hrDate);
+						hrDateObj = hrDateNew;
+					}
+					dataMap.put("HR_DATE", hrDateObj);
+					dataMap.put("EMPLOYEE_COMMENT", employeeComments);
+					dataMap.put("INITIALS", initials);
+					dataMap.put("EMPLOYEE_SIGNATURE", employeeSignature);
+
+					Object employeeDateObj = null;
+					if (employeeDate != null && employeeDate != "") {
+						Date employeeDateNew = Date.valueOf(employeeDate);
+						employeeDateObj = employeeDateNew;
+					}
+					dataMap.put("EMPLOYEE_DATE", employeeDateObj);
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
