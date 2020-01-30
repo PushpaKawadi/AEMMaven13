@@ -1,18 +1,4 @@
-/*
- *  Copyright 2015 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.aem.community.core.servlets;
 
 import java.io.IOException;
@@ -35,6 +21,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -45,8 +32,8 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Dental Plan Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getDentalSSNLookup" })
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Dental Plan Enrollment",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/dentalPlanSSNLookUp" })
 public class DentalPlanSSNServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory.getLogger(DentalPlanSSNServlet.class);
 	private static final long serialVersionUID = 1L;
@@ -54,25 +41,17 @@ public class DentalPlanSSNServlet extends SlingSafeMethodsServlet {
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-		String userID = "";
-		String cwid = "";
-		//JSONObject emplEvalDetails = null;
-		JSONArray emplEvalDetails = null;
-		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
-				&& req.getParameter("cwid") != "") {
-			userID = req.getParameter("userID");
-			cwid = req.getParameter("cwid");
-			logger.info("userid =" + userID);
-			logger.info("EmpID =" + cwid);
+		String ssn = "";
+		JSONArray newPositionManagerDetails = null;
+		if (req.getParameter("ssn") != null && req.getParameter("ssn") != "") {
+			ssn = req.getParameter("ssn");
 			conn = getConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, userID, "SPE2579");
-				
-				
+				newPositionManagerDetails = getDentalPlanDetails(ssn, conn, "dentalPlan");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,81 +59,61 @@ public class DentalPlanSSNServlet extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(emplEvalDetails.toString());
+			response.getWriter().write(newPositionManagerDetails.toString());
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String userID, String docType)
+	public static JSONArray getDentalPlanDetails(String ssn, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
-		//JSONObject employeeEvalDetails = new JSONObject();
-		
-		JSONObject employeeEvalDetails;
+		JSONObject newDentalPlanDetails;
 		JSONArray jArray = new JSONArray();
-		
-		String lookupFields = "FIRST_NAME,LAST_NAME,DEPTID,DEPTNAME,EMPL_RCD,EMPLID,DESCR,GRADE,SupervisorName,SupervisorTitle,UNION_CD,EMPUSERID,ADMINUSERID,ADMINFULLNAME";
 
-//		String emplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, B.UNION_CD,"
-//				+ " D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle, E.USERID AS EMPUSERID,(Select USERID from cmsrda.ful_emp_cwid_nt_name "
-//				+ "where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (select REPORTS_TO from FUL_ECM_JOB_VW "
-//				+ "where emplid='<<Empl_ID>>'))) as MANAGERUSERID, (Select USERID from cmsrda.ful_emp_cwid_nt_name "
-//				+ "where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (Select REPORTS_TO from FUL_ECM_JOB_VW where "
-//				+ "EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINUSERID, (Select (FNAME || ' ' || LNAME)  from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (Select REPORTS_TO from FUL_ECM_JOB_VW where EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT "
-//				+ "JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID  WHERE B.EMPLID = '<<Empl_ID>>'";
-		
-		
-		String emplIDSQL ="Select A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, A.ADDRESS1, A.CITY, A.STATE, A.POSTAL, (case A.SEX when 'M' then '1' else '0' end) as Male, (case A.SEX when 'F' then '1' else '0' end) as Female,(case A.MAR_STATUS when 'M' then '1' else '0' end) as Married, (case A.MAR_STATUS when 'U' then '1' else '0' end) as Single,B.DEPTNAME as DeptName, B.JOBCODE as JobCode From FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>', '-','') AND A.EMPLID = B.EMPLID;";
-		
-		//String emplIDSQL ="SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, B.UNION_CD, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle, E.USERID AS EMPUSERID,(Select USERID from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))) as MANAGERUSERID, (Select USERID from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (Select REPORTS_TO from FUL_ECM_JOB_VW where EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINUSERID, (Select (FNAME || ' ' || LNAME)  from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (Select REPORTS_TO from FUL_ECM_JOB_VW where EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID  WHERE B.EMPLID = '<<Empl_ID>>'";
-		
+        String userIDSQL = ConfigManager.getValue("DentalPlanEnrollmentSSNLookUp");
+        logger.info("The userID SQL is=" + userIDSQL);
+
+        String lookupFields = ConfigManager.getValue("DentalPlanEnrollmentFields");
+        logger.info("The user LookUp Fields are=" + lookupFields);
+
 		String[] fields = lookupFields.split(",");
 
-		// userIDSQL.replaceAll("<<getUser_ID>>",userID);
-		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
-		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-
-
+        userIDSQL = userIDSQL.replaceAll("<<SSN>>", ssn);
+        logger.info("User ID is="+userIDSQL);
 		Statement oStatement = null;
 		try {
+
+			logger.info("inside try4");
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(emplIDSQL);
-			//logger.error("oRresultSet ="+oRresultSet);
-			
-			//if (oRresultSet.next()) {
-//				while (oRresultSet.next()) {
-//				for (int i = 0; i < fields.length; i++) {
-//					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-//				}
-//			}
-			
+			oRresultSet = oStatement.executeQuery(userIDSQL);
+
 			while (oRresultSet.next()) {
 
-				employeeEvalDetails = new JSONObject();
+				newDentalPlanDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("employeeEvalDetails ="+employeeEvalDetails);
+					newDentalPlanDetails.put(fields[i], oRresultSet.getString(fields[i]));
+
 				}
-				jArray.put(employeeEvalDetails);
+				jArray.put(newDentalPlanDetails);
+				logger.info("jArray=" + jArray);
 			}
+
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			employeeEvalDetails = null;
+
 		} finally {
 			try {
-				if (oConnection != null){
+				if (oConnection != null) {
 					oConnection.close();
-					
-				}
-				// oStatement.close();
-				// oRresultSet.close();
-			} catch (Exception exp) {
 
+				}
+
+			} catch (Exception exp) {
+				exp.printStackTrace();
 			}
 		}
 
-		//return employeeEvalDetails;
 		return jArray;
 	}
 

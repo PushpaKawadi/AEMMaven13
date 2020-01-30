@@ -34,8 +34,7 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-//Add the DataSourcePool package
+import com.aem.community.util.ConfigManager;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 /**
@@ -45,18 +44,26 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = {Constants.SERVICE_DESCRIPTION + "=Pay Plan Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getPayPlan" })
-public class PayPlanServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFUserLookUpServlet.class);
+@Component(service = Servlet.class, property = {
+		Constants.SERVICE_DESCRIPTION + "=Dock Notice",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
+		"sling.servlet.paths=" + "/bin/getDockNotice" })
+public class CSUFDockNoticeServlet extends
+		SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory
+			.getLogger(CSUFDockNoticeServlet.class);
 	private static final long serialVersionUID = 1L;
 
-	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(SlingHttpServletRequest req,
+			SlingHttpServletResponse response) throws ServletException,
+			IOException {
 		Connection conn = null;
+		//String dataSourceName = ConfigManager.getValue("dbFrmMgrProd");
 		String userID = "";
+		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
+		if (req.getParameter("userID") != null
+				&& req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
 			conn = getConnection();
 		}
@@ -64,83 +71,62 @@ public class PayPlanServlet extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getUserIDDetailsNew(userID, conn, "SPE2579");
+				emplEvalDetails = getCataLeaveRequestUserDetails(conn, userID,
+						"SPE2579");
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getUserIDDetailsNew(String userID, Connection oConnection, String docType)
+	public static JSONArray getCataLeaveRequestUserDetails(
+			Connection oConnection, String userID, String docType)
 			throws Exception {
-
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-
+		
+		String sqlQuery = ConfigManager.getValue("dockNoticeUserIdSql");
+		logger.info("sqlQuery="+sqlQuery);
+		String lookupFields = ConfigManager.getValue("dockNoticeFields");
+		logger.info("lookupFields="+lookupFields);
+		String[] fields = lookupFields.split(",");
+		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
+		// emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		logger.info("emplIDSQL="+sqlQuery);
 		Statement oStatement = null;
 		try {
-
-			// String userIDSQL = ConfigManager.getValue(docType+"USERIDSQL");
-
-			String userIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, substr(A.WORK_PHONE,7,10) as Extension, B.DEPTNAME, B.DEPTID,  B.EMPL_RCD, B.POSITION_NBR, B.DESCR, B.UNION_CD, ('242' || ' - ' || B.CSU_UNIT || ' - ' || B.JOBCODE || ' - ' ||  '00' || (EMPL_RCD+1) ) as SCOPosNum, B.STD_HOURS, B.POSITION_NBR, B.GRADE, B.EMPLID  from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C where A.EMPLID = C.cwid and C.userid = '<<getUser_ID>>' and A.EMPLID = B.EMPLID";
-			
-
-			String lookupFields = "FIRST_NAME,LAST_NAME,EXTENSION,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,SCOPOSNUM,STD_HOURS,GRADE,EMPLID";
-			String[] fields = lookupFields.split(",");
-
-			userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
-
-			// LogManager.traceInfoMsg(sClassName, methodName, "UserID SQL : " +
-			// userIDSQL);
-
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(userIDSQL);
-			logger.info("userIDSQL=" + userIDSQL);
-
-			// if (oRresultSet.next()) {
+			oRresultSet = oStatement.executeQuery(sqlQuery);
 			while (oRresultSet.next()) {
-
 				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-
+					employeeEvalDetails.put(fields[i],
+							oRresultSet.getString(fields[i]));
 				}
 				jArray.put(employeeEvalDetails);
-				logger.info("jArray=" + jArray);
 			}
-
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-
+			employeeEvalDetails = null;
 		} finally {
 			try {
 				if (oConnection != null) {
 					oConnection.close();
+					logger.info("Connection closed");
 
 				}
-				// if (oStatement != null){
-				// oStatement.close();
-				//
-				// }
-				// if (oRresultSet != null){
-				// oRresultSet.close();
-				//
-				// }
-				// oStatement.close();
-				// oRresultSet.close();
-			} catch (Exception exp) {
-				logger.info("Finally=" + exp);
-				exp.printStackTrace();
+			} catch (Exception e) {
+				logger.error("Exception in CSUFDockNoticeServlet="
+						+ e.getMessage());
+				e.getStackTrace();
 			}
 		}
-
 		return jArray;
 	}
 

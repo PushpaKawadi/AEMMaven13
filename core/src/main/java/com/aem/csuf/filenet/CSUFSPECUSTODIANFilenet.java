@@ -108,15 +108,15 @@ public class CSUFSPECUSTODIANFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffFirstName", doc,
 								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffLastName", doc,
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
@@ -142,7 +142,7 @@ public class CSUFSPECUSTODIANFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Staff_Performance_Evaluation_Confidential_Distributed.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_Custodian_Distributed.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -188,11 +188,11 @@ public class CSUFSPECUSTODIANFilenet implements WorkflowProcess {
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		log.error("Json String:" + jsonString.toString());
+		//log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPEConfDist");
+			log.info("Read SPECustDist");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");

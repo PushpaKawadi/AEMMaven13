@@ -91,9 +91,9 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 		JSONArray jArray = new JSONArray();
 		
 		String sqlQuery = ConfigManager.getValue("catastrophicLeaveRequest");
-		logger.error("sqlQuery="+sqlQuery);
+		logger.info("sqlQuery="+sqlQuery);
 		String lookupFields = ConfigManager.getValue("catastrophicFields");
-		logger.error("lookupFields="+lookupFields);
+		logger.info("lookupFields="+lookupFields);
 		String[] fields = lookupFields.split(",");
 		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
 		// emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);

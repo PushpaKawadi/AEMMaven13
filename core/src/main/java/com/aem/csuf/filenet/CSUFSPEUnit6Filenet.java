@@ -142,7 +142,7 @@ public class CSUFSPEUnit6Filenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Staff Performance Evaluation Unit 6.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_Unit_6.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -192,7 +192,7 @@ public class CSUFSPEUnit6Filenet implements WorkflowProcess {
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPEUnit8Dist");
+			log.info("Read SPEUnit6Dist");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");

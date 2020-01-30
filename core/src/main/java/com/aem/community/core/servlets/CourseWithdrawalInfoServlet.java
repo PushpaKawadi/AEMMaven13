@@ -143,18 +143,9 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 		Statement oStatement = null;
 		try {
-
-			// STUDENTCOURSEWITHDRAWALSQL=Select * from AR_COURSE_WITHDRAWL
-			// where CWID = '<<CWID>>' and STRM = '2185'
-			// CRSEFIELDS=CWID,FNAME,LNAME,MAJOR_DESCR,CAREER,CRSE_NAME,CLASS_NBR,UNT_TAKEN,INSTR_NAME
-
-			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '2197'";
+			//String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '2203'";
+			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
 			
-			//String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
-			// String lookupFields = ConfigManager.getValue("CRSEFIELDS");
-			//String lookupFields = "CWID,FNAME,LNAME,MAJOR_DESCR,CAREER,CRSE_NAME,CLASS_NBR,UNT_TAKEN,INSTR_NAME";
-			// String[] fields = lookupFields.split(",");
-
 			// Get current term details
 			String[] termInfo = getCurrentTerm(oConnection);
 			
@@ -187,6 +178,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 					
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
+					studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM",oRresultSet.getString("STRM"));

@@ -33,82 +33,78 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+//import com.aem.csuf.filenet.PayPlan10_12_11_12Filenet;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=PayPlan10_12_11_12 Save in DB",
+		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=PayPlan10_12_11_12DB" })
+public class PayPlan10_12_11_12DB implements WorkflowProcess {
 
-@Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=PayPlan10_12_11_12 Save in DB",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=PayPlan10_12_11_12DB" })
-public class PayPlan10_12_11_12DB implements WorkflowProcess{
-	
-	private static final Logger log = LoggerFactory
-			.getLogger(PayPlan10_12_11_12DB.class);
+	private static final Logger log = LoggerFactory.getLogger(PayPlan10_12_11_12DB.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
 		Connection conn = null;
 
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
-		String firstName = "";
-		String lastName = "";
+		
 		String empId = "";
-		String empRCD = "";		
+		String firstName = "";
+		String lastName = "";		
+		String empRCD = "";
 		String extension = "";
 		String scoPositionNumber = "";
 		String timeBase = "";
-		String statusMenu = "";
-		String cbid = "";
-		String classification = "";
+		String statusMenu  = "";
+		String cbid  = "";
+		String classifications = "";
 		String grade = "";
-		String cmsPosition = "";
+		String cmsPositionNumber = "";
 		String departmentName = "";
 		String departmentID = "";
-		String payPlan = "";
+		String payPlanCHK = "";
+		String effectiveDate  = "";
 		String planSelected = "";
 		String name1 = "";
 		String monthOff1 = "";
 		String monthOff2 = "";
+		String employeeSignature = "";
 		String empDate = "";
-		String adminSign = "";
-		String approvalRecommendedYes = "";
-		String appropriateAdminName = "";
-		String date1 = "";
-		String approvalGrantedYes = "";
-		String vpSignature = "";
-		String date2 = "";
-		String oncycle = "";
-		String offcycle = "";
+		String onCycle = "";
+		String offCycle = "";
 		String currentMonthSalary = "";
 		String adjustedSalary = "";
-		String dateDiscussed = "";
-		String payPlan10 = "";
+		String dateDiscussed  = "";
 		String payPlan11 = "";
+		String payPlan10 = "";
 		String startDate = "";
 		String monthSal = "";
 		String daysToWork = "";
-		String possibleWorkDays = "";
 		String annualSalary = "";
+		String possibleWorkDays = "";
 		String monthSal1 = "";
 		String monthsToWork = "";
 		String projectedEarnedSalary = "";
 		String annualSalary1 = "";
 		String projectedEarnedSalary1 = "";
 		String settlementAmount = "";
-		String MonthOff1st = "";
-		String MonthOff2nd = "";
-		
-		
+		String firstMonthOff  = "";
+		String secondMonthOff = "";
+		String approvalRecommendedYes = "";
+		String appropriateAdminName = "";
+		String date1 = "";
+		String approvedGrantedYes = "";					
+		String vpSignature = "";
+		String date2 = "";
+
 		LinkedHashMap<String, Object> dataMap = null;
-		
+
 		Resource xmlNode = resolver.getResource(payloadPath);
-		
+
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		// Get the payload path and iterate the path to find Data.xml, Use
 		// Document
@@ -117,32 +113,29 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
+			log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
+			log.info("filePath for PayPlan_10_12_11_12=" + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				log.info("xmlFiles for PayPlan_10_12_11_12=" + filePath);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
-					log.error("Exception1=" + e2.getMessage());
+					log.error("Exception1 for PayPlan_10_12_11_12=" + e2.getMessage());
 					e2.printStackTrace();
 				} catch (PathNotFoundException e2) {
-					log.error("Exception2=" + e2.getMessage());
+					log.error("Exception2 for PayPlan_10_12_11_12=" + e2.getMessage());
 					e2.printStackTrace();
 				} catch (RepositoryException e2) {
-					log.error("Exception3=" + e2.getMessage());
+					log.error("Exception3 for PayPlan_10_12_11_12=" + e2.getMessage());
 					e2.printStackTrace();
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -156,8 +149,7 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					org.w3c.dom.NodeList nList = doc
-							.getElementsByTagName("afBoundData");
+					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
 					for (int temp = 0; temp < nList.getLength(); temp++) {
 						org.w3c.dom.Node nNode = nList.item(temp);
 
@@ -165,165 +157,240 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-							empId = eElement.getElementsByTagName("Empl_ID")
+							empId = eElement.getElementsByTagName("empl_ID")
 									.item(0).getTextContent();
-							lastName = eElement
-									.getElementsByTagName("Last_Name")
-									.item(0).getTextContent();
-							firstName = eElement
-									.getElementsByTagName("First_Name")
-									.item(0).getTextContent();
-							empRCD = eElement.getElementsByTagName("Empl_RCD")
-									.item(0).getTextContent();
-							extension = eElement.getElementsByTagName("Extension")
-									.item(0).getTextContent();
-							scoPositionNumber = eElement
-									.getElementsByTagName("SCO_Position_Number").item(0)
-									.getTextContent();
-							timeBase = eElement
-									.getElementsByTagName("Timebase").item(0)
-									.getTextContent();
+									log.info("empId Value is: " + empId);
 
-							statusMenu = eElement
-									.getElementsByTagName("StatusMenu")
+							firstName = eElement.getElementsByTagName("first_Name")
 									.item(0).getTextContent();
+									log.info("first_NameValue is: " + firstName);
 
-							cbid = eElement
-									.getElementsByTagName("CBID")
+							lastName = eElement.getElementsByTagName("last_Name")
 									.item(0).getTextContent();
-							classification = eElement
-									.getElementsByTagName("Classification")
-									.item(0).getTextContent();
+									log.info("last_Name Value is: " + lastName);							
 
-							grade = eElement
-									.getElementsByTagName("Grade")
+							empRCD = eElement.getElementsByTagName("empl_RCD")
 									.item(0).getTextContent();
+									log.info("empRCD Value is: " + empRCD);
 
-							cmsPosition = eElement
-									.getElementsByTagName("CMS_Position_Number")
+							extension = eElement.getElementsByTagName("extension")
 									.item(0).getTextContent();
-							departmentName = eElement
-									.getElementsByTagName("Department_Name")
-									.item(0).getTextContent();
+									log.info("extension Value is: " + extension);
 
-							departmentID = eElement
-									.getElementsByTagName("Department_ID")
+							scoPositionNumber = eElement.getElementsByTagName("scoPositionNumber")
 									.item(0).getTextContent();
+									log.info("scoPositionNumber Value is: " + scoPositionNumber);
 
-							payPlan = eElement
-									.getElementsByTagName("10/12 OR 11/12 Request")
+							timeBase = eElement.getElementsByTagName("timebase")
 									.item(0).getTextContent();
+									log.info("timeBase Value is: " + timeBase);
 
-							planSelected = eElement
-									.getElementsByTagName("Plan_Selected").item(0)
-									.getTextContent();
+							statusMenu = eElement.getElementsByTagName("statusMenu")
+									.item(0).getTextContent();
+									log.info("statusMenu Value is: " + statusMenu);
 
-							name1 = eElement
-									.getElementsByTagName("Name1")
+							cbid = eElement.getElementsByTagName("cbid")
 									.item(0).getTextContent();
-							monthOff1 = eElement
-									.getElementsByTagName("MonthOff1")
-									.item(0).getTextContent();
-							monthOff2 = eElement
-									.getElementsByTagName("MonthOff2")
-									.item(0).getTextContent();
-							empDate = eElement.getElementsByTagName("EmpDate")
-									.item(0).getTextContent();
+									log.info("cbid Value is: " + cbid);
 
-							adminSign = eElement
-									.getElementsByTagName("AdminSign").item(0)
-									.getTextContent();
-							approvalRecommendedYes = eElement
-									.getElementsByTagName("ApprovalRecommendedYes").item(0)
-									.getTextContent();
-							appropriateAdminName = eElement
-									.getElementsByTagName("Appropriate_Admin_Name").item(0)
-									.getTextContent();
+							classifications = eElement.getElementsByTagName("classification")
+									.item(0).getTextContent();
+							log.info("classification Value is: " + classifications);
 
-							date1 = eElement.getElementsByTagName("Date1")
+							grade = eElement.getElementsByTagName("grade")
 									.item(0).getTextContent();
+							log.info("grade Value is: " + grade);		
 
-							approvalGrantedYes = eElement.getElementsByTagName("ApprovalGrantedYes")
+							cmsPositionNumber = eElement.getElementsByTagName("cmsPositionNumber")
 									.item(0).getTextContent();
-							vpSignature = eElement.getElementsByTagName("VP_Signature")
-									.item(0).getTextContent();
-							date2	 = eElement.getElementsByTagName("Date2")
-									.item(0).getTextContent();
+							log.info("cmsPositionNumber Value is: " + cmsPositionNumber);		
 
-							oncycle = eElement.getElementsByTagName("OnCycle")
+							departmentName = eElement.getElementsByTagName("departmentName")
 									.item(0).getTextContent();
+							log.info("departmentName Value is: " + departmentName);
 
-							offcycle = eElement.getElementsByTagName("OffCycle")
+							departmentID = eElement.getElementsByTagName("departmentID")
 									.item(0).getTextContent();
-							currentMonthSalary = eElement
-									.getElementsByTagName("CurrentMonthlySalary").item(0)
-									.getTextContent();
-							adjustedSalary = eElement.getElementsByTagName("AdjustedSalary")
+							log.info("departmentID Value is: " + departmentID);
+
+							payPlanCHK = eElement.getElementsByTagName("payPlanCHK")
+							.item(0).getTextContent();
+						log.info("payPlanCHK Value is: " + payPlanCHK);
+
+							effectiveDate = eElement.getElementsByTagName("effectiveDate")
 									.item(0).getTextContent();
-							dateDiscussed = eElement.getElementsByTagName("DateDiscussed")
+							log.info("effectiveDate Value is: " + effectiveDate);
+
+							planSelected = eElement.getElementsByTagName("planSelected")
 									.item(0).getTextContent();
-							payPlan10 = eElement.getElementsByTagName("PayPlan10")
+							log.info("planSelected Value is: " + planSelected);
+
+							name1 = eElement.getElementsByTagName("name1")
 									.item(0).getTextContent();
-							payPlan11 = eElement.getElementsByTagName("PayPlan11")
-									.item(0).getTextContent();
-							startDate = eElement.getElementsByTagName("StartDate")
-									.item(0).getTextContent();
-							monthSal = eElement.getElementsByTagName("Month_Sal")
-									.item(0).getTextContent();
-							daysToWork = eElement.getElementsByTagName("Month_Sal")
-									.item(0).getTextContent();
-							possibleWorkDays = eElement.getElementsByTagName("Possible_work_days")
-									.item(0).getTextContent();
-							annualSalary = eElement.getElementsByTagName("Possible_work_days")
-									.item(0).getTextContent();
-							monthSal1 = eElement.getElementsByTagName("Month_Sal1")
-									.item(0).getTextContent();
-							monthsToWork = eElement.getElementsByTagName("Months_to_work")
-									.item(0).getTextContent();
-							projectedEarnedSalary = eElement.getElementsByTagName("Projected_Earned_Salary")
-									.item(0).getTextContent();
-							annualSalary1 = eElement.getElementsByTagName("AnnualSalary1")
-									.item(0).getTextContent();
-							projectedEarnedSalary1 = eElement.getElementsByTagName("Projected_Earned_Salary1")
-									.item(0).getTextContent();
-							settlementAmount = eElement.getElementsByTagName("Settlement_Amount")
-									.item(0).getTextContent();
-							MonthOff1st = eElement.getElementsByTagName("1st_Month_off")
-									.item(0).getTextContent();							
-							MonthOff2nd = eElement.getElementsByTagName("2nd_Month_offment2")
-									.item(0).getTextContent();
+							log.info("name1 Value is: " + name1);
+
+							monthOff1 = eElement.getElementsByTagName("monthOff1")
+							.item(0).getTextContent();
+							log.info("monthOff1 Value is: " + monthOff1);
+
+							monthOff2 = eElement.getElementsByTagName("monthOff2")
+							.item(0).getTextContent();
+							log.info("monthOff2 Value is: " + monthOff2);
+
+							employeeSignature = eElement.getElementsByTagName("employeeSignature")
+							.item(0).getTextContent();
+							log.info("employeeSignature Value is: " + employeeSignature);
+
+							empDate = eElement.getElementsByTagName("empDate")
+							.item(0).getTextContent();
+							log.info("empDate Value is: " + empDate);
+
+							onCycle = eElement.getElementsByTagName("onCycle")
+							.item(0).getTextContent();
+							log.info("OnCycle Value is: " + onCycle);
+
+							offCycle = eElement.getElementsByTagName("offCycle")
+							.item(0).getTextContent();
+							log.info("offCycle Value is: " + offCycle);
+
+							currentMonthSalary = eElement.getElementsByTagName("currentMonthlySalary")
+							.item(0).getTextContent();
+							log.info("currentMonthSalary Value is: " + currentMonthSalary);
+
+							adjustedSalary = eElement.getElementsByTagName("adjustedSalary")
+							.item(0).getTextContent();
+							log.info("adjustedSalary Value is: " + adjustedSalary);
+			
+							dateDiscussed = eElement.getElementsByTagName("dateDiscussed")
+							.item(0).getTextContent();
+							log.info("dateDiscussed Value is: " + dateDiscussed);
+
+							payPlan10 = eElement.getElementsByTagName("payPlan10")
+							.item(0).getTextContent();
+							log.info("payPlan10 Value is: " + payPlan10);
 							
-							}
+							payPlan11 = eElement.getElementsByTagName("payPlan11")
+							.item(0).getTextContent();
+							log.info("payPlan11 Value is: " + payPlan11);
+
+							startDate = eElement.getElementsByTagName("startDate")
+							.item(0).getTextContent();
+							log.info("StartDate Value is: " + startDate);
+							
+							monthSal = eElement.getElementsByTagName("monthSal")
+							.item(0).getTextContent();
+							log.info("monthSal Value is: " + monthSal);
+							
+							daysToWork = eElement.getElementsByTagName("daystowork")
+							.item(0).getTextContent();
+							log.info("daystowork Value is: " + daysToWork);
+							
+							annualSalary = eElement.getElementsByTagName("annualSalary")
+							.item(0).getTextContent();
+							log.info("annualSalary Value is: " + annualSalary);
+
+							possibleWorkDays = eElement.getElementsByTagName("possibleworkdays")
+							.item(0).getTextContent();
+							log.info("possibleWorkDays Value is: " + possibleWorkDays);
+
+							monthSal1 = eElement.getElementsByTagName("monthSal1")
+							.item(0).getTextContent();
+							log.info("monthSal1 Value is: " + monthSal1);
+						
+							monthsToWork = eElement.getElementsByTagName("monthstowork")
+							.item(0).getTextContent();
+							log.info("monthsToWork Value is: " + monthsToWork);
+
+							projectedEarnedSalary = eElement.getElementsByTagName("projectedEarnedSalary")
+							.item(0).getTextContent();
+							log.info("projectedEarnedSalary Value is: " + projectedEarnedSalary);
+
+							annualSalary1 = eElement.getElementsByTagName("annualSalary1")
+							.item(0).getTextContent();
+							log.info("annualSalary1 Value is: " + annualSalary1);	
+							
+							projectedEarnedSalary1 = eElement.getElementsByTagName("projectedEarnedSalary1")
+							.item(0).getTextContent();
+							log.info("projectedEarnedSalary1 Value is: " + projectedEarnedSalary1);
+						
+							settlementAmount = eElement.getElementsByTagName("settlementAmount")
+							.item(0).getTextContent();
+							log.info("settlementAmount Value is: " + settlementAmount);
+
+							firstMonthOff = eElement.getElementsByTagName("firstMonthOff")
+							.item(0).getTextContent();
+							log.info("firstMonthOff Value is: " + firstMonthOff);
+
+							
+							secondMonthOff = eElement.getElementsByTagName("secondMonthOff")
+							.item(0).getTextContent();
+							log.info("secondMonthOff Value is: " + secondMonthOff);
+
+							approvalRecommendedYes = eElement.getElementsByTagName("approvalRecommendedYes")
+							.item(0).getTextContent();
+							log.info("approvalRecommendedYes Value is: " + approvalRecommendedYes);
+
+							appropriateAdminName = eElement.getElementsByTagName("appropriateAdminName")
+							.item(0).getTextContent();
+							log.info("appropriateAdminName Value is: " + appropriateAdminName);
+
+							date1 = eElement.getElementsByTagName("date1")
+							.item(0).getTextContent();
+							log.info("date1 Value is: " + date1);
+
+							approvedGrantedYes = eElement.getElementsByTagName("approvalGrantedYes")
+							.item(0).getTextContent();
+							log.info("approvalGrantedYes Value is: " + approvedGrantedYes);
+
+							vpSignature = eElement.getElementsByTagName("vpSignature")
+							.item(0).getTextContent();
+							log.info("vpSignature Value is: " + vpSignature);
+										
+							date2 = eElement.getElementsByTagName("date2")
+							.item(0).getTextContent();
+							log.info("date2 Value is: " + date2);
+												
+						}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
 
+
 					dataMap.put("EMPL_ID", empId);
-					dataMap.put("LAST_NAME", lastName);
-					dataMap.put("FIRST_NAME", firstName);
+					dataMap.put("FIRST_NAME", lastName);
+					dataMap.put("LAST_NAME", firstName);
 					dataMap.put("EMPL_RCD", empRCD);
 					dataMap.put("EXTENSION", extension);
 					dataMap.put("SCO_POSITION_NUMBER", scoPositionNumber);
 					dataMap.put("TIMEBASE", timeBase);
 					dataMap.put("STATUS_MENU", statusMenu);
 					dataMap.put("CBID", cbid);
-					dataMap.put("CLASSIFICATION", classification);
-					dataMap.put("GRADE", grade);
-					dataMap.put("CMS_POSITION_NUMBER", cmsPosition);
-					dataMap.put("DEPARTMENT_NAME", departmentName);
-					dataMap.put("DEPARTMENT_ID", departmentID);
-					dataMap.put("10_12or11_12_REQUEST", payPlan);
+					dataMap.put("CLASSIFICATIONS", classifications);
+					dataMap.put("GRADE", grade);					
+					dataMap.put("CMS_POSITION_NUMBER", cmsPositionNumber);
+					dataMap.put("DEPARTMENT_NAME", departmentName);					
+					dataMap.put("DEPARTMENT_ID", departmentID);	
+					dataMap.put("PAYPLAN_CHK", payPlanCHK);				
+
+					Object effectiveDateObj= null;
+					if(effectiveDate != null && effectiveDate != "") {
+						Date effectiveDateNew = Date.valueOf(effectiveDate);
+						effectiveDateObj = effectiveDateNew;
+					}
+					dataMap.put("EFFECTIVE_DATE", effectiveDateObj);
 					dataMap.put("PLAN_SELECTED", planSelected);
 					dataMap.put("NAME1", name1);
 					dataMap.put("MONTHOFF1", monthOff1);
-					dataMap.put("MONTHOFF2", monthOff2);
-					
-					Object empDateObj = null;
-					if (empDate != null && empDate != "") {
+					dataMap.put("MONTHOFF2", monthOff2);	
+					dataMap.put("EMPLOYEE_SIGNATURE", employeeSignature);
+
+					Object empDateObj= null;
+					if(empDate != null && empDate != "") {
 						Date empDateNew = Date.valueOf(empDate);
 						empDateObj = empDateNew;
 					}
 					dataMap.put("EMP_DATE", empDateObj);
+<<<<<<< HEAD
 					dataMap.put("ADMIN_SIGN", adminSign);
 					dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
 					dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName);
@@ -362,31 +429,62 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 
 					Object dateDiscussedObj = null;
 					if (dateDiscussed != null && dateDiscussed != "") {
+=======
+					dataMap.put("ON_CYCLE", onCycle);
+					dataMap.put("OFF_CYCLE", offCycle);
+					dataMap.put("CURRENT_MONTHLY_SALARY", currentMonthSalary);
+					dataMap.put("ADJUSTED_SALARY", adjustedSalary);
+
+					Object dateDiscussedObj= null;
+					if(dateDiscussed != null && dateDiscussed != "") {
+>>>>>>> 986669274a715be47dd5e805ec0e463380721f7e
 						Date dateDiscussedNew = Date.valueOf(dateDiscussed);
 						dateDiscussedObj = dateDiscussedNew;
 					}
 					dataMap.put("DATE_DISCUSSED", dateDiscussedObj);
+<<<<<<< HEAD
 					dataMap.put("PAYPLAN10", payPlan10);
+=======
+						dataMap.put("PAYPLAN10", payPlan10);
+>>>>>>> 986669274a715be47dd5e805ec0e463380721f7e
 					dataMap.put("PAYPLAN11", payPlan11);
-					
-					Object startDateObj = null;
-					if (startDate != null && startDate != "") {
-						Date startDateNew = Date.valueOf(startDate);
-						startDateObj = startDateNew;
+
+					Object dstartDateObj= null;
+					if(startDate != null && startDate != "") {
+						Date startDateNew = Date.valueOf(dateDiscussed);
+						dstartDateObj = startDateNew;
 					}
-					dataMap.put("START_DATE", startDateObj);
+					dataMap.put("START_DATE", dstartDateObj);
 					dataMap.put("MONTH_SAL", monthSal);
 					dataMap.put("DAYS_TO_WORK", daysToWork);
-					dataMap.put("POSSIBLE_WORK_DAYS", possibleWorkDays);
 					dataMap.put("ANNUAL_SALARY", annualSalary);
+					dataMap.put("POSSIBLE_WORK_DAYS", possibleWorkDays);
 					dataMap.put("MONTH_SAL1", monthSal1);
 					dataMap.put("MONTHS_TO_WORK", monthsToWork);
 					dataMap.put("PROJECTED_EARNED_SALARY", projectedEarnedSalary);
 					dataMap.put("ANNUAL_SALARY1", annualSalary1);
 					dataMap.put("PROJECTED_EARNED_SALARY1", projectedEarnedSalary1);
 					dataMap.put("SETTLEMENT_AMOUNT", settlementAmount);
-					dataMap.put("1ST_MONTH_OFF", MonthOff1st);
-					dataMap.put("2ND_MONTH_OFF", MonthOff2nd);
+					dataMap.put("FIRST_MONTH_OFF", firstMonthOff);
+					dataMap.put("SECOND_MONTH_OFF", secondMonthOff);
+					dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
+					dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName);
+
+					Object date1Obj= null;
+					if(date1 != null && date1 != "") {
+						Date date1New = Date.valueOf(date1);
+						date1Obj = date1New;
+					}
+					dataMap.put("DATE1", date1Obj);
+					dataMap.put("APPROVAL_GRANTED_YES", approvedGrantedYes);
+					dataMap.put("VP_SIGNATURE", vpSignature);
+
+					Object date2Obj= null;
+					if(date2 != null && date2 != "") {
+						Date date2New = Date.valueOf(date1);
+						date2Obj = date2New;
+					}
+					dataMap.put("DATE2", date2Obj);
 
 
 				} catch (SAXException e) {
@@ -411,7 +509,7 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 		conn = getConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
-			insertPayPlan10_12_11_12Data(conn, dataMap);
+			insertPayPlanData(conn, dataMap);
 		}
 	}
 
@@ -433,14 +531,13 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 			log.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
 		} /*
-		 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
-		 * (Exception exp) { exp.printStackTrace(); } }
-		 */
+			 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
+			 * (Exception exp) { exp.printStackTrace(); } }
+			 */
 		return null;
 	}
 
-	public void insertPayPlan10_12_11_12Data(Connection conn,
-			LinkedHashMap<String, Object> dataMap) {
+	public void insertPayPlanData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {
@@ -453,12 +550,12 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_10_12_11_12PayPlan";
-			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
-					tableName).append(" (");
+			String tableName = "AEM_PayPlan";
+			log.info("Table Name is: "+tableName);
+			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
+			log.info("THE SQL QUERY IS="+sql);
 			StringBuilder placeholders = new StringBuilder();
-			for (Iterator<String> iter = dataMap.keySet().iterator(); iter
-					.hasNext();) {
+			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {
 				sql.append(iter.next());
 				placeholders.append("?");
 				if (iter.hasNext()) {
@@ -497,6 +594,7 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 							preparedStmt.setString(++i, null);
 						}
 					}
+					log.info("The Vlaue is=" + value);
 				}
 			} catch (SQLException e) {
 				log.error("SQLException=" + e.getMessage());
@@ -535,5 +633,4 @@ public class PayPlan10_12_11_12DB implements WorkflowProcess{
 			}
 		}
 	}
-
 }
