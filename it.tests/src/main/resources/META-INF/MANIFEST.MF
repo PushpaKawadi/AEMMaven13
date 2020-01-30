@@ -1,13 +1,5 @@
 Manifest-Version: 1.0
-<<<<<<< HEAD
-Bnd-LastModified: 1580294967290
-=======
-<<<<<<< HEAD
-Bnd-LastModified: 1579840591766
-=======
-Bnd-LastModified: 1579582320335
->>>>>>> 986669274a715be47dd5e805ec0e463380721f7e
->>>>>>> 43d250f78880ae7889df81c27926d141e2aa913f
+Bnd-LastModified: 1580381572241
 Build-Jdk: 1.8.0_221
 Built-By: 105683
 Bundle-Description: Bundles for Integration Tests for AEMMaven13
