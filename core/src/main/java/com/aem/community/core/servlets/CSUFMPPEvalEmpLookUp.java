@@ -49,7 +49,7 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Servlet",
+		Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
 		"sling.servlet.paths=" + "/bin/getMppEmpLookup" })
 public class CSUFMPPEvalEmpLookUp extends SlingSafeMethodsServlet {
