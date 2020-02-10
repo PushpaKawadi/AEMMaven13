@@ -27,11 +27,11 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
@@ -39,7 +39,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.aem.community.util.ConfigManager;
+import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Support Doc4",
 		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=Read Support Doc4" })
@@ -47,6 +47,9 @@ public class ReadSupportDoc4 implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadSupportDoc4.class);
 
+	@Reference
+	private GlobalConfigService globalConfigService;
+	
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -64,6 +67,10 @@ public class ReadSupportDoc4 implements WorkflowProcess {
 		String termDescription = null;
 		String typeOfForm = null;
 		String WithdrawalType = null;
+		String mimeType =null;
+		String withdrawalDecision = "";
+		String instUID = "";
+		String chairUID ="";
 
 		// Node n = session.getNode(payloadPath);
 		// String xmlFilePath = payloadPath;
@@ -88,6 +95,19 @@ public class ReadSupportDoc4 implements WorkflowProcess {
 				while (attFiles4.hasNext()) {
 					Resource supDoc4 = attFiles4.next();
 					String attDoc4 = supDoc4.getPath().concat("/jcr:content");
+					String fileMimeType = supDoc4.getName();
+					if (fileMimeType.toLowerCase().endsWith(".jpg") || fileMimeType.toLowerCase().endsWith(".jpeg")) {
+						mimeType = "image/jpeg";
+					} else if (fileMimeType.toLowerCase().endsWith(".pdf")){
+						mimeType = "application/pdf";
+					}else if(fileMimeType.toLowerCase().endsWith(".png")){
+						mimeType = "image/png";
+					}else if(fileMimeType.toLowerCase().endsWith(".tiff")){
+						mimeType = "image/tiff";
+					}else {
+						mimeType = "application/pdf";
+					}
+					
 					Node subNode4 = resolver.getResource(attDoc4).adaptTo(Node.class);
 					try {
 						is = subNode4.getProperty("jcr:data").getBinary().getStream();
@@ -218,21 +238,62 @@ public class ReadSupportDoc4 implements WorkflowProcess {
 			}
 		}
 				
+//			if (filePath.contains(".pdf")) {
+//				//log.error("filePath ="+filePath);
+//				filePath = attachmentXml.getPath().concat("/jcr:content");
+//				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+//				//log.error("PDF Subnode="+subNode);
+//				try {
+//					is = subNode.getProperty("jcr:data").getBinary().getStream();
+//					try {
+//						log.error("PDF1="+is.available());
+//					} catch (IOException e1) {
+//						// TODO Auto-generated catch block
+//						e1.printStackTrace();
+//					}					try {
+//						byte[] bytes = IOUtils.toByteArray(is);
+//						String encoded = Base64.getEncoder().encodeToString(bytes);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//
+//				} catch (ValueFormatException e) {
+//					e.printStackTrace();
+//				} catch (PathNotFoundException e) {
+//					e.printStackTrace();
+//				} catch (RepositoryException e) {
+//					e.printStackTrace();
+//				} 
+//
+//			}
+			//String jsonString = "{" +"\"SupDoc1\": " + docEncoded1 + "," + "\"SupDoc2\": " + docEncoded2 + "}";
+			
+			//String jsonString = "{" +"\"SupDoc4\": " + docEncoded4 + "," + "\"lastName\": " + lastName + "," + "\"firstName\": " + firstName +"}";
+			
+//		String jsonString = "{" + "\"FirstName\": " + firstName + "," + "\"LastName\": " + lastName + ","
+//				+ "\"CWID\": " + studentID + "," + "\"CaseID\": " + caseID + "," + "\"Major\": " + major + ","
+//				+ "\"TermCode\": " + termCode + "," + "\"TermDescription\": " + termDescription + ","
+//				+ "\"Attachment\": " + docEncoded4 + "," + "\"AttachmentType\": " + "SupportingDocument" +  " \"AttachmentMimeType\": " + "application/pdf" +"}";
 		
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
+		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," +"\"withdrawalDecision\": \"" + withdrawalDecision + "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\","
 				+ "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
 				+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\","
-				+ "\"Attachment\": \"" + docEncoded4 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","+ "\"AttachmentMimeType\": " + "\"application/pdf\"" +","+ "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
+				+ "\"Attachment\": \"" + docEncoded4 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","+ "\"AttachmentMimeType\": \"" + mimeType +"\"," + "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
 		
 			
 		
 			if(docEncoded4 != null && lastName!=null && firstName != null){
-				log.error("Read doc4");
+				
 			URL url = null;
 			try {
-				String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getFilenetURL();
 				url = new URL(filenetUrl);
-				log.error(" URL=" + url);
+				//url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");								
+								
+				//url = new URL("http://erpicn521prd01.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
+				
+				//log.error(" URL=" + url);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

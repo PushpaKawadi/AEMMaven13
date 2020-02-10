@@ -9,7 +9,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Iterator;
-
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -21,30 +20,32 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.aem.community.util.ConfigManager;
+import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Course2", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=Save Course2" })
 public class ReadCourse2 implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadCourse2.class);
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -63,7 +64,10 @@ public class ReadCourse2 implements WorkflowProcess {
 		String termDescription = null;
 		String typeOfForm = null;
 		String WithdrawalType = null;
-		
+		String chairVal = null;
+		String withdrawalDecision = null;
+		String instUID = "";
+		String chairUID ="";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		//log.error("xmlFiles is " + xmlFiles);
@@ -73,7 +77,7 @@ public class ReadCourse2 implements WorkflowProcess {
 			String filePath = attachmentXml.getPath();
 
 
-			if (filePath.contains("Data.xml")) {
+			if (filePath.contains("Data2.xml")) {
 				
 
 				filePath = attachmentXml.getPath().concat("/jcr:content");
@@ -147,6 +151,24 @@ public class ReadCourse2 implements WorkflowProcess {
 						}else{
 							WithdrawalType = "Medical";
 						}
+						
+						org.w3c.dom.Node chairWithdrawlVal = (org.w3c.dom.Node) xpath.evaluate("//RecommendChair", doc,
+								XPathConstants.NODE);
+						chairVal = chairWithdrawlVal.getFirstChild().getNodeValue();
+
+						if (chairVal.equals("1")) {
+							withdrawalDecision = "Approval";
+						} else {
+							withdrawalDecision = "Denial";
+						}
+						
+						org.w3c.dom.Node instUIDVal = (org.w3c.dom.Node) xpath.evaluate("//InstructorUserID2", doc,
+								XPathConstants.NODE);
+						instUID = instUIDVal.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node chairUIDVal = (org.w3c.dom.Node) xpath.evaluate("//ChairUserID2", doc,
+								XPathConstants.NODE);
+						chairUID = chairUIDVal.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						log.error("XPathExpressionException in readcourse2=" + e.getMessage());
@@ -200,17 +222,20 @@ public class ReadCourse2 implements WorkflowProcess {
 				}
 			}
 		}
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
+		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"withdrawalDecision\": \"" + withdrawalDecision + "\","
 				+ "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
-				+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\","
+				+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\","
 				+ "\"Attachment\": \"" + encodedPDF + "\"," + "\"AttachmentType\": " + "\"FinalDOR\"" + ","+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","+ "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
 		
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read Course2");
 			URL url = null;
 			try {
-				String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getFilenetURL();
 				url = new URL(filenetUrl);
+				//url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
+												
+				//url = new URL("http://erpicn521prd01.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
 				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

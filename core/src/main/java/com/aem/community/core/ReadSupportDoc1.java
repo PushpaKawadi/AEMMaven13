@@ -27,11 +27,11 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
@@ -39,13 +39,17 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.aem.community.util.ConfigManager;
+import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Support Doc1",
 		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=Read Support Doc1" })
 public class ReadSupportDoc1 implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadSupportDoc1.class);
+	
+
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -67,6 +71,10 @@ public class ReadSupportDoc1 implements WorkflowProcess {
 		String termDescription = null;
 		String typeOfForm = null;
 		String WithdrawalType = null;
+		String mimeType= null;
+		String withdrawalDecision = "";
+		String instUID = "";
+		String chairUID ="";
 
 		String attachmentsPath = "attachments";
 		Resource xmlNode = resolver.getResource(payloadPath);
@@ -96,6 +104,21 @@ public class ReadSupportDoc1 implements WorkflowProcess {
 						//log.error("Mime Type =" + mimeType);
 
 						String attDoc1 = supDoc1.getPath().concat("/jcr:content");
+						
+						String fileMimeType = supDoc1.getName();
+						if (fileMimeType.toLowerCase().endsWith(".jpg") || fileMimeType.toLowerCase().endsWith(".jpeg")) {
+							mimeType = "image/jpeg";
+						} else if (fileMimeType.toLowerCase().endsWith(".pdf")){
+							mimeType = "application/pdf";
+						}else if(fileMimeType.toLowerCase().endsWith(".png")){
+							mimeType = "image/png";
+						}
+					   else if(fileMimeType.toLowerCase().endsWith(".tiff")){
+							mimeType = "image/tiff";
+						}else {
+							mimeType = "application/pdf";
+						}
+						
 						Node subNode1 = resolver.getResource(attDoc1).adaptTo(Node.class);
 
 						try {
@@ -230,24 +253,30 @@ public class ReadSupportDoc1 implements WorkflowProcess {
 //					+ "\"TermCode\": " + termCode + "," + "\"TermDescription\": " + termDescription + ","
 //					+ "\"Attachment\": " + docEncoded1 + "," + "\"AttachmentType\": " + "SupportingDocument" +  " \"AttachmentMimeType\": " + "application/pdf" +"}";
 			
-			String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
+			String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," +"\"withdrawalDecision\": \"" + withdrawalDecision + "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\","
 					+ "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
 					+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\","
-					+ "\"Attachment\": \"" + docEncoded1 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","+ "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
+					+ "\"Attachment\": \"" + docEncoded1 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","+ "\"AttachmentMimeType\": \"" + mimeType +"\"," + "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
 			
 
 //			String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
 //					+ "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
 //					+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\","
 //					+a "\"Attachment\": \"" + encodedPDF + "\"," + "\"AttachmentType\": " + "\"FinalDOR\"" + ","+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","+ "\"WithdrawalType\": \"" + WithdrawalType + "\"}";
-			
-			
+			 
 			
 			if (docEncoded1 != null && lastName != null && firstName != null) {
 				URL url = null;
 				try {
-					String filenetUrl = ConfigManager.getValue("filenetUrl");
+					
+					String filenetUrl = globalConfigService.getFilenetURL();
 					url = new URL(filenetUrl);
+					
+					
+					//url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
+										
+					//url = new URL("http://erpicn521prd01.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
+										
 				} catch (MalformedURLException e) {
 					e.printStackTrace();
 				}

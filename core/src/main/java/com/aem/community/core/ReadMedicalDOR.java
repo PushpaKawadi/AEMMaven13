@@ -9,7 +9,6 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
 import java.util.Iterator;
-
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -21,30 +20,32 @@ import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
-
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
-import com.aem.community.util.ConfigManager;
+import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Medical DOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=Save Medical DOR" })
 public class ReadMedicalDOR implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadMedicalDOR.class);
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -63,6 +64,10 @@ public class ReadMedicalDOR implements WorkflowProcess {
 		String termDescription = null;
 		String typeOfForm = null;
 		String WithdrawalType = null;
+		String medicalVal = null;
+		String withdrawalDecision = null;
+		String instUID = "";
+		String chairUID ="";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		
@@ -148,7 +153,17 @@ public class ReadMedicalDOR implements WorkflowProcess {
 						} else {
 							WithdrawalType = "Medical";
 						}
+						org.w3c.dom.Node chairWithdrawlVal = (org.w3c.dom.Node) xpath.evaluate("//RecommendMedical", doc,
+								XPathConstants.NODE);
+						medicalVal = chairWithdrawlVal.getFirstChild().getNodeValue();
 
+						if (medicalVal.equals("1")) {
+							withdrawalDecision = "Approval";
+						} else {
+							withdrawalDecision = "Denial";
+						}
+						
+						
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -193,9 +208,9 @@ public class ReadMedicalDOR implements WorkflowProcess {
 				}
 			}
 		}
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
+		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"withdrawalDecision\": \"" + withdrawalDecision + "\","
 				+ "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major
-				+ "\"," + "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\","
+				+ "\"," + "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \"" + termDescription + "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\","
 				+ "\"Attachment\": \"" + encodedPDF + "\"," + "\"AttachmentType\": " + "\"FinalDOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"WithdrawalType\": \"" + WithdrawalType+ "\"}";
 
@@ -204,8 +219,12 @@ public class ReadMedicalDOR implements WorkflowProcess {
 			log.info("Save Medical Pdf");
 			URL url = null;
 			try {
-				String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getFilenetURL();
 				url = new URL(filenetUrl);
+				//url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");												
+								
+				//url = new URL("http://erpicn521prd01.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments");
+				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -78,6 +79,8 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 		String medicalApprovalStatus = "";
 		String comments = "";
 		String medicalComments = "";
+		Timestamp stepCompleteTime = null;
+		Timestamp wfCompleteTime = null;
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -87,14 +90,16 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 					.substring(workflowID.lastIndexOf("/") + 1);
 
 			String contentPath = workItem.getContentPath();
-			java.util.Date workflowStartTime = workItem.getProgressBeginTime();
-			java.util.Date stepStartTime = workItem.getWorkflow()
-					.getTimeStarted();
-
+			//java.util.Date workflowStartTime = workItem.getProgressBeginTime();
+//			java.util.Date stepStartTime = workItem.getWorkflow()
+//					.getTimeStarted();
+			Timestamp workflowStartTime = new java.sql.Timestamp(workItem.getTimeStarted().getTime());
+			Timestamp stepStartTime = new java.sql.Timestamp(System.currentTimeMillis());
+			
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
-			java.util.Date stepCompleteTime = workItem.getWorkflow()
-					.getTimeEnded();
+//			java.util.Date stepCompleteTime = workItem.getWorkflow()
+//					.getTimeEnded();
 
 			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
 					.getMetaDataMap().entrySet()) {
@@ -225,6 +230,9 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 					stepType = "STEPSTART";
 					stepName = "ARSC Review";
 					currentAssignee = "ARSC-Reviewers";
+					stepCompleteTime = null;
+					workflowStartTime = null;
+					wfCompleteTime = null;
 				}
 				if (paramsValue.equalsIgnoreCase("After Admin Review")) {
 					stepType = "STEPEND";
@@ -236,12 +244,17 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = arscComments;
+					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					workflowStartTime = null;
+					wfCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 				}
 				if (paramsValue.equalsIgnoreCase("Before Medical Review")) {
 					stepType = "STEPSTART";
 					stepName = "Medical Review";
 					stepResponse = "Send To Medical Reviewers";
 					currentAssignee = "Medical-Reviewers";
+					stepCompleteTime = null;
+					wfCompleteTime = null;
 				}
 				if (paramsValue.equalsIgnoreCase("After Medical Review")) {
 					stepType = "STEPEND";
@@ -253,6 +266,9 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = medicalComments;
+					workflowStartTime = null;
+					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					wfCompleteTime = null;
 				}
 
 				dataMap = new LinkedHashMap<String, Object>();
@@ -260,12 +276,10 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("WORKFLOW_PAYLOAD", contentPath);
 				dataMap.put("CASE_ID", caseID);
 				dataMap.put("CWID", sID);
-				stepStartTime = null;
-				dataMap.put("WORKFLOW_START_TIME", stepStartTime);
+				dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
 				dataMap.put("STEP_START_TIME", stepStartTime);
 				dataMap.put("WORKFLOW_INITIATOR", workflowInitiator);
 				dataMap.put("ASSIGNEE", currentAssignee);
-				stepCompleteTime = null;
 				dataMap.put("STEP_COMPLETE_TIME", stepCompleteTime);
 				dataMap.put("STEP_TYPE", stepType);
 				dataMap.put("STEP_RESPONSE", stepResponse);
@@ -283,8 +297,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("CHAIR_NAME", null);
 				dataMap.put("APPROVAL_STATUS", approvalStatus);
 				dataMap.put("COMMENTS", comments);
-
-				// datamap.put("WORKFLOW_COMPLETE_TIME", stepEndTime);
+				dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 
 				conn = getConnection();
 				if (conn != null) {
@@ -334,6 +347,8 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				try {
 					if (value instanceof Date) {
 						preparedStmt.setDate(++i, (Date) value);
+					} else if(value instanceof Timestamp){
+						preparedStmt.setTimestamp(++i, (Timestamp) value);
 					} else if (value instanceof Integer) {
 						preparedStmt.setInt(++i, (Integer) value);
 					} else {
@@ -349,10 +364,11 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				}
 			}
 			try {
-				log.error("Before insert");
+				log.info("SQL statement="+preparedStmt);
+				log.info("Before insert workflow history");
 				preparedStmt.execute();
 				conn.commit();
-				log.error("End insert");
+				log.info("End insert workflow history");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();

@@ -6,9 +6,11 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -17,6 +19,7 @@ import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
@@ -26,6 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
@@ -39,7 +43,7 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Course1",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=WF History" })
+		"process.label" + "=WF Non Medical History" })
 public class SaveWFHistory implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
@@ -60,8 +64,8 @@ public class SaveWFHistory implements WorkflowProcess {
 		log.info("parameters1=" + parameters1);
 		String param1 = parameters1[0];
 		String param2 = parameters1[1];
-		log.error("Param1=" + param1);
-		log.error("Param12=" + param2);
+		log.info("Param1=" + param1);
+		log.info("Param12=" + param2);
 
 		String filename = param2.split("\\.")[0];
 		String extension = param2.split("\\.")[1];
@@ -101,36 +105,28 @@ public class SaveWFHistory implements WorkflowProcess {
 		String instComments = "";
 		String chairComments = "";
 		String comments = "";
+		Timestamp stepCompleteTime = null;
+		Timestamp wfCompleteTime = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		
-		
 		while (xmlFiles.hasNext()) {
 			String workflowID = workItem.getId();
 			String workID = workflowID
 					.substring(workflowID.lastIndexOf("/") + 1);
 
 			String contentPath = workItem.getContentPath();
-			java.util.Date workflowStartTime = workItem.getProgressBeginTime();
-			log.error("Pushpa Process begin="+workflowStartTime);
+			Timestamp workflowStartTime = new java.sql.Timestamp(workItem.getTimeStarted().getTime());
 			
 			java.util.Date timeStarted = workItem.getTimeStarted();
-			log.error("Pushpa timeStarted="+timeStarted);
-			
 			
 			java.util.Date stepStartTime = workItem.getWorkflow()
 					.getTimeStarted();
-			log.error("Pushpa stepStart="+workflowStartTime);
 			
-			java.sql.Date stepStartDate = new java.sql.Date(stepStartTime.getTime());
-			
+			Timestamp stepStartDate = new java.sql.Timestamp(System.currentTimeMillis());
 			
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
-			java.util.Date stepCompleteTime = workItem.getTimeEnded();
-			
-			log.error("Pushpa stepCompleteTime="+stepCompleteTime);
-			//java.sql.Date stepEndDate = new java.sql.Date(stepCompleteTime.getTime());
+		
 			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
 					.getMetaDataMap().entrySet()) {
 				if (entry.getKey().matches("actionTaken")) {
@@ -290,6 +286,8 @@ public class SaveWFHistory implements WorkflowProcess {
 					stepResponse = "Send To Instructor";
 					stepName = "Instructor Review";
 					currentAssignee = instUID;
+					stepCompleteTime = null;
+					wfCompleteTime = null;
 				}
 				if (param1.equalsIgnoreCase("After Instructor Review")) {
 					stepType = "STEPEND";
@@ -301,11 +299,17 @@ public class SaveWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = instComments;
+					workflowStartTime = null;
+					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					wfCompleteTime = null;
 				}
 				if (param1.equalsIgnoreCase("Before Chair Review")) {
 					stepType = "STEPSTART";
 					stepName = "Chair Review";
 					currentAssignee = chairUID;
+					workflowStartTime = null;
+					stepCompleteTime = null;
+					wfCompleteTime = null;
 				}
 				if (param1.equalsIgnoreCase("After Chair Review")) {
 					stepType = "STEPEND";
@@ -317,11 +321,17 @@ public class SaveWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = chairComments;
+					workflowStartTime = null;
+					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					wfCompleteTime = null;
 				}
 				if (param1.equalsIgnoreCase("Before Admin Review")) {
 					stepType = "STEPSTART";
 					stepName = "ARSC Review";
 					currentAssignee = "ARSC-Reviewers";
+					workflowStartTime = null;
+					stepCompleteTime = null;
+					wfCompleteTime = null;
 				}
 				if (param1.equalsIgnoreCase("After Admin Review")) {
 					stepType = "STEPEND";
@@ -333,23 +343,26 @@ public class SaveWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = arscComments;
+					workflowStartTime = null;
+					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					wfCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 				}
-
+				
 				dataMap = new LinkedHashMap<String, Object>();
 				dataMap.put("WORKFLOW_ID", workID);
 				dataMap.put("WORKFLOW_PAYLOAD", contentPath);
 				dataMap.put("CASE_ID", caseID);
 				dataMap.put("CWID", sID);
-				stepStartTime = null;
-				dataMap.put("WORKFLOW_START_TIME", stepStartTime);
+				//stepStartTime = null;
+				dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
 				dataMap.put("STEP_START_TIME", stepStartDate);
 				dataMap.put("WORKFLOW_INITIATOR", workflowInitiator);
 				dataMap.put("ASSIGNEE", currentAssignee);
-				stepCompleteTime = null;
+				//stepCompleteTime = null;
 				dataMap.put("STEP_COMPLETE_TIME", stepCompleteTime);
 				dataMap.put("STEP_TYPE", stepType);
 				dataMap.put("STEP_RESPONSE", stepResponse);
-				dataMap.put("STEP_NAME", stepName); // /
+				dataMap.put("STEP_NAME", stepName); 
 				dataMap.put("COURSE_NUMBER", course);
 				dataMap.put("INSTRUCTOR_NAME", instName);
 				dataMap.put("STUDENT_FIRST_NAME", firstName);
@@ -363,7 +376,7 @@ public class SaveWFHistory implements WorkflowProcess {
 				dataMap.put("CHAIR_NAME", chairName);
 				dataMap.put("APPROVAL_STATUS", approvalStatus);
 				dataMap.put("COMMENTS", comments);
-				// datamap.put("WORKFLOW_COMPLETE_TIME", stepEndTime);
+				dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 				conn = getConnection();
 				if (conn != null) {
 					log.info("Connection Successfull");
@@ -399,7 +412,7 @@ public class SaveWFHistory implements WorkflowProcess {
 				}
 			}
 			sql.append(") VALUES (").append(placeholders).append(")");
-			log.error("SQL=" + sql.toString());
+			log.info("SQL=" + sql.toString());
 			try {
 				preparedStmt = conn.prepareStatement(sql.toString());
 			} catch (SQLException e1) {
@@ -412,7 +425,9 @@ public class SaveWFHistory implements WorkflowProcess {
 				try {
 					if (value instanceof Date) {
 						preparedStmt.setDate(++i, (Date) value);
-					} else if (value instanceof Integer) {
+					}else if(value instanceof Timestamp){
+						preparedStmt.setTimestamp(++i, (Timestamp) value);
+					}else if (value instanceof Integer) {
 						preparedStmt.setInt(++i, (Integer) value);
 					} else {
 						if (value != "" && value != null) {
@@ -427,10 +442,11 @@ public class SaveWFHistory implements WorkflowProcess {
 				}
 			}
 			try {
-				log.error("Before insert workflow history");
+				log.info("SQL statement="+preparedStmt);
+				log.info("Before insert workflow history");
 				preparedStmt.execute();
 				conn.commit();
-				log.error("End insert workflow history");
+				log.info("End insert workflow history");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
