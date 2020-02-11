@@ -195,7 +195,7 @@ public class MppAdminDistributedFilenet implements WorkflowProcess {
 		// log.error("Rating="+rating);
 		// log.error("Json String:" + jsonString.toString());
 
-		// log.error("encodedPDF="+encodedPDF);
+		 log.error("MPP Admin Review encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read SPE2578");
 			URL url = null;
