@@ -27,6 +27,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -38,6 +39,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=MppPerfEvalDOR",
@@ -47,7 +49,8 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(MppPerfEvalFilenet.class);
-
+	@Reference
+	private GlobalConfigService globalConfigService;
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
@@ -113,7 +116,7 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 						empId = empIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpFirstNAme", doc,
+								.evaluate("//EmpFirstName", doc,
 										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
@@ -187,22 +190,20 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
 				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
-				+ empId + "\"," + "\"Rating\": \"" + rating + "\","
-				+ "\"AttachmentType\": " + "\"FinalSPEDOR\"" + ","
+				+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
+		
 		// log.error("Json String:" + jsonString.toString());
 
-		// log.error("encodedPDF="+encodedPDF);
+	
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPE2578");
+			log.info("Read MppPerfEvalDOR");
 			URL url = null;
 			try {
-				String filenetUrl = ConfigManager.getValue("filenetUrl");
+				//String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getFilenetURL();
+				
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
