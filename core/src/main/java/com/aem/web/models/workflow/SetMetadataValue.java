@@ -9,9 +9,9 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 
 @Component(property = { "service.description=Set Meatadata Value", "service.vendor=Adobe Systems",
-		"process.label=CSUF Set value of metadata" })
-public class CSUFSetMetadataValue implements WorkflowProcess {
-	private static final Logger log = LoggerFactory.getLogger(CSUFSetMetadataValue.class);
+		"process.label=Set value of metadata" })
+public class SetMetadataValue implements WorkflowProcess {
+	private static final Logger log = LoggerFactory.getLogger(SetMetadataValue.class);
 
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap args)
 			throws com.adobe.granite.workflow.WorkflowException {

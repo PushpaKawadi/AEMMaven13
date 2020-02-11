@@ -28,6 +28,7 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -39,7 +40,8 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 //import com.aem.community.util.ConfigManager;
-import com.aem.community.util.ConfigManager;
+import com.aem.community.core.services.GlobalConfigService;
+
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Staff Support Doc",
 		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=Read Staff Support Doc" })
@@ -47,7 +49,8 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(ReadStaffSupportDoc.class);
 	private String mimeType;
-
+	@Reference
+	private GlobalConfigService globalConfigService;
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -69,6 +72,9 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 		String termDescription = null;
 		String typeOfForm = null;
 		String WithdrawalType = null;
+		String withdrawalDecision = "";
+		String instUID = "";
+		String chairUID ="";
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 
@@ -203,22 +209,23 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 							// log.error("bytes="+bytes);
 							docEncoded1 = Base64.getEncoder().encodeToString(bytes);
 
-							String instructorJsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+							String instructorJsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"withdrawalDecision\": \"" + withdrawalDecision + "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\","
 									+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + studentID + "\","
 									+ "\"CaseID\": \"" + caseID + "\"," + "\"Major\": \"" + major + "\","
 									+ "\"TermCode\": \"" + termCode + "\"," + "\"TermDescription\": \""
 									+ termDescription + "\"," + "\"Attachment\": \"" + docEncoded1 + "\","
 									+ "\"AttachmentType\": " + "\"SupportingDocument\"" + ","
-									+ "\"AttachmentMimeType\": " + instructorMimeType + "," + "\"WithdrawalType\": \""
-									+ WithdrawalType + "\"}";
+									+ "\"AttachmentMimeType\": \"" + instructorMimeType  + "\"," + "\"WithdrawalType\": \""
+									+ WithdrawalType + "\"}"; 
 
 							if (docEncoded1 != null && lastName != null && firstName != null) {
 								log.error("Read Instructor doc");
 								URL url = null;
 								try {
-									String filenetUrl = ConfigManager.getValue("filenetUrl");
+									String filenetUrl = globalConfigService.getFilenetURL();
 									url = new URL(filenetUrl);
-									//log.info("instructorJsonString=" + instructorJsonString);
+									
+									log.info("instructorJsonString=" + instructorJsonString);
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}
@@ -320,20 +327,21 @@ public class ReadStaffSupportDoc implements WorkflowProcess {
 							docEncoded2 = Base64.getEncoder().encodeToString(bytes);
 
 							String chairJsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \""
-									+ lastName + "\"," + "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID
+									+ lastName +  "\"," + "\"chairUID\": \"" + chairUID + "\"," + "\"instUID\": \"" + instUID + "\"," + "\"withdrawalDecision\": \"" + withdrawalDecision + "\"," + "\"CWID\": \"" + studentID + "\"," + "\"CaseID\": \"" + caseID
 									+ "\"," + "\"Major\": \"" + major + "\"," + "\"TermCode\": \"" + termCode + "\","
 									+ "\"TermDescription\": \"" + termDescription + "\"," + "\"Attachment\": \""
 									+ docEncoded2 + "\"," + "\"AttachmentType\": " + "\"SupportingDocument\"" + ","
-									+ "\"AttachmentMimeType\": " + chairMimeType + "," + "\"WithdrawalType\": \""
+									+ "\"AttachmentMimeType\": \""  + chairMimeType + "\"," + "\"WithdrawalType\": \""
 									+ WithdrawalType + "\"}";
 
 							if (docEncoded2 != null && lastName != null && firstName != null) {
 								log.error("Read Chair doc");
 								URL url = null;
 								try {
-									String filenetUrl = ConfigManager.getValue("filenetUrl");
+									String filenetUrl = globalConfigService.getFilenetURL();
 									url = new URL(filenetUrl);
-									//log.info("chairJsonString=" + chairJsonString);
+									
+									log.info("chairJsonString=" + chairJsonString);
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}
