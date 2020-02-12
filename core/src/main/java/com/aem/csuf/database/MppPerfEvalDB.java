@@ -35,21 +35,18 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=MPP Save in DB",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=MPP Save in DB", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=MppPerfEvalDB" })
 public class MppPerfEvalDB implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(MppPerfEvalDB.class);
+	private static final Logger log = LoggerFactory.getLogger(MppPerfEvalDB.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
 		Connection conn = null;
 
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -70,51 +67,23 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String athleticsEmp = "";
 		String evaluatorsName = "";
 		String evalCB = "";
-
 		String evalSign = "";
 		String evalComments = "";
 		String empCB = "";
 		String empSign = "";
-
 		String adminCB = "";
 		String adminSign = "";
-
 		String hrComments = "";
 		String hrCB = "";
 		String initials = "";
 		String hrDate = "";
 		String adminReview = "";
 		String commentsOthers = "";
-		String conceptualSkills1 = "";
-		String conceptualSkills2 = "";
-		String conceptualSkills3 = "";
-		String conceptualSkills4 = "";
-		String conceptualSkills5 = "";
-		String conceptualSkills6 = "";
-		String interPersonalSkills1 = "";
-		String interPersonalSkills2 = "";
-		String interPersonalSkills3 = "";
-		String interPersonalSkills4 = "";
-		String interPersonalSkills5 = "";
-		String interPersonalSkills6 = "";
-		String technicalSkills1 = "";
-		String technicalSkills2 = "";
-		String technicalSkills3 = "";
-		String technicalSkills4 = "";
-		String technicalSkills5 = "";
-		String technicalSkills6 = "";
-		String others1 = "";
-		String others2 = "";
-		String others3 = "";
-		String others4 = "";
-		String others5 = "";
-		String others6 = "";
-		String overallPerformance1 = "";
-		String overallPerformance2 = "";
-		String overallPerformance3 = "";
-		String overallPerformance4 = "";
-		String overallPerformance5 = "";
-		String overallPerformance6 = "";
+		String conceptualSkills = "";
+		String interPersonalSkills = "";
+		String technicalSkills = "";
+		String others = "";
+		String overallPerformance = "";
 		String overallRating = "";
 		String sectionBComments = "";
 		String evalName = "";
@@ -135,6 +104,12 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String supportStmt2 = "";
 		String supportStmt3 = "";
 		String supportStmt4 = "";
+		String hrCoordinatorSign = "";
+		String hrCoordinatorSignDate = "";
+		String hrCoordinatorSignComment = "";
+		String associateSign = "";
+		String associateDate = "";
+		String associateComment = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -152,11 +127,9 @@ public class MppPerfEvalDB implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -169,8 +142,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -184,239 +156,77 @@ public class MppPerfEvalDB implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					org.w3c.dom.NodeList nList = doc
-							.getElementsByTagName("afBoundData");
+					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
 					for (int temp = 0; temp < nList.getLength(); temp++) {
 						org.w3c.dom.Node nNode = nList.item(temp);
 
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							initials = eElement
-									.getElementsByTagName("Initials").item(0)
+							initials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
+							hrDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
+							empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
+							lastName = eElement.getElementsByTagName("EmpLastName").item(0).getTextContent();
+							firstName = eElement.getElementsByTagName("EmpFirstName").item(0).getTextContent();
+							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
+							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
+							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
+							departmentID = eElement.getElementsByTagName("DeptID").item(0).getTextContent();
+							departmentName = eElement.getElementsByTagName("DeptName").item(0).getTextContent();
+							range = eElement.getElementsByTagName("Range").item(0).getTextContent();
+							evaluatorsName = eElement.getElementsByTagName("EvaluatorName").item(0).getTextContent();
+							evaluationType = eElement.getElementsByTagName("EvaluationType").item(0).getTextContent();
+							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
-							hrDate = eElement.getElementsByTagName("HRDate")
-									.item(0).getTextContent();
-							hrComments = eElement
-									.getElementsByTagName("HRComment").item(0)
+							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
+							adminReview = eElement.getElementsByTagName("AdminReview").item(0).getTextContent();
+							athleticsEmp = eElement.getElementsByTagName("AthleticEmp").item(0).getTextContent();
+							commentsOthers = eElement.getElementsByTagName("OtherRating").item(0).getTextContent();
+							conceptualSkills = eElement.getElementsByTagName("ConceptualSkill").item(0)
 									.getTextContent();
-							empId = eElement.getElementsByTagName("EmpID")
-									.item(0).getTextContent();
-							lastName = eElement
-									.getElementsByTagName("EmpLastName")
-									.item(0).getTextContent();
-							firstName = eElement
-									.getElementsByTagName("EmpFirstNAme")
-									.item(0).getTextContent();
-							empRCD = eElement.getElementsByTagName("EmpRCD")
-									.item(0).getTextContent();
-							cbid = eElement.getElementsByTagName("CBID")
-									.item(0).getTextContent();
-							classification = eElement
-									.getElementsByTagName("Classification")
-									.item(0).getTextContent();
-							departmentID = eElement
-									.getElementsByTagName("DeptID").item(0)
+							interPersonalSkills = eElement.getElementsByTagName("InterpersonalSkills").item(0)
 									.getTextContent();
-							departmentName = eElement
-									.getElementsByTagName("DeptName").item(0)
+							technicalSkills = eElement.getElementsByTagName("TechnicalSkills").item(0).getTextContent();
+							others = eElement.getElementsByTagName("OtherSkills").item(0).getTextContent();
+							overallPerformance = eElement.getElementsByTagName("OverallPerformance").item(0)
 									.getTextContent();
-							range = eElement.getElementsByTagName("Range")
-									.item(0).getTextContent();
-							evaluatorsName = eElement
-									.getElementsByTagName("EvaluatorName")
-									.item(0).getTextContent();
-							evaluationType = eElement
-									.getElementsByTagName("EvaluationType")
-									.item(0).getTextContent();
-							ratingPeriodFrom = eElement
-									.getElementsByTagName("ReviewPeriodFrom")
-									.item(0).getTextContent();
-							ratingPeriodTo = eElement
-									.getElementsByTagName("ReviewPeriodTo")
-									.item(0).getTextContent();
-							adminReview = eElement
-									.getElementsByTagName("AdminReview")
-									.item(0).getTextContent();
-							athleticsEmp = eElement
-									.getElementsByTagName("AthleticEmp")
-									.item(0).getTextContent();
-
-							commentsOthers = eElement
-									.getElementsByTagName("CommentsOthers")
-									.item(0).getTextContent();
-							conceptualSkills1 = eElement
-									.getElementsByTagName("CS1").item(0)
+							overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
+							sectionBComments = eElement.getElementsByTagName("SectionB").item(0).getTextContent();
+							evalName = eElement.getElementsByTagName("EvaluatorNameSign").item(0).getTextContent();
+							evalSign = eElement.getElementsByTagName("EvaluatorSign").item(0).getTextContent();
+							evalDate = eElement.getElementsByTagName("EvaluatorDate").item(0).getTextContent();
+							evalComments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+							evalCB = eElement.getElementsByTagName("EvalCB").item(0).getTextContent();
+							adminName = eElement.getElementsByTagName("AdminName").item(0).getTextContent();
+							adminSign = eElement.getElementsByTagName("AdminSign").item(0).getTextContent();
+							adminDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
+							adminComment = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
+							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
+							vpName = eElement.getElementsByTagName("VPName").item(0).getTextContent();
+							vpSign = eElement.getElementsByTagName("VPSign").item(0).getTextContent();
+							vpDate = eElement.getElementsByTagName("VPDate").item(0).getTextContent();
+							vpComment = eElement.getElementsByTagName("VPComment").item(0).getTextContent();
+							vpCB = eElement.getElementsByTagName("VPCB").item(0).getTextContent();
+							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
+							empDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
+							empComments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
+							atCritical = eElement.getElementsByTagName("AthleticEmpImpToPos").item(0).getTextContent();
+							atOptions = eElement.getElementsByTagName("AthleticsEmpRating").item(0).getTextContent();
+							supportStmt1 = eElement.getElementsByTagName("SupportStatement1").item(0).getTextContent();
+							supportStmt2 = eElement.getElementsByTagName("SupportStatement2").item(0).getTextContent();
+							supportStmt3 = eElement.getElementsByTagName("SupportStatement3").item(0).getTextContent();
+							supportStmt4 = eElement.getElementsByTagName("SupportStatement4").item(0).getTextContent();
+							hrCoordinatorSign = eElement.getElementsByTagName("HRCoordinatorSign").item(0)
 									.getTextContent();
-							conceptualSkills2 = eElement
-									.getElementsByTagName("CS2").item(0)
+							hrCoordinatorSignDate = eElement.getElementsByTagName("HRCoordinatorSignDate").item(0)
 									.getTextContent();
-							conceptualSkills3 = eElement
-									.getElementsByTagName("CS3").item(0)
+							hrCoordinatorSignComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
 									.getTextContent();
-							conceptualSkills4 = eElement
-									.getElementsByTagName("CS4").item(0)
+							associateSign = eElement.getElementsByTagName("AssociateSign").item(0).getTextContent();
+							associateDate = eElement.getElementsByTagName("AssociateDate").item(0).getTextContent();
+							associateComment = eElement.getElementsByTagName("AssociateComment").item(0)
 									.getTextContent();
-							conceptualSkills5 = eElement
-									.getElementsByTagName("CS5").item(0)
-									.getTextContent();
-							conceptualSkills6 = eElement
-									.getElementsByTagName("CS6").item(0)
-									.getTextContent();
-
-							interPersonalSkills1 = eElement
-									.getElementsByTagName("IS1").item(0)
-									.getTextContent();
-							interPersonalSkills2 = eElement
-									.getElementsByTagName("IS2").item(0)
-									.getTextContent();
-							interPersonalSkills3 = eElement
-									.getElementsByTagName("IS3").item(0)
-									.getTextContent();
-							interPersonalSkills4 = eElement
-									.getElementsByTagName("IS4").item(0)
-									.getTextContent();
-							interPersonalSkills5 = eElement
-									.getElementsByTagName("IS5").item(0)
-									.getTextContent();
-							interPersonalSkills6 = eElement
-									.getElementsByTagName("IS6").item(0)
-									.getTextContent();
-
-							technicalSkills1 = eElement
-									.getElementsByTagName("TS1").item(0)
-									.getTextContent();
-							technicalSkills2 = eElement
-									.getElementsByTagName("TS2").item(0)
-									.getTextContent();
-							technicalSkills3 = eElement
-									.getElementsByTagName("TS3").item(0)
-									.getTextContent();
-							technicalSkills4 = eElement
-									.getElementsByTagName("TS4").item(0)
-									.getTextContent();
-							technicalSkills5 = eElement
-									.getElementsByTagName("TS5").item(0)
-									.getTextContent();
-							technicalSkills6 = eElement
-									.getElementsByTagName("TS6").item(0)
-									.getTextContent();
-
-							others1 = eElement.getElementsByTagName("others1")
-									.item(0).getTextContent();
-							others2 = eElement.getElementsByTagName("others2")
-									.item(0).getTextContent();
-							others3 = eElement.getElementsByTagName("others3")
-									.item(0).getTextContent();
-							others4 = eElement.getElementsByTagName("others4")
-									.item(0).getTextContent();
-							others5 = eElement.getElementsByTagName("others5")
-									.item(0).getTextContent();
-							others6 = eElement.getElementsByTagName("others6")
-									.item(0).getTextContent();
-
-							overallPerformance1 = eElement
-									.getElementsByTagName("OP1").item(0)
-									.getTextContent();
-							overallPerformance2 = eElement
-									.getElementsByTagName("OP2").item(0)
-									.getTextContent();
-							overallPerformance3 = eElement
-									.getElementsByTagName("OP3").item(0)
-									.getTextContent();
-							overallPerformance4 = eElement
-									.getElementsByTagName("OP4").item(0)
-									.getTextContent();
-							overallPerformance5 = eElement
-									.getElementsByTagName("OP5").item(0)
-									.getTextContent();
-							overallPerformance6 = eElement
-									.getElementsByTagName("OP6").item(0)
-									.getTextContent();
-
-							overallRating = eElement
-									.getElementsByTagName("OverallRating")
-									.item(0).getTextContent();
-							sectionBComments = eElement
-									.getElementsByTagName("SectionB").item(0)
-									.getTextContent();
-
-							evalName = eElement
-									.getElementsByTagName("EvaluatorNameSign")
-									.item(0).getTextContent();
-
-							evalSign = eElement
-									.getElementsByTagName("EvaluatorSign")
-									.item(0).getTextContent();
-
-							evalDate = eElement
-									.getElementsByTagName("EvaluatorDate")
-									.item(0).getTextContent();
-							evalComments = eElement
-									.getElementsByTagName("EvaluatorComment")
-									.item(0).getTextContent();
-							evalCB = eElement.getElementsByTagName("EvalCB")
-									.item(0).getTextContent();
-
-							adminName = eElement
-									.getElementsByTagName("AdminName").item(0)
-									.getTextContent();
-							adminSign = eElement
-									.getElementsByTagName("AdminSign").item(0)
-									.getTextContent();
-							adminDate = eElement
-									.getElementsByTagName("AdminDate").item(0)
-									.getTextContent();
-							adminComment = eElement
-									.getElementsByTagName("AdminComment")
-									.item(0).getTextContent();
-							adminCB = eElement.getElementsByTagName("AdminCB")
-									.item(0).getTextContent();
-
-							vpName = eElement.getElementsByTagName("VPName")
-									.item(0).getTextContent();
-							vpSign = eElement.getElementsByTagName("VPSign")
-									.item(0).getTextContent();
-							vpDate = eElement.getElementsByTagName("VPDate")
-									.item(0).getTextContent();
-							vpComment = eElement
-									.getElementsByTagName("VPComment").item(0)
-									.getTextContent();
-							vpCB = eElement.getElementsByTagName("VPCB")
-									.item(0).getTextContent();
-
-							empSign = eElement.getElementsByTagName("EmpSign")
-									.item(0).getTextContent();
-							empDate = eElement.getElementsByTagName("EmpDate")
-									.item(0).getTextContent();
-
-							empComments = eElement
-									.getElementsByTagName("EmpComment").item(0)
-									.getTextContent();
-							empCB = eElement.getElementsByTagName("EmpCB")
-									.item(0).getTextContent();
-
-							atCritical = eElement
-									.getElementsByTagName("AtCritical").item(0)
-									.getTextContent();
-
-							atOptions = eElement
-									.getElementsByTagName("AtOptions").item(0)
-									.getTextContent();
-
-							supportStmt1 = eElement
-									.getElementsByTagName("SupportDoc1")
-									.item(0).getTextContent();
-							supportStmt2 = eElement
-									.getElementsByTagName("SupportDoc2")
-									.item(0).getTextContent();
-							supportStmt3 = eElement
-									.getElementsByTagName("SupportDoc3")
-									.item(0).getTextContent();
-							supportStmt4 = eElement
-									.getElementsByTagName("SupportDoc4")
-									.item(0).getTextContent();
-
 						}
 					}
 
@@ -431,75 +241,36 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("DEPTNAME", departmentName);
 					dataMap.put("RANGE", range);
 					dataMap.put("DEPTID", departmentID);
-
-					dataMap.put("REVIEWPERIODFROM",
-							Date.valueOf(ratingPeriodFrom));
+					dataMap.put("REVIEWPERIODFROM", Date.valueOf(ratingPeriodFrom));
 					dataMap.put("REVIEWPERIODTO", Date.valueOf(ratingPeriodTo));
 					dataMap.put("EVALUATORNAME", evaluatorsName);
 					dataMap.put("EVALUATIONTYPE", evaluationType);
 					dataMap.put("ADMINREVIEW", adminReview);
 					dataMap.put("ATHLETICEMP", athleticsEmp);
-					dataMap.put("COMMENTSOTHERS", commentsOthers);
-
-					dataMap.put("CONCEPTUALSKILLS1", conceptualSkills1);
-					dataMap.put("CONCEPTUALSKILLS2", conceptualSkills2);
-					dataMap.put("CONCEPTUALSKILLS3", conceptualSkills3);
-					dataMap.put("CONCEPTUALSKILLS4", conceptualSkills4);
-					dataMap.put("CONCEPTUALSKILLS5", conceptualSkills5);
-					dataMap.put("CONCEPTUALSKILLS6", conceptualSkills6);
-
-					dataMap.put("INTERPERSONALSKILLS1", interPersonalSkills1);
-					dataMap.put("INTERPERSONALSKILLS2", interPersonalSkills2);
-					dataMap.put("INTERPERSONALSKILLS3", interPersonalSkills3);
-					dataMap.put("INTERPERSONALSKILLS4", interPersonalSkills4);
-					dataMap.put("INTERPERSONALSKILLS5", interPersonalSkills5);
-					dataMap.put("INTERPERSONALSKILLS6", interPersonalSkills6);
-
-					dataMap.put("TECHNICALSKILLS1", technicalSkills1);
-					dataMap.put("TECHNICALSKILLS2", technicalSkills2);
-					dataMap.put("TECHNICALSKILLS3", technicalSkills3);
-					dataMap.put("TECHNICALSKILLS4", technicalSkills4);
-					dataMap.put("TECHNICALSKILLS5", technicalSkills5);
-					dataMap.put("TECHNICALSKILLS6", technicalSkills6);
-
-					dataMap.put("OTHERS1", others1);
-					dataMap.put("OTHERS2", others2);
-					dataMap.put("OTHERS3", others3);
-					dataMap.put("OTHERS4", others4);
-					dataMap.put("OTHERS5", others5);
-					dataMap.put("OTHERS6", others6);
-
-					dataMap.put("OVERALL_PERFORMANCE1", overallPerformance1);
-					dataMap.put("OVERALL_PERFORMANCE2", overallPerformance2);
-					dataMap.put("OVERALL_PERFORMANCE3", overallPerformance3);
-					dataMap.put("OVERALL_PERFORMANCE4", overallPerformance4);
-
-					dataMap.put("OVERALL_PERFORMANCE5", overallPerformance5);
-					dataMap.put("OVERALL_PERFORMANCE6", overallPerformance6);
-
+					dataMap.put("OTHER_RATING", commentsOthers);
+					dataMap.put("CONCEPTUALSKILLS", conceptualSkills);
+					dataMap.put("INTERPERSONALSKILLS", interPersonalSkills);
+					dataMap.put("TECHNICALSKILLS", technicalSkills);
+					dataMap.put("OTHERS", others);
+					dataMap.put("OVERALL_PERFORMANCE", overallPerformance);
 					dataMap.put("OVERALLRATING", overallRating);
 					dataMap.put("SECTIONBCOMMENTS", sectionBComments);
-
-					dataMap.put("ATCRITICAL", atCritical);
-					dataMap.put("ATOPTIONS", atOptions);
-
+					dataMap.put("ATHLETICEMP_IMP_TO_POS", atCritical);
+					dataMap.put("ATHLETICEMPRATING", atOptions);
 					dataMap.put("SUPPORTSTMT1", supportStmt1);
 					dataMap.put("SUPPORTSTMT2", supportStmt2);
 					dataMap.put("SUPPORTSTMT3", supportStmt3);
 					dataMap.put("SUPPORTSTMT4", supportStmt4);
-
 					dataMap.put("EVALUATORNAMESIGN", evalName);
 					dataMap.put("EVALUATORSIGN", evalSign);
 					dataMap.put("EVALUATORDATE", Date.valueOf(evalDate));
 					dataMap.put("EVALUATORCOMMENT", evalComments);
 					dataMap.put("EVALCB", evalCB);
-
 					dataMap.put("ADMINNAME", adminName);
 					dataMap.put("ADMINSIGN", adminSign);
 					dataMap.put("ADMINDATE", Date.valueOf(adminDate));
 					dataMap.put("ADMINCOMMENT", adminComment);
 					dataMap.put("ADMINCB", adminCB);
-
 					dataMap.put("VPNAME", vpName);
 					dataMap.put("VPSIGN", vpSign);
 
@@ -512,18 +283,37 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("VPDATE", vpDateObj);
 					dataMap.put("VPCOMMENT", vpComment);
 					dataMap.put("VPCB", vpCB);
-
+					dataMap.put("ASSOCIATESIGN", associateSign);
+					Object associateDateObj = null;
+					if (associateDate != null && associateDate != "") {
+						Date associateDateNew = Date.valueOf(associateDate);
+						associateDateObj = associateDateNew;
+					}
+					dataMap.put("ASSOCIATEDATE", associateDateObj);
+					dataMap.put("ASSOCIATECOMMENT", associateComment);
+					dataMap.put("HRCOOSIGN", hrCoordinatorSign);
+					Object hrCooDateObj = null;
+					if (hrCoordinatorSignDate != null && hrCoordinatorSignDate != "") {
+						Date hrCooDateNew = Date.valueOf(hrCoordinatorSignDate);
+						hrCooDateObj = hrCooDateNew;
+					}
+					dataMap.put("HRCOODATE", hrCooDateObj);
+					dataMap.put("HRCOOCOMMENT", hrCoordinatorSignComment);
 					dataMap.put("EMPSIGN", empSign);
 					dataMap.put("EMPDATE", empDate);
 					dataMap.put("EMPCOMMENT", empComments);
 					dataMap.put("EMPCB", empCB);
-
-					dataMap.put("HRDate", Date.valueOf(hrDate));
+					Object hrDateObj = null;
+					if (hrDate != null && hrDate != "") {
+						Date hrDateNew = Date.valueOf(hrDate);
+						hrDateObj = hrDateNew;
+					}
+					dataMap.put("HRDATE", hrDateObj);
 					dataMap.put("INITIALS", initials);
 					dataMap.put("HRCOMMENT", hrComments);
 					dataMap.put("HRCB", hrCB);
 
-					log.error("Here111");
+					log.error("put complete");
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
@@ -568,15 +358,15 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		} catch (Exception e) {
 			log.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
-		} /*
+		}
+		/*
 		 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
 		 * (Exception exp) { exp.printStackTrace(); } }
 		 */
 		return null;
 	}
 
-	public void insertSPEData(Connection conn,
-			LinkedHashMap<String, Object> dataMap) {
+	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {
@@ -589,12 +379,10 @@ public class MppPerfEvalDB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_MPP_PERF_EVAL";
-			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
-					tableName).append(" (");
+			String tableName = "AEM_MPP_PERFORMANCE_EVAL";
+			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
-			for (Iterator<String> iter = dataMap.keySet().iterator(); iter
-					.hasNext();) {
+			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {
 				sql.append(iter.next());
 				placeholders.append("?");
 				if (iter.hasNext()) {
