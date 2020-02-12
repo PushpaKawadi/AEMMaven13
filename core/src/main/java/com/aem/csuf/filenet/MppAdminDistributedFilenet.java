@@ -40,19 +40,19 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=MppAdminEvalDOR",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=MppAdminEvalDOR" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=careerDevelopmentPlanFileNet1", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=MppAdminReviewDistributedDOR" })
 public class MppAdminDistributedFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(MppAdminDistributedFilenet.class);
+	private static final Logger log = LoggerFactory.getLogger(MppAdminDistributedFilenet.class);
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession,
-			MetaDataMap processArguments) throws WorkflowException {
-		ResourceResolver resolver = workflowSession
-				.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
+			throws WorkflowException {
+
+                log.info("MPP Admin Review Distributed FileNet");
+
+		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -60,25 +60,28 @@ public class MppAdminDistributedFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		String rating = null;
+		String departmentName = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-
+		// Get the payload path and iterate the path to find Data.xml, Use
+		// Document
+		// factory to parse the xml and fetch the required values for the
+		// filenet
+		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
+			log.info("filePath====== " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				log.info("xmlFiles=======" + filePath);
+
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -91,41 +94,37 @@ public class MppAdminDistributedFilenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
-							.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
 					} catch (ParserConfigurationException e1) {
-						log.info("ParserConfigurationException=" + e1);
+						log.info("ParserConfigurationException=====" + e1);
 						e1.printStackTrace();
 					}
 					try {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
-						log.info("IOException=" + e1);
+						log.info("IOException======" + e1);
 						e1.printStackTrace();
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpID", doc, XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
+								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpFirstNAme", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpFirstNAme", doc,
+								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpLastName", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpLastName", doc,
+								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						/*org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//HrOverallRate", doc,
-										XPathConstants.NODE);
-						rating = ratingNode.getFirstChild().getNodeValue();*/
+						org.w3c.dom.Node emplRCD = (org.w3c.dom.Node) xpath.evaluate("//DeptName", doc,
+								XPathConstants.NODE);
+                        departmentName = emplRCD.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -138,23 +137,23 @@ public class MppAdminDistributedFilenet implements WorkflowProcess {
 					} catch (IOException e) {
 						e.printStackTrace();
 					}
+
 				}
+
 			}
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("MPP_Admin_Distributed.pdf")) {
-				log.info("filePath =" + filePath);
+			if (filePath.contains("MPP_Admin_Review_Distributed.pdf")) {
+				log.info("filePath ======" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
+					is = subNode.getProperty("jcr:data").getBinary().getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
+						log.info("encodedPDF===="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -183,21 +182,19 @@ public class MppAdminDistributedFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
-				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
-				+ empId + "\"," + "\"Rating\": \"" + rating + "\","
-				+ "\"AttachmentType\": " + "\"FinalSPEDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
+		String jsonString = "{" + "\"EmpFirstNAme\": \"" + firstName + "\"," + "\"EmpLastName\": \"" + lastName + "\","
+				+ "\"EmpID\": \"" + empId + "\"," + "\"DeptName\": \"" + departmentName + "\"," + "\"AttachmentType\": "
+				+ "\"MPPAdminReviewDistributedDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		// log.error("Json String:" + jsonString.toString());
+		log.error("lastName="+lastName);
+		log.error("firstName="+firstName);
+		log.error("empId="+empId);
+		log.error("EMPL_RCD="+departmentName);
+		log.error("Json String:" + jsonString.toString());
 
-		 log.error("MPP Admin Review encodedPDF="+encodedPDF);
+		log.error("MPP Admin Review Distributed encodedPDF===="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPE2578");
+			log.info("MPP Admin Review Distributed");
 			URL url = null;
 			try {
 				String filenetUrl = ConfigManager.getValue("filenetUrl");
