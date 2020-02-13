@@ -72,17 +72,13 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 		String evalSign = "";
 		String evalDate = "";
 		String evalName = "";
-		String evalCB = "";
 		String assessmentSelection = "";
 		String adminName = "";
 		String adminSign = "";
 		String adminDate = "";
-		String adminCB = "";
 		String vpName = "";
 		String vpSign = "";
 		String vpDate = "";
-		String vpCB = "";
-		String hrCB = "";
 		String initials = "";
 		String hrDate = "";
 		LinkedHashMap<String, Object> dataMap = null;
@@ -202,8 +198,6 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 							evalDate = eElement
 									.getElementsByTagName("EvaluatorDate")
 									.item(0).getTextContent();
-							evalCB = eElement.getElementsByTagName("EvalCB")
-									.item(0).getTextContent();
 
 							adminName = eElement
 									.getElementsByTagName("AdminName").item(0)
@@ -215,9 +209,6 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 									.getElementsByTagName("AdminDate").item(0)
 									.getTextContent();
 
-							adminCB = eElement.getElementsByTagName("AdminCB")
-									.item(0).getTextContent();
-
 							vpName = eElement.getElementsByTagName("VPName")
 									.item(0).getTextContent();
 							vpSign = eElement.getElementsByTagName("VPSign")
@@ -225,11 +216,6 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 							vpDate = eElement.getElementsByTagName("VPDate")
 									.item(0).getTextContent();
 
-							vpCB = eElement.getElementsByTagName("VPCB")
-									.item(0).getTextContent();
-
-							hrCB = eElement.getElementsByTagName("HRCB")
-									.item(0).getTextContent();
 							initials = eElement
 									.getElementsByTagName("Initials").item(0)
 									.getTextContent();
@@ -262,12 +248,11 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 					dataMap.put("EVALUATOR_NAME", evalName);
 					dataMap.put("EVALUATOR_SIGN", evalSign);
 					dataMap.put("EVALUATOR_DATE", Date.valueOf(evalDate));
-					dataMap.put("EVALCB", evalCB);
+					
 
 					dataMap.put("ADMIN_NAME", adminName);
 					dataMap.put("ADMIN_SIGN", adminSign);
-					dataMap.put("ADMIN_DATE", Date.valueOf(adminDate));
-					dataMap.put("ADMINCB", adminCB);
+					dataMap.put("ADMIN_DATE", Date.valueOf(adminDate));					
 
 					dataMap.put("VPNAME", vpName);
 					dataMap.put("VPSIGN", vpSign);
@@ -277,11 +262,9 @@ public class MppAdminDistributedDB implements WorkflowProcess {
 						Date vpDateNew = Date.valueOf(vpDate);
 						vpDateObj = vpDateNew;
 					}
-					dataMap.put("VPDATE", vpDateObj);
-					dataMap.put("VPCB", vpCB);
+					dataMap.put("VPDATE", vpDateObj);				
 					dataMap.put("HR_DATE", Date.valueOf(hrDate));
-					dataMap.put("INITIALS", initials);
-					dataMap.put("HRCB", hrCB);
+					dataMap.put("INITIALS", initials);					
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());

@@ -13,7 +13,6 @@ import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.mail.Email;
 import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.SimpleEmail;
@@ -57,12 +56,12 @@ public class Email_Approve implements WorkflowProcess {
 	String cwid = null;
 	String studentFName = null;
     String sudentLName = null;
-    String sectionNumber = null;
+    String classSectionNumber = null;
     String instEmailAdd = null;
     String instName = null;
     String chairEmailAdd = null;
     String courseName = null;
-    String classSection = null;
+    
 	
 
 	public void execute(WorkItem item, WorkflowSession wfsession, MetaDataMap args) throws WorkflowException {
@@ -131,10 +130,11 @@ public class Email_Approve implements WorkflowProcess {
 	
 							if (nNode1.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 						
-								org.w3c.dom.Element eElement1 = (org.w3c.dom.Element) nNode1;	
+								org.w3c.dom.Element eElement1 = (org.w3c.dom.Element) nNode1;
+								log.info("Before ClassSectionNumber");
 								
-                             //sectionNumber = eElement1.getElementsByTagName("classNumberList").item(0).getTextContent();
-								//classSection = eElement1.getElementsByTagName("classSectionList").item(0).getTextContent();
+								classSectionNumber = eElement1.getElementsByTagName("classSectionList").item(0).getTextContent();
+								log.info("Before ClassSectionNumber value is:="+classSectionNumber);
 							}
 						}
 
@@ -157,7 +157,8 @@ public class Email_Approve implements WorkflowProcess {
 								String indexValue = String.valueOf(index);
 								String checkBoxValue = eElement.getElementsByTagName("CB".concat(indexValue)).item(0)
 										.getTextContent();
-								if (StringUtils.isNotBlank(checkBoxValue) && checkBoxValue.equals("1")) {
+								
+								if ((null != checkBoxValue) && checkBoxValue.length()>0 && checkBoxValue.equals("1")) {
 									log.info("**********CHECKBOX - ".concat(indexValue).concat("**********"));
 
 									instEmailAdd = eElement
@@ -180,13 +181,13 @@ public class Email_Approve implements WorkflowProcess {
                                             .getTextContent();
                                             log.info("Course No:="+courseName);
 
-                                    classSection = eElement
+                                    classSectionNumber = eElement
                                             .getElementsByTagName("sectionNumber".concat(indexValue)).item(0)
                                             .getTextContent();  
-                                            log.info("Section No:="+classSection);      
+                                            log.info("Class Section Number:="+classSectionNumber);      
 
 									try {
-										sendEmail(instEmailAdd, instName, chairEmailAdd, courseName, classSection);
+										sendEmail(instEmailAdd, instName, chairEmailAdd, courseName, classSectionNumber);
 									} catch (EmailException e) {
 										log.info("Exception from CheckBox : ".concat(indexValue) + e);
 										e.printStackTrace();
@@ -214,7 +215,7 @@ public class Email_Approve implements WorkflowProcess {
 		}
 	}
 
-	public void sendEmail(String instructorEmail, String instName, String chairEmail, String CourseName, String sectionNumber) throws EmailException {
+	public void sendEmail(String instructorEmail, String instName, String chairEmail, String CourseName, String classSectionNumber) throws EmailException {
 
 		try {
 			
@@ -252,9 +253,9 @@ public class Email_Approve implements WorkflowProcess {
 					+ "The student below has requested to be withdrawn from your course(s) due to medical reasons.  "
 					+ "This request has been approved and the student has been withdrawn from the course(s). </br>"
 					+ "</br>" + "CWID: " + cwid + "</br>" + "Name: " + studentFName + " " + sudentLName + "</br>"
-					+ "Course Name: " + courseName + "</br> Section Number: "+classSection + "</br>" + "</br>" + "</br>"
+					+ "Course Name: " + courseName + "</br> Section Number: "+classSectionNumber + "</br>" + "</br>" + "</br>"
 					+ "Should you have any questions, please contact Enrollment Services at (657)-278-5202." + "</br>"
-					+ "</br> Sincerely, </br>" + "Registration and Records" + "</html>";
+					+ "</br> Sincerely, </br>" + "Office of Registration and Records" + "</html>";
 
 			email.setContent(Approve, "text/html");
 
