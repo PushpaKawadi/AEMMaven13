@@ -10,5 +10,5 @@ public interface GlobalConfigService {
 	String getFilenetURL();
 	String getDbFrmMgrProd();
 	String getDbDocMgrProd();
-
+	String getDbAemDev();
 }

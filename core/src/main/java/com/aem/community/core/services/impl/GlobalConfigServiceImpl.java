@@ -20,7 +20,7 @@ import com.aem.community.core.services.GlobalConfigService;
 
 
 @Component(service = GlobalConfigService.class, immediate = true, configurationPolicy = ConfigurationPolicy.REQUIRE, property = {
-		Constants.SERVICE_DESCRIPTION + "=Global Config Service", "filenet_URL=", "db_Frm_Mgr_Prod=",
+		Constants.SERVICE_DESCRIPTION + "=Global Config Service", "filenet_URL=", "db_Frm_Mgr_Prod=","db_Aem_Dev=",
 		"db_Doc_Mgr_Prod=" })
 @Designate(ocd = GlobalConfig.class)
 public class GlobalConfigServiceImpl implements GlobalConfigService {
@@ -83,5 +83,10 @@ public class GlobalConfigServiceImpl implements GlobalConfigService {
 	@Override
 	public String getDbDocMgrProd() {		
 		return config.db_Doc_Mgr_Prod();
+	}
+	
+	@Override
+	public String getDbAemDev() {		
+		return config.db_Aem_Dev();
 	}
 }

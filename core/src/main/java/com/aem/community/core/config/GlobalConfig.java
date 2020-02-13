@@ -14,4 +14,7 @@ public @interface GlobalConfig {
 	
 	@AttributeDefinition(name = "dbDocMgrProd", description = "Student Database Name", type = AttributeType.STRING, defaultValue = "docmgrprod")
 	String db_Doc_Mgr_Prod();
+	
+	@AttributeDefinition(name = "dbAemDev", description = "AEM Dev DB", type = AttributeType.STRING, defaultValue = "AEMDBDEV")
+	String db_Aem_Dev();
 }
