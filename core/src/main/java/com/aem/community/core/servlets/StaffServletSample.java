@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -34,6 +36,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import com.aem.community.core.services.JDBCConnectionHelperService;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -49,6 +53,9 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class StaffServletSample extends SlingSafeMethodsServlet {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	@Override
 	protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse response)
@@ -57,7 +64,7 @@ public class StaffServletSample extends SlingSafeMethodsServlet {
 		Connection conn = null;
 		Statement oStatement = null;
 		// conn = DriverManager.getConnection(dbUrl, dbUserName, dbPassword);
-		conn = getConnection();
+		conn = jdbcConnectionService.getFrmDBConnection();
 		logger.info("Focus="+conn);
 		if (conn != null) {
 

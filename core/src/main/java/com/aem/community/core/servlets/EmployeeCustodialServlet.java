@@ -36,6 +36,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import com.aem.community.core.services.JDBCConnectionHelperService;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -52,6 +54,9 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class EmployeeCustodialServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory.getLogger(EmployeeCustodialServlet.class);
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
@@ -65,7 +70,7 @@ public class EmployeeCustodialServlet extends SlingSafeMethodsServlet {
 			cwid = req.getParameter("cwid");
 			logger.info("userid =" + userID);
 			logger.info("EmpID =" + cwid);
-			conn = getConnection();
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {

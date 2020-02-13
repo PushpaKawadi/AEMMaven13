@@ -31,9 +31,12 @@ import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.GlobalConfigService;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 
 /**
@@ -48,6 +51,9 @@ import com.aem.community.util.ConfigManager;
 public class UserManager extends SlingSafeMethodsServlet {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private GlobalConfigService globalService;
 
 	@Override
 	protected void doGet(final SlingHttpServletRequest req, final SlingHttpServletResponse response)
@@ -68,6 +74,7 @@ public class UserManager extends SlingSafeMethodsServlet {
 		JSONObject userDetails = new JSONObject();
 		ResourceResolver resolver = request.getResourceResolver();
 		Session session = resolver.adaptTo(Session.class);
+		//Session session = globalService.getAdminSession();
 		String userId = session.getUserID();
 		//logger.info("userDetails=" + userId);
 		userDetails.put("userId", userId);

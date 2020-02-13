@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -34,6 +36,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -54,6 +57,9 @@ public class CSUFReviewerUserId extends SlingSafeMethodsServlet {
 			.getLogger(CSUFReviewerUserId.class);
 	private static final long serialVersionUID = 1L;
 
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+	
 	public void doGet(SlingHttpServletRequest req,
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
@@ -62,7 +68,7 @@ public class CSUFReviewerUserId extends SlingSafeMethodsServlet {
 		JSONObject emplEvalDetails = null;
 		if (req.getParameter("name") != null && req.getParameter("name") != "") {
 			name = req.getParameter("name");
-			conn = getConnection();
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {

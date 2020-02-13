@@ -5,9 +5,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -21,6 +23,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -37,21 +40,25 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class AppointmentChangeRequestSelfUserLookUpServlet extends SlingSafeMethodsServlet {
     private final static Logger logger = LoggerFactory.getLogger(AppointmentChangeRequestSelfUserLookUpServlet.class);
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
-		Connection conn = null;
+		Connection dbConn = null;
 		String userID = "";
 		JSONArray appointmentChangeRequestDetails = null;
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
-			conn = getConnection();
+			dbConn = jdbcConnectionService.getFrmDBConnection();
+			logger.info("dbConn==========="+dbConn);
 		}
 
-		if (conn != null) {
+		if (dbConn != null) {
 			try {
-				logger.info("Connection Success=" + conn);
-				appointmentChangeRequestDetails = getAppointmentChangeRequestDetails(userID, conn, "appointmentChangeRequest");
+				logger.info("Connection Success=" + dbConn);
+				appointmentChangeRequestDetails = getAppointmentChangeRequestDetails(userID, dbConn, "appointmentChangeRequest");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -115,35 +122,6 @@ public class AppointmentChangeRequestSelfUserLookUpServlet extends SlingSafeMeth
 		}
 
 		return jArray;
-	}
-
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
 	}
 
 }

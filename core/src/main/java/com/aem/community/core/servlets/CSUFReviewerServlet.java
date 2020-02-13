@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -57,6 +58,9 @@ public class CSUFReviewerServlet extends SlingSafeMethodsServlet {
 			.getLogger(CSUFReviewerServlet.class);
 	private static final long serialVersionUID = 1L;
 
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+	
 	public void doGet(SlingHttpServletRequest req,
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
@@ -66,7 +70,7 @@ public class CSUFReviewerServlet extends SlingSafeMethodsServlet {
 		if (req.getParameter("lastName") != null
 				&& req.getParameter("lastName") != "") {
 			lastName = req.getParameter("lastName");
-			conn = getConnection();
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {

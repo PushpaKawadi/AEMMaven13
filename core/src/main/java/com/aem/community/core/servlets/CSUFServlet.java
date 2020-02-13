@@ -36,6 +36,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+import com.aem.community.core.services.JDBCConnectionHelperService;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -51,21 +53,16 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class CSUFServlet extends SlingSafeMethodsServlet {
 	private final Logger logger = LoggerFactory.getLogger(getClass());
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
 		Statement oStatement = null;
-		conn = getConnection();
-		// String cwid="";
-		// if(req.getParameter("cwid") != null && req.getParameter("cwid") != ""){
-		// cwid = req.getParameter("cwid");
-		// logger.info("cwid ="+cwid);
-		// }
-		// cwid = req.getParameter("cwid");
-		// logger.info("cwid outdis="+cwid);
-
-		logger.info("Focus CSUF=" + conn);
+		conn = jdbcConnectionService.getFrmDBConnection();
+		
 		if (conn != null) {
 			logger.info("Connection Successfull=" + conn);
 			ResultSet oRresultSet = null;

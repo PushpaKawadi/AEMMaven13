@@ -19,9 +19,11 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -35,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -51,6 +54,9 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory.getLogger(CSUFUserLookUpServlet.class);
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
@@ -59,7 +65,7 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
-			conn = getConnection();
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {

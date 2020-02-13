@@ -37,6 +37,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -53,11 +54,13 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory.getLogger(CSUFVisionLifeLtd.class);
 	private static final long serialVersionUID = 1L;
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-		String dataSourceName = ConfigManager.getValue("dbFrmMgrProd");
 
 		String ssn = "";
 
@@ -68,7 +71,7 @@ public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 
 			logger.info("ssn =" + ssn);
 
-			conn = getConnection();
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
