@@ -27,10 +27,12 @@ import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
@@ -38,11 +40,15 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=DonationDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCataLeaveDonationFilenet" })
 public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalFilenet.class);
 
@@ -194,7 +200,7 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 			log.info("Read Catastrophic ");
 			URL url = null;
 			try {
-				String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
