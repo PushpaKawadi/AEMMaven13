@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE Save in DB", Constants.SERVICE_VENDOR + "=Adobe Systems",
@@ -40,6 +41,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class CSUFSPE2579DB implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPE2579DB.class);
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+	
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -664,7 +669,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 
 			}
 		}
-		conn = getConnection();
+		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertSPEData(conn, dataMap);

@@ -8,6 +8,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
@@ -16,6 +17,7 @@ import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.osgi.framework.Constants;
@@ -25,11 +27,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = {
@@ -37,6 +41,9 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCertificateEligibilityDB" })
 public class CSUFCertificateOfEligibilityDB implements WorkflowProcess {
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	private static final Logger log = LoggerFactory
 			.getLogger(CSUFCertificateOfEligibilityDB.class);
@@ -366,7 +373,7 @@ public class CSUFCertificateOfEligibilityDB implements WorkflowProcess {
 
 			}
 		}
-		conn = getConnection();
+		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertCataLeaveDonationData(conn, dataMap);

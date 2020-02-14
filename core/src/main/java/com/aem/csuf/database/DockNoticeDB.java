@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Dock Notice DB",
@@ -42,6 +43,9 @@ public class DockNoticeDB implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(DockNoticeDB.class);
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -74,7 +78,7 @@ public class DockNoticeDB implements WorkflowProcess {
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		conn = getConnection();
+		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			while (xmlFiles.hasNext()) {
 				Resource attachmentXml = xmlFiles.next();

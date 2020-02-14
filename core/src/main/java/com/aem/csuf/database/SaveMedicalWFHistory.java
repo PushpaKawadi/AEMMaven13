@@ -35,6 +35,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Course1",
@@ -44,6 +45,9 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SaveMedicalWFHistory.class);
+	
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -299,7 +303,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("COMMENTS", comments);
 				dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 
-				conn = getConnection();
+				conn = jdbcConnectionService.getAemDEVDBConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
 					insertWFHistory(conn, dataMap);
