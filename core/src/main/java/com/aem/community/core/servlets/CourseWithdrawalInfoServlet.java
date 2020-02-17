@@ -202,6 +202,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 				courseInfo.put("CRSE_ID", oRresultSet.getString("CRSE_ID"));
 				courseInfo.put("INSTR_USERID", oRresultSet.getString("INSTR_USERID"));
 				courseInfo.put("INSTR_EMAIL", oRresultSet.getString("INSTR_EMAIL"));
+				courseInfo.put("CLASS_SECTION", oRresultSet.getString("CLASS_SECTION"));
 				//courseInfo.put("INSTR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				//courseInfo.put("INSTR_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
 				
