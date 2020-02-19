@@ -34,8 +34,8 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 public class ReadMetadataMap implements WorkflowProcess {
 	private static final Logger log = LoggerFactory.getLogger(ReadMetadataMap.class);
 
-	public ReadMetadataMap() {
-	}
+//	public ReadMetadataMap() {
+//	}
 
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap arg2)
 			throws com.adobe.granite.workflow.WorkflowException {
@@ -44,18 +44,16 @@ public class ReadMetadataMap implements WorkflowProcess {
 		log.info("Start of Read Metadata Value and Set Element in XML");
 		log.info("The string I got was ..." + ((String) arg2.get("PROCESS_ARGS", "string")).toString());
 		String params = ((String) arg2.get("PROCESS_ARGS", "string")).toString();
-
+		
 		String[] parameters = params.split(",");
 		String nodeName = parameters[0];
 		String keyObtained = parameters[1];
-		String value = "";
+		String value = "false";
 		String valStr = "";
 		for (Map.Entry<String, Object> entry : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
 			if (entry.getKey().matches(keyObtained)) {
 				valStr = entry.getValue().toString();
 				value = valStr;
-			}else {
-				value = "Agree";
 			}
 		}		
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
