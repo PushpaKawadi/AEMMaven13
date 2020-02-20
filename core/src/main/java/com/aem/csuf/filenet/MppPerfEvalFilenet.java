@@ -42,15 +42,14 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=MppPerfEvalDOR",
-		Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=MppPerfEvalDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=MppPerfEvalDOR" })
 public class MppPerfEvalFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory
-			.getLogger(MppPerfEvalFilenet.class);
+	private static final Logger log = LoggerFactory.getLogger(MppPerfEvalFilenet.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
+
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
@@ -63,7 +62,14 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		String rating = null;
+		String cbid = null;
+		String deptId = null;
+		String overallRating = null;
+		String evaluationType = null;
+		String empUserId = null;
+		String managerUserId = null;
+		String hrCoordId = null;
+		String administratorId = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -124,11 +130,44 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 								.evaluate("//EmpLastName", doc,
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
+											
+						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath
+								.evaluate("//CBID", doc, XPathConstants.NODE);
+						cbid = cbidNode.getFirstChild().getNodeValue();
 
-						/*org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//HrOverallRate", doc,
+						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//DeptID", doc,
 										XPathConstants.NODE);
-						rating = ratingNode.getFirstChild().getNodeValue();*/
+						deptId = deptIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
+								.evaluate("//OverallRating", doc,
+										XPathConstants.NODE);
+						overallRating = overallRatingNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EvaluationType", doc, XPathConstants.NODE);
+						evaluationType = evaluationTypeNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpUserID", doc,
+										XPathConstants.NODE);
+						empUserId = empUserIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//ManagerUserID", doc,
+										XPathConstants.NODE);
+						managerUserId = managerUserIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node hrCoordIdNode = (org.w3c.dom.Node) xpath
+						.evaluate("//HrCoordId", doc,
+								XPathConstants.NODE);
+						hrCoordId = hrCoordIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node administratorIdNode = (org.w3c.dom.Node) xpath
+						.evaluate("//AdminUserID", doc,
+								XPathConstants.NODE);
+						administratorId = administratorIdNode.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -184,17 +223,14 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 				}
 			}
 		}
+		
 
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
-				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
-				+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
+		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"EncodedPDF\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPE\"" + ","  + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 		
-		// log.error("Json String:" + jsonString.toString());
+		 log.error("Json String:" + jsonString.toString());
 
 	
 		if (encodedPDF != null && lastName != null && firstName != null) {
