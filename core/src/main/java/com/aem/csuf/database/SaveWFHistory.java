@@ -35,6 +35,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.adobe.granite.workflow.model.WorkflowModel;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 /**
@@ -56,9 +57,16 @@ public class SaveWFHistory implements WorkflowProcess {
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
+		
+		////////////
+		
+//	    WorkflowSession graniteWorkflowSession = request.getResourceResolver().adaptTo(WorkflowSession.class);
+//	            WorkItem[] workItems = graniteWorkflowSession.getActiveWorkItems();
+	            ///////////
 		Connection conn = null;
 		ResourceResolver resolver = workflowSession
 				.adaptTo(ResourceResolver.class);
+		
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 
 		String paramsValue = ((String) processArguments.get("PROCESS_ARGS",
@@ -113,15 +121,43 @@ public class SaveWFHistory implements WorkflowProcess {
 		Timestamp wfCompleteTime = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		while (xmlFiles.hasNext()) {
-			String workflowID = workItem.getId();
-			String workID = workflowID
-					.substring(workflowID.lastIndexOf("/") + 1);
+		String wfInstanceID = workItem.getWorkflow().getId(); // Workflow instance id
+		log.error("Test1 wfInstanceID =="+wfInstanceID);
+		String workflowID = workItem.getId(); // workitem id
+		log.error("Test2 workflowID=="+workflowID);
+		
+		String wId = workflowID.replace("VolatileWorkItem_", "/workItems/");
+		String workItemID = "";
+		log.error("Test3 wId=="+wId);
+		if (param1.equalsIgnoreCase("Before Instructor Review")|| param1.equalsIgnoreCase("Before Chair Review") || param1.equalsIgnoreCase("Before Admin Review")) {
+			log.error("param1 before step="+param1);
+			String firstStr = wId.substring(0, wId.indexOf('_'));
+			String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
+			String t1 = firstStr.replaceAll("[^0-9]+", "");
+			int a1 = Integer.parseInt(t1);
+			a1++; // Process step is one step behind the Assign task, so increment it.
+			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
+			workItemID = wfInstanceID.concat(firstStr).concat("_").concat(secString);
+			log.error("Test4 workItemID=="+workItemID);
+		}
+		
+		if (param1.equalsIgnoreCase("After Instructor Review") || param1.equalsIgnoreCase("After Chair Review") || param1.equalsIgnoreCase("After Admin Review")) {
+			log.error("param1 after step="+param1);
+			String firstStr = wId.substring(0, wId.indexOf('_'));
+			String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
+			String t1 = firstStr.replaceAll("[^0-9]+", "");
+			int a1 = Integer.parseInt(t1);
+			a1--;// Process step is one step ahead the Assign task, so decrement it.
+			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
+			workItemID = wfInstanceID.concat(firstStr).concat("_").concat(secString);
+			log.error("Test4 workItemID=="+workItemID);
+		}
+		
 
+		while (xmlFiles.hasNext()) {
+			
 			String contentPath = workItem.getContentPath();
 			Timestamp workflowStartTime = new java.sql.Timestamp(workItem.getTimeStarted().getTime());
-			
-			java.util.Date timeStarted = workItem.getTimeStarted();
 			
 			java.util.Date stepStartTime = workItem.getWorkflow()
 					.getTimeStarted();
@@ -131,12 +167,12 @@ public class SaveWFHistory implements WorkflowProcess {
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
 		
-			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
-					.getMetaDataMap().entrySet()) {
-				if (entry.getKey().matches("actionTaken")) {
-					stepResponse = entry.getValue().toString();
-				}
-			}
+//			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
+//					.getMetaDataMap().entrySet()) {
+//				if (entry.getKey().matches("actionTaken")) {
+//					stepResponse = entry.getValue().toString();
+//				}
+//			}
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
@@ -353,16 +389,15 @@ public class SaveWFHistory implements WorkflowProcess {
 				}
 				
 				dataMap = new LinkedHashMap<String, Object>();
-				dataMap.put("WORKFLOW_ID", workID);
+				dataMap.put("WORKITEM_ID", workItemID);
 				dataMap.put("WORKFLOW_PAYLOAD", contentPath);
 				dataMap.put("CASE_ID", caseID);
 				dataMap.put("CWID", sID);
 				//stepStartTime = null;
-				dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
+				//dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
 				dataMap.put("STEP_START_TIME", stepStartDate);
 				dataMap.put("WORKFLOW_INITIATOR", workflowInitiator);
 				dataMap.put("ASSIGNEE", currentAssignee);
-				//stepCompleteTime = null;
 				dataMap.put("STEP_COMPLETE_TIME", stepCompleteTime);
 				dataMap.put("STEP_TYPE", stepType);
 				dataMap.put("STEP_RESPONSE", stepResponse);
@@ -380,8 +415,10 @@ public class SaveWFHistory implements WorkflowProcess {
 				dataMap.put("CHAIR_NAME", chairName);
 				dataMap.put("APPROVAL_STATUS", approvalStatus);
 				dataMap.put("COMMENTS", comments);
-				dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
-				conn = jdbcConnectionService.getAemDEVDBConnection();
+				dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
+				//dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
+				//conn = jdbcConnectionService.getAemDEVDBConnection();
+				conn = getConnection();
 				if (conn != null) {
 					log.info("Connection Successfull");
 					insertWFHistory(conn, dataMap);

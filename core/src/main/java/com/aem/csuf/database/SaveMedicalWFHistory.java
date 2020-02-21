@@ -53,6 +53,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
 		Connection conn = null;
+		
 		ResourceResolver resolver = workflowSession
 				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
@@ -276,11 +277,11 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				}
 
 				dataMap = new LinkedHashMap<String, Object>();
-				dataMap.put("WORKFLOW_ID", workID);
+				dataMap.put("WORKITEM_ID", workID);
 				dataMap.put("WORKFLOW_PAYLOAD", contentPath);
 				dataMap.put("CASE_ID", caseID);
 				dataMap.put("CWID", sID);
-				dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
+				//dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
 				dataMap.put("STEP_START_TIME", stepStartTime);
 				dataMap.put("WORKFLOW_INITIATOR", workflowInitiator);
 				dataMap.put("ASSIGNEE", currentAssignee);
@@ -301,9 +302,10 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("CHAIR_NAME", null);
 				dataMap.put("APPROVAL_STATUS", approvalStatus);
 				dataMap.put("COMMENTS", comments);
-				dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
+				//dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 
-				conn = jdbcConnectionService.getAemDEVDBConnection();
+				//conn = jdbcConnectionService.getAemDEVDBConnection();
+				conn = getConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
 					insertWFHistory(conn, dataMap);
