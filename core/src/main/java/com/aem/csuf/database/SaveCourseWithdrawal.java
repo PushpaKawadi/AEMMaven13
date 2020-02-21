@@ -207,6 +207,10 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
+		
+		String wfInstanceID = workItem.getWorkflow().getId(); // Workflow instance id
+		log.error("Test1 wfInstanceID =="+wfInstanceID);
+		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -851,6 +855,7 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 						studDateObj = stuDate;
 					}
 					dataMap.put("STUDENT_SIGN_DATE", studDateObj);
+					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 					
 				} catch (SAXException e) {
 					e.printStackTrace();
@@ -862,7 +867,8 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 					}
 
 				}
-				conn = jdbcConnectionService.getAemDEVDBConnection();
+				//conn = jdbcConnectionService.getAemDEVDBConnection();
+				conn = getConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
 					insertStudentData(conn, dataMap);

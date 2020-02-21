@@ -58,11 +58,6 @@ public class SaveWFHistory implements WorkflowProcess {
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
 		
-		////////////
-		
-//	    WorkflowSession graniteWorkflowSession = request.getResourceResolver().adaptTo(WorkflowSession.class);
-//	            WorkItem[] workItems = graniteWorkflowSession.getActiveWorkItems();
-	            ///////////
 		Connection conn = null;
 		ResourceResolver resolver = workflowSession
 				.adaptTo(ResourceResolver.class);
@@ -122,15 +117,15 @@ public class SaveWFHistory implements WorkflowProcess {
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		String wfInstanceID = workItem.getWorkflow().getId(); // Workflow instance id
-		log.error("Test1 wfInstanceID =="+wfInstanceID);
+		log.info("Workflow InstanceID =="+wfInstanceID);
 		String workflowID = workItem.getId(); // workitem id
-		log.error("Test2 workflowID=="+workflowID);
+		log.info("WorkflowID=="+workflowID);
 		
 		String wId = workflowID.replace("VolatileWorkItem_", "/workItems/");
 		String workItemID = "";
-		log.error("Test3 wId=="+wId);
+		log.info("WorkItem Id=="+wId);
 		if (param1.equalsIgnoreCase("Before Instructor Review")|| param1.equalsIgnoreCase("Before Chair Review") || param1.equalsIgnoreCase("Before Admin Review")) {
-			log.error("param1 before step="+param1);
+			log.info("param1 before step="+param1);
 			String firstStr = wId.substring(0, wId.indexOf('_'));
 			String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
 			String t1 = firstStr.replaceAll("[^0-9]+", "");
@@ -138,11 +133,11 @@ public class SaveWFHistory implements WorkflowProcess {
 			a1++; // Process step is one step behind the Assign task, so increment it.
 			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
 			workItemID = wfInstanceID.concat(firstStr).concat("_").concat(secString);
-			log.error("Test4 workItemID=="+workItemID);
+			log.info("Final WorkItemID =="+workItemID);
 		}
 		
 		if (param1.equalsIgnoreCase("After Instructor Review") || param1.equalsIgnoreCase("After Chair Review") || param1.equalsIgnoreCase("After Admin Review")) {
-			log.error("param1 after step="+param1);
+			log.info("param1 after step="+param1);
 			String firstStr = wId.substring(0, wId.indexOf('_'));
 			String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
 			String t1 = firstStr.replaceAll("[^0-9]+", "");
@@ -150,7 +145,7 @@ public class SaveWFHistory implements WorkflowProcess {
 			a1--;// Process step is one step ahead the Assign task, so decrement it.
 			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
 			workItemID = wfInstanceID.concat(firstStr).concat("_").concat(secString);
-			log.error("Test4 workItemID=="+workItemID);
+			log.info("Final WorkItemID =="+workItemID);
 		}
 		
 

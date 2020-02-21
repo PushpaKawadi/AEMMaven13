@@ -45,7 +45,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
 			.getLogger(SaveMedicalWFHistory.class);
-	
+
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -53,7 +53,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
 		Connection conn = null;
-		
+
 		ResourceResolver resolver = workflowSession
 				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
@@ -89,30 +89,60 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
+
+		String wfInstanceID = workItem.getWorkflow().getId(); // Workflow
+																// instance id
+		log.info("Workflow InstanceID =="+wfInstanceID);
+		String workflowID = workItem.getId(); // workitem id
+		log.info("WorkflowID=="+workflowID);
+
+		String wId = workflowID.replace("VolatileWorkItem_", "/workItems/");
+		String workItemID = "";
+		log.info("Workflow item Id==" + wId);
+		if (paramsValue.equalsIgnoreCase("Before Medical Review")
+				|| paramsValue.equalsIgnoreCase("Before Admin Review")) {
+			log.info("param1 before step=" + paramsValue);
+			String firstStr = wId.substring(0, wId.indexOf('_'));
+			String secString = wId
+					.substring(wId.indexOf('_') + 1, wId.length());
+			String t1 = firstStr.replaceAll("[^0-9]+", "");
+			int a1 = Integer.parseInt(t1);
+			a1++; // Process step is one step behind the Assign task, so
+					// increment it.
+			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
+			workItemID = wfInstanceID.concat(firstStr).concat("_")
+					.concat(secString);
+			log.info("Final workItemID ==" + workItemID);
+		}
+
+		if (paramsValue.equalsIgnoreCase("After Medical Review")
+				|| paramsValue.equalsIgnoreCase("After Admin Review")) {
+			log.info("param1 after step=" + paramsValue);
+			String firstStr = wId.substring(0, wId.indexOf('_'));
+			String secString = wId
+					.substring(wId.indexOf('_') + 1, wId.length());
+			String t1 = firstStr.replaceAll("[^0-9]+", "");
+			int a1 = Integer.parseInt(t1);
+			a1--;// Process step is one step ahead the Assign task, so decrement
+					// it.
+			firstStr = firstStr.replaceAll(t1, String.valueOf(a1));
+			workItemID = wfInstanceID.concat(firstStr).concat("_")
+					.concat(secString);
+			log.info("Final workItemID==" + workItemID);
+		}
+
 		while (xmlFiles.hasNext()) {
-			String workflowID = workItem.getId();
-			String workID = workflowID
-					.substring(workflowID.lastIndexOf("/") + 1);
 
 			String contentPath = workItem.getContentPath();
-			//java.util.Date workflowStartTime = workItem.getProgressBeginTime();
-//			java.util.Date stepStartTime = workItem.getWorkflow()
-//					.getTimeStarted();
-			Timestamp workflowStartTime = new java.sql.Timestamp(workItem.getTimeStarted().getTime());
-			Timestamp stepStartTime = new java.sql.Timestamp(System.currentTimeMillis());
-			
+
+			Timestamp workflowStartTime = new java.sql.Timestamp(workItem
+					.getTimeStarted().getTime());
+			Timestamp stepStartTime = new java.sql.Timestamp(
+					System.currentTimeMillis());
+
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
-//			java.util.Date stepCompleteTime = workItem.getWorkflow()
-//					.getTimeEnded();
-
-			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
-					.getMetaDataMap().entrySet()) {
-				if (entry.getKey().matches("actionTaken")) {
-					stepResponse = entry.getValue().toString();
-					// log.error("stepResponse="+stepResponse);
-				}
-			}
+		
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
@@ -249,9 +279,11 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 						approvalStatus = "Denied";
 					}
 					comments = arscComments;
-					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					stepCompleteTime = new java.sql.Timestamp(
+							System.currentTimeMillis());
 					workflowStartTime = null;
-					wfCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					wfCompleteTime = new java.sql.Timestamp(
+							System.currentTimeMillis());
 				}
 				if (paramsValue.equalsIgnoreCase("Before Medical Review")) {
 					stepType = "STEPSTART";
@@ -272,16 +304,17 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 					}
 					comments = medicalComments;
 					workflowStartTime = null;
-					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					stepCompleteTime = new java.sql.Timestamp(
+							System.currentTimeMillis());
 					wfCompleteTime = null;
 				}
 
 				dataMap = new LinkedHashMap<String, Object>();
-				dataMap.put("WORKITEM_ID", workID);
+				dataMap.put("WORKITEM_ID", workItemID);
 				dataMap.put("WORKFLOW_PAYLOAD", contentPath);
 				dataMap.put("CASE_ID", caseID);
 				dataMap.put("CWID", sID);
-				//dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
+				// dataMap.put("WORKFLOW_START_TIME", workflowStartTime);
 				dataMap.put("STEP_START_TIME", stepStartTime);
 				dataMap.put("WORKFLOW_INITIATOR", workflowInitiator);
 				dataMap.put("ASSIGNEE", currentAssignee);
@@ -302,9 +335,10 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("CHAIR_NAME", null);
 				dataMap.put("APPROVAL_STATUS", approvalStatus);
 				dataMap.put("COMMENTS", comments);
-				//dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
+				dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
+				// dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 
-				//conn = jdbcConnectionService.getAemDEVDBConnection();
+				// conn = jdbcConnectionService.getAemDEVDBConnection();
 				conn = getConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
@@ -353,7 +387,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				try {
 					if (value instanceof Date) {
 						preparedStmt.setDate(++i, (Date) value);
-					} else if(value instanceof Timestamp){
+					} else if (value instanceof Timestamp) {
 						preparedStmt.setTimestamp(++i, (Timestamp) value);
 					} else if (value instanceof Integer) {
 						preparedStmt.setInt(++i, (Integer) value);
@@ -370,7 +404,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				}
 			}
 			try {
-				log.info("SQL statement="+preparedStmt);
+				log.info("SQL statement=" + preparedStmt);
 				log.info("Before insert workflow history");
 				preparedStmt.execute();
 				conn.commit();
