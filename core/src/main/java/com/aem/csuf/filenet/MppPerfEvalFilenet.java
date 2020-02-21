@@ -238,7 +238,7 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 			URL url = null;
 			try {
 				//String filenetUrl = ConfigManager.getValue("filenetUrl");
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService.getMppFilenetURL();
 				
 				url = new URL(filenetUrl);
 				// url = new URL("");

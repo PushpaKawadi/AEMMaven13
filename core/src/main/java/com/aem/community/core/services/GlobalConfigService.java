@@ -11,4 +11,5 @@ public interface GlobalConfigService {
 	String getDbFrmMgrProd();
 	String getDbDocMgrProd();
 	String getDbAemDev();
+	String getMppFilenetURL();
 }

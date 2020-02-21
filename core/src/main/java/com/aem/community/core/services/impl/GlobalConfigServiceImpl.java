@@ -89,4 +89,10 @@ public class GlobalConfigServiceImpl implements GlobalConfigService {
 	public String getDbAemDev() {		
 		return config.db_Aem_Dev();
 	}
+	
+	@Override
+	public String getMppFilenetURL() {	
+		log.debug("Filenet Value="+config.mpp_filenet_URL());
+		return config.mpp_filenet_URL();
+	}
 }

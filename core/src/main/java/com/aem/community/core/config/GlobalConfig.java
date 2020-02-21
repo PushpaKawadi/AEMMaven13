@@ -17,4 +17,7 @@ public @interface GlobalConfig {
 	
 	@AttributeDefinition(name = "dbAemDev", description = "AEM Dev DB", type = AttributeType.STRING, defaultValue = "AEMDBDEV")
 	String db_Aem_Dev();
+	
+	@AttributeDefinition(name = "MPP Filenet URL", description = "MPP Filenet URL", type = AttributeType.STRING, defaultValue = "http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments")
+	String mpp_filenet_URL();
 }
