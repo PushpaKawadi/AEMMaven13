@@ -162,12 +162,12 @@ public class SaveWFHistory implements WorkflowProcess {
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
 		
-//			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
-//					.getMetaDataMap().entrySet()) {
-//				if (entry.getKey().matches("actionTaken")) {
-//					stepResponse = entry.getValue().toString();
-//				}
-//			}
+			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
+					.getMetaDataMap().entrySet()) {
+				if (entry.getKey().matches("actionTaken")) {
+					stepResponse = entry.getValue().toString();
+				}
+			}
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
@@ -337,6 +337,7 @@ public class SaveWFHistory implements WorkflowProcess {
 					workflowStartTime = null;
 					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 					wfCompleteTime = null;
+					stepStartDate = null; 
 				}
 				if (param1.equalsIgnoreCase("Before Chair Review")) {
 					stepType = "STEPSTART";
@@ -359,6 +360,7 @@ public class SaveWFHistory implements WorkflowProcess {
 					workflowStartTime = null;
 					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 					wfCompleteTime = null;
+					stepStartDate = null;
 				}
 				if (param1.equalsIgnoreCase("Before Admin Review")) {
 					stepType = "STEPSTART";
@@ -379,8 +381,10 @@ public class SaveWFHistory implements WorkflowProcess {
 					}
 					comments = arscComments;
 					workflowStartTime = null;
+					stepStartDate = null;
 					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 					wfCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
+					stepStartDate = null;
 				}
 				
 				dataMap = new LinkedHashMap<String, Object>();

@@ -142,6 +142,12 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 
 			String workflowInitiator = workItem.getWorkflow().getInitiator();
 			String currentAssignee = workItem.getCurrentAssignee();
+			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
+					.getMetaDataMap().entrySet()) {
+				if (entry.getKey().matches("actionTaken")) {
+					stepResponse = entry.getValue().toString();
+				}
+			}
 		
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -284,6 +290,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 					workflowStartTime = null;
 					wfCompleteTime = new java.sql.Timestamp(
 							System.currentTimeMillis());
+					stepStartTime = null;
 				}
 				if (paramsValue.equalsIgnoreCase("Before Medical Review")) {
 					stepType = "STEPSTART";
@@ -307,6 +314,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 					stepCompleteTime = new java.sql.Timestamp(
 							System.currentTimeMillis());
 					wfCompleteTime = null;
+					stepStartTime = null;
 				}
 
 				dataMap = new LinkedHashMap<String, Object>();
