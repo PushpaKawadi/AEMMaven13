@@ -81,7 +81,6 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String hrCB = "";
 		String initials = "";
 		String hrDate = "";
-		String adminReview = "";
 		String commentsOthers = "";
 		String conceptualSkills = "";
 		String interPersonalSkills = "";
@@ -95,11 +94,6 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String adminName = "";
 		String adminDate = "";
 		String adminComment = "";
-		String vpName = "";
-		String vpSign = "";
-		String vpDate = "";
-		String vpComment = "";
-		String vpCB = "";
 		String empDate = "";
 		String empComments = "";
 		String atCritical = "";
@@ -111,9 +105,9 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String hrCoordinatorSign = "";
 		String hrCoordinatorSignDate = "";
 		String hrCoordinatorSignComment = "";
-		String associateSign = "";
-		String associateDate = "";
-		String associateComment = "";
+		String workflowInstance = "";
+		String hrCooCB = "";
+		
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -126,7 +120,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
-
+			workflowInstance = workItem.getWorkflow().getId();
 			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
@@ -183,7 +177,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
 							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
-							adminReview = eElement.getElementsByTagName("AdminReview").item(0).getTextContent();
+							//adminReview = eElement.getElementsByTagName("AdminReview").item(0).getTextContent();
 							athleticsEmp = eElement.getElementsByTagName("AthleticEmp").item(0).getTextContent();
 							commentsOthers = eElement.getElementsByTagName("OtherRating").item(0).getTextContent();
 							conceptualSkills = eElement.getElementsByTagName("ConceptualSkill").item(0)
@@ -206,11 +200,6 @@ public class MppPerfEvalDB implements WorkflowProcess {
 							adminDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
 							adminComment = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
 							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
-							vpName = eElement.getElementsByTagName("VPName").item(0).getTextContent();
-							vpSign = eElement.getElementsByTagName("VPSign").item(0).getTextContent();
-							vpDate = eElement.getElementsByTagName("VPDate").item(0).getTextContent();
-							vpComment = eElement.getElementsByTagName("VPComment").item(0).getTextContent();
-							vpCB = eElement.getElementsByTagName("VPCB").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
 							empDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
 							empComments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
@@ -227,15 +216,15 @@ public class MppPerfEvalDB implements WorkflowProcess {
 									.getTextContent();
 							hrCoordinatorSignComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
 									.getTextContent();
-							associateSign = eElement.getElementsByTagName("AssociateSign").item(0).getTextContent();
-							associateDate = eElement.getElementsByTagName("AssociateDate").item(0).getTextContent();
-							associateComment = eElement.getElementsByTagName("AssociateComment").item(0)
+							hrCB = eElement.getElementsByTagName("HRDICB").item(0)
 									.getTextContent();
+							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
+
 						}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
-
+					
 					dataMap.put("EMPID", empId);
 					dataMap.put("LASTNAME", lastName);
 					dataMap.put("FIRSTNAME", firstName);
@@ -245,11 +234,20 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("DEPTNAME", departmentName);
 					dataMap.put("RANGE", range);
 					dataMap.put("DEPTID", departmentID);
-					dataMap.put("REVIEWPERIODFROM", Date.valueOf(ratingPeriodFrom));
-					dataMap.put("REVIEWPERIODTO", Date.valueOf(ratingPeriodTo));
+					Object ratingPeriodFromObj = null;
+					if (ratingPeriodFrom != null && ratingPeriodFrom != "") {
+						Date ratingPeriodFromNew = Date.valueOf(ratingPeriodFrom);
+						ratingPeriodFromObj = ratingPeriodFromNew;
+					}
+					dataMap.put("REVIEWPERIODFROM",ratingPeriodFromObj);
+					Object ratingPeriodToObj = null;
+					if (ratingPeriodTo != null && ratingPeriodTo != "") {
+						Date ratingPeriodToNew = Date.valueOf(ratingPeriodTo);
+						ratingPeriodToObj = ratingPeriodToNew;
+					}
+					dataMap.put("REVIEWPERIODTO", ratingPeriodToObj);
 					dataMap.put("EVALUATORNAME", evaluatorsName);
 					dataMap.put("EVALUATIONTYPE", evaluationType);
-					dataMap.put("ADMINREVIEW", adminReview);
 					dataMap.put("ATHLETICEMP", athleticsEmp);
 					dataMap.put("OTHER_RATING", commentsOthers);
 					dataMap.put("CONCEPTUALSKILLS", conceptualSkills);
@@ -267,34 +265,28 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("SUPPORTSTMT4", supportStmt4);
 					dataMap.put("EVALUATORNAMESIGN", evalName);
 					dataMap.put("EVALUATORSIGN", evalSign);
-					dataMap.put("EVALUATORDATE", Date.valueOf(evalDate));
+					
+					Object evalDateObj = null;
+					if (evalDate != null && evalDate != "") {
+						Date evalDateNew = Date.valueOf(evalDate);
+						evalDateObj = evalDateNew;
+					}
+					//dataMap.put("EVALUATORDATE", null);
+					dataMap.put("EVALUATORDATE", evalDateObj);
 					dataMap.put("EVALUATORCOMMENT", evalComments);
 					dataMap.put("EVALCB", evalCB);
 					dataMap.put("ADMINNAME", adminName);
 					dataMap.put("ADMINSIGN", adminSign);
-					dataMap.put("ADMINDATE", Date.valueOf(adminDate));
+					Object adminDateObj = null;
+					if (adminDate != null && adminDate != "") {
+						Date adminDateNew = Date.valueOf(adminDate);
+						adminDateObj = adminDateNew;
+					}
+					dataMap.put("ADMINDATE", adminDateObj);
+					//dataMap.put("ADMINDATE", null);
 					dataMap.put("ADMINCOMMENT", adminComment);
 					dataMap.put("ADMINCB", adminCB);
-					dataMap.put("VPNAME", vpName);
-					dataMap.put("VPSIGN", vpSign);
-
-					Object vpDateObj = null;
-					if (vpDate != null && vpDate != "") {
-						Date vpDateNew = Date.valueOf(draftDate);
-						vpDateObj = vpDateNew;
-					}
-
-					dataMap.put("VPDATE", vpDateObj);
-					dataMap.put("VPCOMMENT", vpComment);
-					dataMap.put("VPCB", vpCB);
-					dataMap.put("ASSOCIATESIGN", associateSign);
-					Object associateDateObj = null;
-					if (associateDate != null && associateDate != "") {
-						Date associateDateNew = Date.valueOf(associateDate);
-						associateDateObj = associateDateNew;
-					}
-					dataMap.put("ASSOCIATEDATE", associateDateObj);
-					dataMap.put("ASSOCIATECOMMENT", associateComment);
+					dataMap.put("HRCOOCB", hrCooCB);
 					dataMap.put("HRCOOSIGN", hrCoordinatorSign);
 					Object hrCooDateObj = null;
 					if (hrCoordinatorSignDate != null && hrCoordinatorSignDate != "") {
@@ -304,7 +296,12 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("HRCOODATE", hrCooDateObj);
 					dataMap.put("HRCOOCOMMENT", hrCoordinatorSignComment);
 					dataMap.put("EMPSIGN", empSign);
-					dataMap.put("EMPDATE", empDate);
+					Object empDateObj = null;
+					if (empDate != null && empDate != "") {
+						Date empDateNew = Date.valueOf(empDate);
+						empDateObj = empDateNew;
+					}
+					dataMap.put("EMPDATE", empDateObj);
 					dataMap.put("EMPCOMMENT", empComments);
 					dataMap.put("EMPCB", empCB);
 					Object hrDateObj = null;
@@ -316,7 +313,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("INITIALS", initials);
 					dataMap.put("HRCOMMENT", hrComments);
 					dataMap.put("HRCB", hrCB);
-
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
 					log.error("put complete");
 
 				} catch (SAXException e) {

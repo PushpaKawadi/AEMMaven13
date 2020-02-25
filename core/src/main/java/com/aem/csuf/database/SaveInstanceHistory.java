@@ -38,11 +38,6 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-/**
- * 
- * @author 103499
- *
- */
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Workflow Instance History",
 		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=Save Workflow Instance History" })
 public class SaveInstanceHistory implements WorkflowProcess {
@@ -114,7 +109,7 @@ public class SaveInstanceHistory implements WorkflowProcess {
 			workflowCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 			workflowStatus = "COMPLETED";
 			workflowInstance = workItem.getWorkflow().getId();
-			log.info("workflow complete time" + workflowCompleteTime);
+			log.info("	" + workflowCompleteTime);
 			log.info("workflow complete status" + workflowStatus);
 			conn = getConnection();
 			if (conn != null) {
