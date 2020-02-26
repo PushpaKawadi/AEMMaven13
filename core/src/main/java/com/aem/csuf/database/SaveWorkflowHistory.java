@@ -38,11 +38,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowModel;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
-/**
- * 
- * @author 103499
- *
- */
+
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Workflow History",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=Save Workflow History" })
@@ -67,7 +63,14 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 		String paramsValue = ((String) processArguments.get("PROCESS_ARGS",
 				"string")).toString();
 		log.info("params value=" + paramsValue);
-
+		String[] parameters1 = paramsValue.split(",");
+		log.info("parameters1=" + parameters1);
+		String param1 = parameters1[0];
+		String param2 = parameters1[1];
+		log.info("Param1=" + param1);
+		log.info("Param12=" + param2);
+		String actionTaken = "";
+		actionTaken = param2;
 		String param = paramsValue;
 		LinkedHashMap<String, Object> dataMap = null;
 
@@ -96,14 +99,19 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 		log.info("WorkflowID=="+workflowID);
 		
 		String wId = workflowID.replace("VolatileWorkItem_", "/workItems/");
-		String workItemID = "";
+		//String workItemID = "";
 		log.info("WorkItem Id=="+wId);
 		
 		while (xmlFiles.hasNext()) {
 			
 			workflowInstance = workItem.getWorkflow().getId();
 			payloadPath = workItem.getWorkflowData().getPayload().toString();
-
+			for (Map.Entry<String, Object> entry : workItem.getWorkflowData()
+					.getMetaDataMap().entrySet()) {
+				if (entry.getKey().matches(actionTaken)) {
+					stepResponse = entry.getValue().toString();
+				}
+			}
 			workflowName = workItem.getWorkflow().getWorkflowModel().getId();
 			stepStartTime = new java.sql.Timestamp(System.currentTimeMillis());
 			workflowInitiator = workItem.getWorkflow().getInitiator();
@@ -173,7 +181,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							String stage = eElement.getElementsByTagName("StageIndicator").item(0).getTextContent();
 							if (stage.equals("ToManager")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
-								stepResponse = "Send To Manager";
 								stepName = "Manager Review";
 								
 								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent().equals(null))) {
@@ -185,7 +192,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToManagerAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
-								stepResponse = "Send To Manager";
 								stepName = "Evaluation Final - Manager";
 								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
@@ -197,7 +203,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToManagerFinalAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
-								stepResponse = "Send To Manager";
 								stepName = "Manager Final Evaluation";
 								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
@@ -208,7 +213,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToManagerHRDI")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
-								stepResponse = "Send To Manager";
 								stepName = "Manager HRDI Changes";
 								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
@@ -219,7 +223,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToHRCoo")) {
 								assignee = eElement.getElementsByTagName("HrCoordId").item(0).getTextContent();
-								stepResponse = "Send To HR Coordinator";
 								stepName = "HR Coordinator";
 								if (!(eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent().equals(null))) {
 								comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
@@ -230,7 +233,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToEmployee")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
-								stepResponse = "Send To Employee";
 								stepName = "Employee Review";
 								if (!(eElement.getElementsByTagName("EmpComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
@@ -240,7 +242,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							}
 							if (stage.equals("ToEmployeeAck")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
-								stepResponse = "Send To Employee";
 								stepName = "Employee Acknowledgement";
 								if (!(eElement.getElementsByTagName("EmpComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
@@ -262,7 +263,6 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 								// assignee =
 								// eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								assignee = "HR-Reviewers";
-								stepResponse = "Send To HRDI";
 								stepName = "HRDI Review";
 								if (!(eElement.getElementsByTagName("HRDIComment").item(0).getTextContent().equals(null))) {
 									comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
@@ -285,7 +285,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 
 				}
 				
-				if (param.equalsIgnoreCase("Start of the Workflow Assign Step")) {
+				if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
 					stepCompleteTime = null;
 					comments = null;
 					stepType = "STEPSTART";
@@ -298,7 +298,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 					workItemId = workflowInstance.concat(firstStr).concat("_").concat(secString);
 					log.info("Final WorkItemID ==" + workItemId);
 				}
-				if (param.equalsIgnoreCase("End of the Workflow Assign Step")) {
+				if (param1.equalsIgnoreCase("End of the Workflow Assign Step")) {
 					stepCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 					stepType = "STEPEND";
 
