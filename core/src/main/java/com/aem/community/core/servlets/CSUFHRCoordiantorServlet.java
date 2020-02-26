@@ -50,14 +50,14 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
+		Constants.SERVICE_DESCRIPTION + "=HR Coordinator Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
-		"sling.servlet.paths=" + "/bin/getMppEmpLookup" })
-public class CSUFMPPEvalEmpLookUp extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getHRCooLookup" })
+public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMPPEvalEmpLookUp.class);
+			.getLogger(CSUFHRCoordiantorServlet.class);
 	private static final long serialVersionUID = 1L;
-	
+
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -65,61 +65,61 @@ public class CSUFMPPEvalEmpLookUp extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-
-		String userID = "";
-		String cwid = "";
-		// JSONObject emplEvalDetails = null;
+		String division = "";
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("userID") != null
-				&& req.getParameter("userID") != ""
-				&& req.getParameter("cwid") != null
-				&& req.getParameter("cwid") != "") {
-			userID = req.getParameter("userID");
-			cwid = req.getParameter("cwid");
-			logger.info("userid =" + userID);
-			logger.info("EmpID =" + cwid);
-			conn = jdbcConnectionService.getFrmDBConnection();
+		if (req.getParameter("division") != null
+				&& req.getParameter("division") != "") {
+			division = req.getParameter("division");
+			conn = jdbcConnectionService.getAemDEVDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, userID,
-						"SPE2579");
+				emplEvalDetails = getHRCooDetails(conn, division);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
+			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid,
-			Connection oConnection, String userID, String docType)
-			throws Exception {
+	public static JSONArray getHRCooDetails(Connection oConnection,
+			String division) throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = ConfigManager.getValue("mppEmpIDSQL");
-		//String lookupFields = ConfigManager.getValue("lookupFields");
-		String lookupFields = ConfigManager.getValue("mppLookUpFields");
-		String[] fields = lookupFields.split(",");
-		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
-		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		String emplIDSQL = ConfigManager.getValue("mppHRCooSQL"); // "select * from FUL_EMP_CWID_NT_NAME where LNAME = 'Nelson'";
+		emplIDSQL = emplIDSQL.replaceAll("<<division>>", division);
 		Statement oStatement = null;
+
 		try {
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
 				employeeEvalDetails = new JSONObject();
-				for (int i = 0; i < fields.length; i++) {
-					employeeEvalDetails.put(fields[i],
-							oRresultSet.getString(fields[i]));
-				}
+				employeeEvalDetails.put("HREmpID",
+						oRresultSet.getString("EMPLOYEEID"));
+				employeeEvalDetails.put("HRUserID",
+						oRresultSet.getString("USERID"));
+				employeeEvalDetails.put("HRFName",
+						oRresultSet.getString("FIRSTNAME"));
+				employeeEvalDetails.put("HRLName",
+						oRresultSet.getString("LASTNAME"));
+				employeeEvalDetails.put("HREmail",
+						oRresultSet.getString("EMAIL"));
+				employeeEvalDetails.put("HRDivision",
+						oRresultSet.getString("DIVISION"));
+				employeeEvalDetails.put("HRDivName",
+						oRresultSet.getString("DIVISIONNAME"));
 				jArray.put(employeeEvalDetails);
+				logger.info("Array="+jArray);
 			}
+
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
