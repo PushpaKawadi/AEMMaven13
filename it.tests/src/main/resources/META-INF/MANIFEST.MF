@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1581923477057
-Build-Jdk: 1.8.0_221
+Bnd-LastModified: 1582595452149
+Build-Jdk: 1.8.0_241
 Built-By: 105683
 Bundle-Description: Bundles for Integration Tests for AEMMaven13
 Bundle-ManifestVersion: 2

@@ -188,16 +188,16 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"Rating\": \"" + rating + "\"," + "\"AttachmentType\": "
+				+ "\"EmpId\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
 				+ "\"SPEUnit4DOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		// log.error("lastName="+lastName);
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+		log.error("Json String:" + jsonString.toString());
 
-		// log.error("encodedPDF="+encodedPDF);
+		 log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read SPEUnit4Dist");
 			URL url = null;
