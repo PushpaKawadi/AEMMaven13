@@ -9,7 +9,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 
 @Component(property = { "service.description=Set Meatadata Value", "service.vendor=Adobe Systems",
-		"process.label=Set value of metadata" })
+		"process.label=Set Metadata Value" })
 public class SetMetadataValue implements WorkflowProcess {
 	private static final Logger log = LoggerFactory.getLogger(SetMetadataValue.class);
 
