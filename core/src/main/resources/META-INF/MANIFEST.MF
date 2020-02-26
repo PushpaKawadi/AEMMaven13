@@ -1,7 +1,13 @@
 Manifest-Version: 1.0
+<<<<<<< HEAD
 Bnd-LastModified: 1582595451336
 Build-Jdk: 1.8.0_241
 Built-By: 105683
+=======
+Bnd-LastModified: 1582710410188
+Build-Jdk: 1.8.0_131
+Built-By: 104745
+>>>>>>> 0f77221a0ebb22064ccf04a514f5d719068e2d25
 Bundle-Description: Core bundle for AEMMaven13
 Bundle-ManifestVersion: 2
 Bundle-Name: AEMMaven13 - Core
@@ -109,6 +115,7 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  ockNoticeServlet.xml,OSGI-INF/com.aem.community.core.servlets.CSUFEmplo
  yeeFeeWaiverUserLookupServlet.xml,OSGI-INF/com.aem.community.core.servl
  ets.CSUFEmployeeLookUpServlet.xml,OSGI-INF/com.aem.community.core.servl
+<<<<<<< HEAD
  ets.CSUFMPPAdminReviewDistUserLookUp.xml,OSGI-INF/com.aem.community.cor
  e.servlets.CSUFMPPEvalEmpLookUp.xml,OSGI-INF/com.aem.community.core.ser
  vlets.CSUFMPPSelfEvalDBServlet.xml,OSGI-INF/com.aem.community.core.serv
@@ -208,5 +215,108 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  models.workflow.SetValueinDataXml.xml,OSGI-INF/com.aem.web.models.workf
  low.SetValueinXml.xml,OSGI-INF/com.aem.web.models.workflow.SetValueinXm
  lWithNewPayload.xml
+=======
+ ets.CSUFHRCoordiantorServlet.xml,OSGI-INF/com.aem.community.core.servle
+ ts.CSUFMPPAdminReviewDistUserLookUp.xml,OSGI-INF/com.aem.community.core
+ .servlets.CSUFMPPEvalEmpLookUp.xml,OSGI-INF/com.aem.community.core.serv
+ lets.CSUFMPPSelfEvalDBServlet.xml,OSGI-INF/com.aem.community.core.servl
+ ets.CSUFMPPSelfEvaluationServlet.xml,OSGI-INF/com.aem.community.core.se
+ rvlets.CSUFReviewerServlet.xml,OSGI-INF/com.aem.community.core.servlets
+ .CSUFReviewerUserId.xml,OSGI-INF/com.aem.community.core.servlets.CSUFSe
+ rvlet.xml,OSGI-INF/com.aem.community.core.servlets.CSUFUserLookUpServle
+ t.xml,OSGI-INF/com.aem.community.core.servlets.CSUFVisionLifeLtd.xml,OS
+ GI-INF/com.aem.community.core.servlets.CareerDevelopmentPlanUserLookUpS
+ ervlet.xml,OSGI-INF/com.aem.community.core.servlets.ClassificationDecis
+ ionApealUserLookUpServlet.xml,OSGI-INF/com.aem.community.core.servlets.
+ CobraFinalNoticeEmpServlet.xml,OSGI-INF/com.aem.community.core.servlets
+ .CourseWithdrawalInfoServlet.xml,OSGI-INF/com.aem.community.core.servle
+ ts.CourseWithdrawalInfoServletNew.xml,OSGI-INF/com.aem.community.core.s
+ ervlets.DentalPlanEnrollmentSSNLookUp.xml,OSGI-INF/com.aem.community.co
+ re.servlets.DentalPlanSSNServlet.xml,OSGI-INF/com.aem.community.core.se
+ rvlets.DependentFeeWaiverEmpServlet.xml,OSGI-INF/com.aem.community.core
+ .servlets.EmployeeConfidentialServlet.xml,OSGI-INF/com.aem.community.co
+ re.servlets.EmployeeCustodialServlet.xml,OSGI-INF/com.aem.community.cor
+ e.servlets.EmployeeEvaluationUnit4Servlet.xml,OSGI-INF/com.aem.communit
+ y.core.servlets.EmployeeEvaluationUnit8Servlet.xml,OSGI-INF/com.aem.com
+ munity.core.servlets.NewPositionManagerEmpLookUpServlet.xml,OSGI-INF/co
+ m.aem.community.core.servlets.NewPositionManagerUserLookUpServlet.xml,O
+ SGI-INF/com.aem.community.core.servlets.PayPlanUserLookupServlet.xml,OS
+ GI-INF/com.aem.community.core.servlets.STDSSNServlet.xml,OSGI-INF/com.a
+ em.community.core.servlets.SimpleServlet.xml,OSGI-INF/com.aem.community
+ .core.servlets.SpecialConsultantEmpServlet.xml,OSGI-INF/com.aem.communi
+ ty.core.servlets.SpecialConsultantUserServlet.xml,OSGI-INF/com.aem.comm
+ unity.core.servlets.StaffServletSample.xml,OSGI-INF/com.aem.community.c
+ ore.servlets.StudentPerfEmpLookup.xml,OSGI-INF/com.aem.community.core.s
+ ervlets.TestEmailServlet1.xml,OSGI-INF/com.aem.community.core.servlets.
+ TestEmailServlet2.xml,OSGI-INF/com.aem.community.core.servlets.TestEmai
+ lWithEmbeddedImageServlet.xml,OSGI-INF/com.aem.community.core.servlets.
+ UserManager.xml,OSGI-INF/com.aem.community.util.DBDetails.xml,OSGI-INF/
+ com.aem.csuf.database.CSUFCataLeaveDonationDB.xml,OSGI-INF/com.aem.csuf
+ .database.CSUFCataLeaveRequestDB.xml,OSGI-INF/com.aem.csuf.database.CSU
+ FCertificateOfEligibilityDB.xml,OSGI-INF/com.aem.csuf.database.CSUFPreP
+ erfEvalDB.xml,OSGI-INF/com.aem.csuf.database.CSUFSPE2579DB.xml,OSGI-INF
+ /com.aem.csuf.database.CSUFSPEConfidentialDB.xml,OSGI-INF/com.aem.csuf.
+ database.CSUFSPECustodian.xml,OSGI-INF/com.aem.csuf.database.CSUFSPEUni
+ t1DB.xml,OSGI-INF/com.aem.csuf.database.CSUFSPEUnit4DB.xml,OSGI-INF/com
+ .aem.csuf.database.CSUFSPEUnit6DB.xml,OSGI-INF/com.aem.csuf.database.CS
+ UFSPEUnit8DB.xml,OSGI-INF/com.aem.csuf.database.CSUFStudentPerfEvalDB.x
+ ml,OSGI-INF/com.aem.csuf.database.CSUFVisionLifeLtdEnrollmentDB.xml,OSG
+ I-INF/com.aem.csuf.database.CareerDevelopmentPlanDB.xml,OSGI-INF/com.ae
+ m.csuf.database.ClassificationDecisionApealDB.xml,OSGI-INF/com.aem.csuf
+ .database.CobraFinalNoticeDB.xml,OSGI-INF/com.aem.csuf.database.DentalP
+ lanEnrollmentDB.xml,OSGI-INF/com.aem.csuf.database.DependentFeeWaiverDB
+ .xml,OSGI-INF/com.aem.csuf.database.DockNoticeDB.xml,OSGI-INF/com.aem.c
+ suf.database.MppAdminDistributedDB.xml,OSGI-INF/com.aem.csuf.database.M
+ ppAdminPerfEvalDB.xml,OSGI-INF/com.aem.csuf.database.MppPerfEvalDB.xml,
+ OSGI-INF/com.aem.csuf.database.MppSelfEvalDB.xml,OSGI-INF/com.aem.csuf.
+ database.NewPositionManagerDB.xml,OSGI-INF/com.aem.csuf.database.SaveCo
+ urseWithdrawal.xml,OSGI-INF/com.aem.csuf.database.SaveInstanceHistory.x
+ ml,OSGI-INF/com.aem.csuf.database.SaveMedicalWFHistory.xml,OSGI-INF/com
+ .aem.csuf.database.SaveWFHistory.xml,OSGI-INF/com.aem.csuf.database.Sav
+ eWorkflowHistory.xml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveDonatio
+ nFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveRequestFilenet.
+ xml,OSGI-INF/com.aem.csuf.filenet.CSUFCertificateOfEligibilityFilenet.x
+ ml,OSGI-INF/com.aem.csuf.filenet.CSUFEmployeeFeeWaiver.xml,OSGI-INF/com
+ .aem.csuf.filenet.CSUFPrePerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.file
+ net.CSUFSPE2579Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPECONFIDF
+ ilenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPECUSTODIANFilenet.xml,OS
+ GI-INF/com.aem.csuf.filenet.CSUFSPEUNIT4Filenet.xml,OSGI-INF/com.aem.cs
+ uf.filenet.CSUFSPEUNIT8DISTFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CS
+ UFSPEUnit1Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPEUnit6Filenet
+ .xml,OSGI-INF/com.aem.csuf.filenet.CSUFSTUDPERFEVALFilenet.xml,OSGI-INF
+ /com.aem.csuf.filenet.CSUFVisionLifeLtdFilenet.xml,OSGI-INF/com.aem.csu
+ f.filenet.CareerDevelopmentPlanFileNet.xml,OSGI-INF/com.aem.csuf.filene
+ t.CobraFinalNoticeFilenet.xml,OSGI-INF/com.aem.csuf.filenet.DentalPlanE
+ nrollmentFilenet.xml,OSGI-INF/com.aem.csuf.filenet.DependentFeeWaiverFi
+ leNet.xml,OSGI-INF/com.aem.csuf.filenet.MppAdminDistributedFilenet.xml,
+ OSGI-INF/com.aem.csuf.filenet.MppAdminEvalFilenet.xml,OSGI-INF/com.aem.
+ csuf.filenet.MppEmpSelfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.Mp
+ pPerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.NewPositionManagerFi
+ lenet.xml,OSGI-INF/com.aem.csuf.filenet.PayPlan10_12_11_12Filenet.xml,O
+ SGI-INF/com.aem.web.models.workflow.CSUFGetValueInSubmittedXml.xml,OSGI
+ -INF/com.aem.web.models.workflow.CSUFGetValueinDataXml.xml,OSGI-INF/com
+ .aem.web.models.workflow.CSUFSetValueinDataXml.xml,OSGI-INF/com.aem.web
+ .models.workflow.CSUFSetValueinXml.xml,OSGI-INF/com.aem.web.models.work
+ flow.DelayStep.xml,OSGI-INF/com.aem.web.models.workflow.GetValueinDataX
+ ml.xml,OSGI-INF/com.aem.web.models.workflow.GetValueinXml.xml,OSGI-INF/
+ com.aem.web.models.workflow.NewPayloadModified1.xml,OSGI-INF/com.aem.we
+ b.models.workflow.NewPayloadModified10.xml,OSGI-INF/com.aem.web.models.
+ workflow.NewPayloadModified11.xml,OSGI-INF/com.aem.web.models.workflow.
+ NewPayloadModified12.xml,OSGI-INF/com.aem.web.models.workflow.NewPayloa
+ dModified13.xml,OSGI-INF/com.aem.web.models.workflow.NewPayloadModified
+ 14.xml,OSGI-INF/com.aem.web.models.workflow.NewPayloadModified15.xml,OS
+ GI-INF/com.aem.web.models.workflow.NewPayloadModified2.xml,OSGI-INF/com
+ .aem.web.models.workflow.NewPayloadModified3.xml,OSGI-INF/com.aem.web.m
+ odels.workflow.NewPayloadModified4.xml,OSGI-INF/com.aem.web.models.work
+ flow.NewPayloadModified5.xml,OSGI-INF/com.aem.web.models.workflow.NewPa
+ yloadModified6.xml,OSGI-INF/com.aem.web.models.workflow.NewPayloadModif
+ ied7.xml,OSGI-INF/com.aem.web.models.workflow.NewPayloadModified8.xml,O
+ SGI-INF/com.aem.web.models.workflow.NewPayloadModified9.xml,OSGI-INF/co
+ m.aem.web.models.workflow.ReadMetadataMap.xml,OSGI-INF/com.aem.web.mode
+ ls.workflow.SetMetadataValue.xml,OSGI-INF/com.aem.web.models.workflow.S
+ etValueinDataXml.xml,OSGI-INF/com.aem.web.models.workflow.SetValueinXml
+ .xml,OSGI-INF/com.aem.web.models.workflow.SetValueinXmlWithNewPayload.x
+ ml
+>>>>>>> 0f77221a0ebb22064ccf04a514f5d719068e2d25
 Sling-Model-Packages: com.aem.community.core
 Tool: Bnd-3.3.0.201609221906
