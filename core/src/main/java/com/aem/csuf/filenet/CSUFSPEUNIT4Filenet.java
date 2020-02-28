@@ -197,14 +197,14 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 		// log.error("Rating="+rating);
 		log.error("Json String:" + jsonString.toString());
 
-		 log.error("encodedPDF="+encodedPDF);
+		 //log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read SPEUnit4Dist");
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService.getFilenetURL();
 				url = new URL(filenetUrl);
-				// url = new URL("");
+				 url = new URL("");
 
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
