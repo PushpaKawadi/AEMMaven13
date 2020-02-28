@@ -195,7 +195,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String empComment = "";
 		String waivePeriod = "";
 		String adminCB = "";
-		String adminPrintedName = "";
+		String adminName = "";
 		String adminSign = "";
 		String adminSignDate = "";
 		String adminComments = "";
@@ -263,8 +263,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 							
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							initials = eElement.getElementsByTagName("Initials").item(0).getTextContent();
-							hrDate = eElement.getElementsByTagName("HrDate").item(0).getTextContent();
+							
 							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
 							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
@@ -429,16 +428,18 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							empComment = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
 							waivePeriod = eElement.getElementsByTagName("WaivePeriod").item(0).getTextContent();
 							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
-							adminPrintedName = eElement.getElementsByTagName("AdministratorsPrintedName").item(0)
+							adminName = eElement.getElementsByTagName("AdminName").item(0)
 									.getTextContent();
-							adminSign = eElement.getElementsByTagName("AdministratorSignature").item(0)
+							adminSign = eElement.getElementsByTagName("AdminSign").item(0)
 									.getTextContent();
 							adminSignDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
 							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
 							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
 									.getTextContent();
-							hrCB = eElement.getElementsByTagName("HRCB").item(0).getTextContent();
-							hrComments = eElement.getElementsByTagName("HrComment").item(0).getTextContent();
+							hrCB = eElement.getElementsByTagName("HRDICB").item(0).getTextContent();
+							initials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
+							hrDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
 							hrOverallRate = eElement.getElementsByTagName("HrOverallRate").item(0).getTextContent();
 
 							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
@@ -627,41 +628,41 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 					dataMap.put("HR_COORDINATOR_COMMENT", hrCoordinatorComment);
 
 					
-//					dataMap.put("EMP_DECL_CB", empCB);
-//					dataMap.put("WAIVEPERIOD", waivePeriod);
-//
-//					Object empSignObj = null;
-//					if (empSignDate != null && empSignDate != "") {
-//						Date empDateNew = Date.valueOf(empSignDate);
-//						empSignObj = empDateNew;
-//					}
-//					dataMap.put("EMPSIGNDATE", empSignObj);
-//					dataMap.put("EMPCOMMENT", empComment);
-//					dataMap.put("EMPSIGN", empSign);
+					dataMap.put("EMP_DECL_CB", empCB);
+					dataMap.put("WAIVEPERIOD", null);
+
+					Object empSignObj = null;
+					if (empSignDate != null && empSignDate != "") {
+						Date empDateNew = Date.valueOf(empSignDate);
+						empSignObj = empDateNew;
+					}
+					dataMap.put("EMPSIGNDATE", empSignObj);
+					dataMap.put("EMPCOMMENT", empComment);
+					dataMap.put("EMPSIGN", empSign);
 //					dataMap.put("REVIEWERCOMMENT", reviewerComments);
-//					dataMap.put("ADMIN_DECL_CB", adminCB);
-//
-//					Object adminSignObj = null;
-//					if (adminSignDate != null && adminSignDate != "") {
-//						Date adminDateNew = Date.valueOf(adminSignDate);
-//						adminSignObj = adminDateNew;
-//					}
-//					dataMap.put("ADMINSIGNDATE", adminSignObj);
-//					dataMap.put("ADMINCOMMENT", adminComments);
-//					dataMap.put("ADMINISTRATORSIGNATURE", adminSign);
-//					dataMap.put("ADMINISTRATORSPRINTEDNAME", adminPrintedName);
-//					dataMap.put("HR_DECL_CB", hrCB);
-//
-//					Object hrDateObj = null;
-//					if (hrDate != null && hrDate != "") {
-//						Date hrDateNew = Date.valueOf(hrDate);
-//						hrDateObj = hrDateNew;
-//					}
-//
-//					dataMap.put("HRDATE", hrDateObj);
-//					dataMap.put("HRCOMMENT", hrComments);
-//					dataMap.put("HRINITIALS", initials);
-//					dataMap.put("HROVERALLRATE", hrOverallRate);
+					dataMap.put("ADMIN_DECL_CB", adminCB);
+
+					Object adminSignObj = null;
+					if (adminSignDate != null && adminSignDate != "") {
+						Date adminDateNew = Date.valueOf(adminSignDate);
+						adminSignObj = adminDateNew;
+					}
+					dataMap.put("ADMINSIGNDATE", adminSignObj);
+					dataMap.put("ADMINCOMMENT", adminComments);
+					dataMap.put("ADMINISTRATORSIGNATURE", adminSign);
+					dataMap.put("ADMINISTRATORSPRINTEDNAME", adminName);
+					dataMap.put("HR_DECL_CB", hrCB);
+
+					Object hrDateObj = null;
+					if (hrDate != null && hrDate != "") {
+						Date hrDateNew = Date.valueOf(hrDate);
+						hrDateObj = hrDateNew;
+					}
+
+					dataMap.put("HRDATE", hrDateObj);
+					dataMap.put("HRCOMMENT", hrComments);
+					dataMap.put("HRINITIALS", initials);
+					//dataMap.put("HROVERALLRATE", hrOverallRate);
 					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 					log.error("Datamap Size=" + dataMap.size());
 
