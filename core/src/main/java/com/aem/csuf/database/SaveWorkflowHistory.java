@@ -190,102 +190,110 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 							if (stage.equals("ToManager")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager Review";
-
-								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-											.getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
+//											.getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToManagerAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Evaluation Final - Manager";
-								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-											.getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
+//											.getTextContent();
+//								} else {
+//									comments = null;
+//								}
 
 							}
 							if (stage.equals("ToManagerFinalAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager Final Evaluation";
-								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-											.getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
+//											.getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToManagerHRDI")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager HRDI Changes";
-								if (!(eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-											.getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
+//											.getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToHRCoo")) {
 								assignee = eElement.getElementsByTagName("HrCoordId").item(0).getTextContent();
 								stepName = "HR Coordinator";
-								if (!(eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
-											.getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
+//											.getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToEmployee")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								stepName = "Employee Review";
-								if (!(eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToEmployeeAck")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								stepName = "Employee Acknowledgement";
-								if (!(eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToAdmin")) {
 								assignee = eElement.getElementsByTagName("AdminUserID").item(0).getTextContent();
 								stepResponse = "Send To Appropriate Administrator";
 								stepName = "Appropriate Administrator Review";
-								if (!(eElement.getElementsByTagName("AdminComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("AdminComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 							if (stage.equals("ToHRDI")) {
 								// assignee =
 								// eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								assignee = "HR-Reviewers";
 								stepName = "HRDI Review";
-								if (!(eElement.getElementsByTagName("HRDIComment").item(0).getTextContent()
-										.equals(null))) {
-									comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
-								} else {
-									comments = null;
-								}
+								comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
+//								if (eElement.getElementsByTagName("HRDIComment").item(0).getTextContent()
+//										.equals(null)) {
+//									comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
+//								} else {
+//									comments = null;
+//								}
 							}
 
 						}
@@ -304,7 +312,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 
 				if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
 					stepCompleteTime = null;
-					comments = null;
+					//comments = null;
 					stepType = "STEPSTART";
 					String firstStr = wId.substring(0, wId.indexOf('_'));
 					String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
