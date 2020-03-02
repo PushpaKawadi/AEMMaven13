@@ -267,7 +267,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
 							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
-							empId = eElement.getElementsByTagName("EmplID").item(0).getTextContent();
+							empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
 							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
 							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
 							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
