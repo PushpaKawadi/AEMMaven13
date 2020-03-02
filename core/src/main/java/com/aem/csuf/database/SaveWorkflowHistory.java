@@ -107,7 +107,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 						if (entry1.getKey().matches("empAction")) {
 							if (entry1.getValue().toString().equals("disagree")) {
 								sendBackResponse = "Disagree";
-								if (param1.equalsIgnoreCase("End of the Workflow Assign Step")) {
+								if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
 								entry1.setValue("");
 								}
 							} else {
