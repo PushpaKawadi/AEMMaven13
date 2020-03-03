@@ -112,7 +112,7 @@ public class CSUFSPEUnit6Filenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 

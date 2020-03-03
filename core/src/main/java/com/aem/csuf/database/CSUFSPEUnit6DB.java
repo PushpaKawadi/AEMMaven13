@@ -434,8 +434,8 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 									.getTextContent();
 							adminSignDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
 							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
-									.getTextContent();
+//							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
+//									.getTextContent();
 							hrCB = eElement.getElementsByTagName("HRDICB").item(0).getTextContent();
 							initials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
 							hrDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();

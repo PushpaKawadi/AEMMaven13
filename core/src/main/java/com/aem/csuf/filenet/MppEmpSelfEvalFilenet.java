@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -50,7 +49,7 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 
 	@Reference
 	private GlobalConfigService globalConfigService;
-	
+
 	private static final Logger log = LoggerFactory
 			.getLogger(MppEmpSelfEvalFilenet.class);
 
@@ -67,6 +66,9 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 		String encodedPDF = null;
 		String empId = null;
 		String rating = null;
+		String cbid = null;
+		String depId = null;
+		String empUserID = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -128,10 +130,17 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						/*org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//HrOverallRate", doc,
-										XPathConstants.NODE);
-						rating = ratingNode.getFirstChild().getNodeValue();*/
+						org.w3c.dom.Node cbidVal = (org.w3c.dom.Node) xpath
+								.evaluate("//CBID", doc, XPathConstants.NODE);
+						cbid = cbidVal.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node depVal = (org.w3c.dom.Node) xpath
+								.evaluate("//DeptID", doc, XPathConstants.NODE);
+						depId = depVal.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node logVal = (org.w3c.dom.Node) xpath
+								.evaluate("//logUser", doc, XPathConstants.NODE);
+						empUserID = logVal.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -193,15 +202,24 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
 				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
-				+ empId + "\"," + "\"Rating\": \"" + rating + "\","
-				+ "\"AttachmentType\": " + "\"FinalSPEDOR\"" + ","
+				+ empId + "\"," + "\"OverallRating\": \"" + "" + "\","
+				+ "\"EvaluationType\": \"" + "" + "\","
+				+ "\"AttachmentType\": " + "\"MPPSelfEvalDOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
+				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \""
+				+ depId + "\"," + "\"DocType\":" + "\"MPPSE\"" + ","
+				+ "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":"
+				+ "\"2020\"" + "," + "\"StartMonth\":" + "\"05\"" + ","
+				+ "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\""
+				+ empUserID + "\"," + "\"ManagerUserID\":\"" + "" + "\","
+				+ "\"HRCoordUserID\":\"" + "" + "\","
+				+ "\"AppropriateAdminUserID\":\"" + "" + "\","
+				+ "\"Attachment\":\"" + encodedPDF + "\"}";
 		// log.error("lastName="+lastName);
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		// log.error("Json String:" + jsonString.toString());
+		log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
