@@ -115,7 +115,7 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
@@ -188,7 +188,7 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"EmpId\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
+				+ "\"EmpID\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
 				+ "\"SPEUnit4DOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		// log.error("lastName="+lastName);
