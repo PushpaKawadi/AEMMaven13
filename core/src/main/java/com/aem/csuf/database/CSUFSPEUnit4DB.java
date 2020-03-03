@@ -167,7 +167,7 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 							ratingPeriodTo = eElement.getElementsByTagName("RatingPeriodTo")
 									.item(0).getTextContent();
 							log.info("RatingPeriodTo="+ratingPeriodTo);
-							empId = eElement.getElementsByTagName("EmpId")
+							empId = eElement.getElementsByTagName("EmpID")
 									.item(0).getTextContent();
 							log.info("empId="+empId);
 							empRCD = eElement.getElementsByTagName("EmpRCD")
