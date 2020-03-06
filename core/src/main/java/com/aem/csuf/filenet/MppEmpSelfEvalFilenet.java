@@ -226,7 +226,7 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 			log.info("Read SPE2578");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService.getMppFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
