@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -43,19 +42,19 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE2579", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=SPE2579DOR" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPE2579SaveDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=SPE2579SaveDOR" })
 public class CSUFSPE2579Filenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPE2579Filenet.class);
-	
 	@Reference
 	private GlobalConfigService globalConfigService;
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -63,14 +62,17 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		String rating = null;
+		String cbid = null;
+		String deptId = null;
+		String overallRating = null;
+		String evaluationType = null;
+		String empUserId = null;
+		String managerUserId = null;
+		String hrCoordId = null;
+		String administratorId = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
+
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -80,12 +82,12 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				// /
-				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -98,7 +100,8 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -114,21 +117,57 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpID", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffFirstName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//StaffFirstName", doc,
+										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//StaffLastName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//StaffLastName", doc,
+										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
+											
+						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath
+								.evaluate("//CBID", doc, XPathConstants.NODE);
+						cbid = cbidNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//HrOverallRate", doc,
+						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//Department_ID", doc,
+										XPathConstants.NODE);
+						deptId = deptIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
+								.evaluate("//OverallRating", doc,
+										XPathConstants.NODE);
+						overallRating = overallRatingNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EvaluationType", doc, XPathConstants.NODE);
+						evaluationType = evaluationTypeNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpUserID", doc,
+										XPathConstants.NODE);
+						empUserId = empUserIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//ManagerUserID", doc,
+										XPathConstants.NODE);
+						managerUserId = managerUserIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node hrCoordIdNode = (org.w3c.dom.Node) xpath
+						.evaluate("//HrCoordId", doc,
 								XPathConstants.NODE);
-						rating = ratingNode.getFirstChild().getNodeValue();
+						hrCoordId = hrCoordIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node administratorIdNode = (org.w3c.dom.Node) xpath
+						.evaluate("//AdminUserID", doc,
+								XPathConstants.NODE);
+						administratorId = administratorIdNode.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -148,12 +187,14 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Staff_Performance_Evaluation_2,5,7,9.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_2_5_7_9.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
@@ -182,26 +223,31 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 				}
 			}
 		}
+		
 
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"Rating\": \"" + rating + "\"," + "\"AttachmentType\": "
-				+ "\"FinalSPEDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"FinalSPEPerfEval2579DOR\"" + ","
+				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"Attachment\":\"" + encodedPDF + "\","
+				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579\""
+				+ "," + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\""
+				+ overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
+				+ "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","
+				+ "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
+				+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+		
+		 log.error("Json String:" + jsonString.toString());
 
-		// log.error("encodedPDF="+encodedPDF);
+	
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPE2578");
+			log.info("Read MppPerfEvalDOR");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				//String filenetUrl = ConfigManager.getValue("filenetUrl");
+				String filenetUrl = globalConfigService.getMppFilenetURL();
+				
 				url = new URL(filenetUrl);
 				// url = new URL("");
 

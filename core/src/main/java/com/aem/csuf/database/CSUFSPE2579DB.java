@@ -197,7 +197,6 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		String adminSign = "";
 		String adminSignDate = "";
 		String adminComments = "";
-		String reviewerComments = "";
 		String hrComments = "";
 		String hrOverallRate = "";
 		String hrCB = "";
@@ -205,6 +204,11 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		String hrDate = "";
 		String addCriteriaSelection1 = "";
 		String addCriteriaSelection2 = "";
+		String hrCoordinatorSign = "";
+		String hrCoordinatorSignDate = "";
+		String hrCoordinatorSignComment = "";
+		String workflowInstance = "";
+		String hrCooCB = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -215,7 +219,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
+			workflowInstance = workItem.getWorkflow().getId();
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -258,12 +262,12 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							initials = eElement.getElementsByTagName("Initials").item(0).getTextContent();
-							hrDate = eElement.getElementsByTagName("HrDate").item(0).getTextContent();
+							initials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
+							hrDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();
 							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
 									.getTextContent();
 							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
-							empId = eElement.getElementsByTagName("EmplID").item(0).getTextContent();
+							empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
 							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
 							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
 							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
@@ -276,7 +280,7 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 							draftDate = eElement.getElementsByTagName("DraftDate").item(0).getTextContent();
 							athleticsEmp = eElement.getElementsByTagName("AthleticsEmp").item(0).getTextContent();
 							staffposdesc = eElement.getElementsByTagName("Staffposdesc").item(0).getTextContent();
-							evaluatorsName = eElement.getElementsByTagName("EvaluatorsName").item(0).getTextContent();
+							evaluatorsName = eElement.getElementsByTagName("EvaluatorName").item(0).getTextContent();
 							evaluatorsTitle = eElement.getElementsByTagName("EvaluatorsTitle").item(0).getTextContent();
 							qualityRB = eElement.getElementsByTagName("Quality").item(0).getTextContent();
 							quality1 = eElement.getElementsByTagName("quality1").item(0).getTextContent();
@@ -358,13 +362,13 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 							accepting3 = eElement.getElementsByTagName("Accepting3").item(0).getTextContent();
 							accepting4 = eElement.getElementsByTagName("Accepting4").item(0).getTextContent();
 							accepting5 = eElement.getElementsByTagName("Accepting5").item(0).getTextContent();
-							athleticsEmpRating = eElement.getElementsByTagName("AtDetails").item(0).getTextContent();
+							athleticsEmpRating = eElement.getElementsByTagName("AthleticsImpToPos").item(0).getTextContent();
 							athleticsEmpRating1 = eElement.getElementsByTagName("AtMeets").item(0).getTextContent();
 							athleticsEmpRating2 = eElement.getElementsByTagName("AtDoesnotMeet").item(0)
 									.getTextContent();
-							addCriteriaSelection1 = eElement.getElementsByTagName("AdditionalCriteria").item(0)
+							addCriteriaSelection1 = eElement.getElementsByTagName("AddCriteriaImpToPos1").item(0)
 									.getTextContent();
-							addCriteriaSelection2 = eElement.getElementsByTagName("AdditionalCriteriaV2").item(0)
+							addCriteriaSelection2 = eElement.getElementsByTagName("AddCriteriaImpToPos2").item(0)
 									.getTextContent();
 							addCriteriaCom1 = eElement.getElementsByTagName("AddCriteria1").item(0).getTextContent();
 							log.error("val of com 1:"+addCriteriaCom1);
@@ -414,28 +418,33 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 							performanceGoalComment3 = eElement.getElementsByTagName("performanceGoalComment3").item(0)
 									.getTextContent();
 							evalCB = eElement.getElementsByTagName("EvalCB").item(0).getTextContent();
-							evalPrintedName = eElement.getElementsByTagName("EvaluatorsPrintedName").item(0)
+							evalPrintedName = eElement.getElementsByTagName("EvaluatorNameSign").item(0)
 									.getTextContent();
-							evalSign = eElement.getElementsByTagName("EvaluatorsSignature").item(0).getTextContent();
-							evalSignDate = eElement.getElementsByTagName("EvalSignDate").item(0).getTextContent();
-							evalComments = eElement.getElementsByTagName("evalComments").item(0).getTextContent();
+							evalSign = eElement.getElementsByTagName("EvaluatorSign").item(0).getTextContent();
+							evalSignDate = eElement.getElementsByTagName("EvaluatorDate").item(0).getTextContent();
+							evalComments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
 							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
-							empSignDate = eElement.getElementsByTagName("Date_3").item(0).getTextContent();
+							empSignDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
 							empComment = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-							waivePeriod = eElement.getElementsByTagName("WaivePeriod").item(0).getTextContent();
 							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
-							adminPrintedName = eElement.getElementsByTagName("AdministratorsPrintedName").item(0)
+							adminPrintedName = eElement.getElementsByTagName("AdminName").item(0)
 									.getTextContent();
-							adminSign = eElement.getElementsByTagName("AdministratorSignature").item(0)
+							adminSign = eElement.getElementsByTagName("AdminSign").item(0)
 									.getTextContent();
-							adminSignDate = eElement.getElementsByTagName("Date_2").item(0).getTextContent();
+							adminSignDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
 							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
+							hrCoordinatorSign = eElement.getElementsByTagName("HRCoordinatorSign").item(0)
 									.getTextContent();
-							hrCB = eElement.getElementsByTagName("HRCB").item(0).getTextContent();
-							hrComments = eElement.getElementsByTagName("HrComment").item(0).getTextContent();
-							hrOverallRate = eElement.getElementsByTagName("HrOverallRate").item(0).getTextContent();
+							hrCoordinatorSignDate = eElement.getElementsByTagName("HRCoordinatorSignDate").item(0)
+									.getTextContent();
+							hrCoordinatorSignComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
+									.getTextContent();
+							hrCB = eElement.getElementsByTagName("HRDICB").item(0)
+									.getTextContent();
+							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
+							hrOverallRate = eElement.getElementsByTagName("HRDIOverallRate").item(0).getTextContent();
 
 						}
 					}
@@ -446,35 +455,33 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
-					dataMap.put("DRAFTDATE", draftDateGivenObj);
-					dataMap.put("ATHLETICSEMP", athleticsEmp);
+					dataMap.put("DRAFT_DT", draftDateGivenObj);
+					dataMap.put("ATHLETICS_EMP", athleticsEmp);
 					dataMap.put("STAFFPOSDESC", staffposdesc);
 					dataMap.put("EMPLID", empId);
 					dataMap.put("EMPRCD", empRCD);
 					dataMap.put("CBID", cbid);
-					dataMap.put("EVALUATIONTYPE", evaluationType);
-					dataMap.put("FIRSTNAME", firstName);
-					dataMap.put("LASTNAME", lastName);
+					dataMap.put("EVALUATION_TYPE", evaluationType);
+					dataMap.put("FIRST_NAME", firstName);
+					dataMap.put("LAST_NAME", lastName);
 					dataMap.put("CLASSIFICATION", classification);
 					dataMap.put("EMPRANGE", range);
 					dataMap.put("DEPARTMENT", departmentName);
-					// Integer deptartmentId = Integer.parseInt(departmentID);
-					// Object deptId = deptartmentId;
-					dataMap.put("DEPARTMENTID", Integer.parseInt(departmentID));
-					dataMap.put("EVALUATORSNAME", evaluatorsName);
-					dataMap.put("EVALUATORSTITLE", evaluatorsTitle);
+					dataMap.put("DEPARTMENT_ID", Integer.parseInt(departmentID));
+					dataMap.put("EVALUATORS_NAME", evaluatorsName);
+					dataMap.put("EVALUATORS_TITLE", evaluatorsTitle);
 					Object reviewPeriodFromObj = null;
 					if (ratingPeriodFrom != null && ratingPeriodFrom != "") {
 						Date reviewPeriodFromNew = Date.valueOf(ratingPeriodFrom);
 						reviewPeriodFromObj = reviewPeriodFromNew;
 					}
-					dataMap.put("REVIEWPERIODFROM", reviewPeriodFromObj);
+					dataMap.put("REVIEWPERIOD_FROM", reviewPeriodFromObj);
 					Object reviewPeriodToObj = null;
 					if (ratingPeriodTo != null && ratingPeriodTo != "") {
 						Date reviewPeriodToNew = Date.valueOf(ratingPeriodTo);
 						reviewPeriodToObj = reviewPeriodToNew;
 					}
-					dataMap.put("REVIEWPERIODTO", reviewPeriodToObj);
+					dataMap.put("REVIEWPERIOD_TO", reviewPeriodToObj);
 
 					dataMap.put("QUALITY", qualityRB);
 					dataMap.put("QUALITY_RATING_1", quality1);
@@ -606,9 +613,9 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 					dataMap.put("PERFORMANCEGOALCOMMENT3", performanceGoalComment3);
 
 					dataMap.put("EVAL_DECL_CB", evalCB);
-					dataMap.put("EVALUATORSPRINTEDNAME", evalPrintedName);
-					dataMap.put("EVALUATORSSIGNATURE", evalSign);
-					dataMap.put("EVALCOMMENTS", evalComments);
+					dataMap.put("EVALUATORS_PRINTED_NAME", evalPrintedName);
+					dataMap.put("EVALUATORS_SIGNATURE", evalSign);
+					dataMap.put("EVAL_COMMENTS", evalComments);
 
 					Object evalDateObj = null;
 					if (evalSignDate != null && evalSignDate != "") {
@@ -616,19 +623,16 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						evalDateObj = evalDateNew;
 					}
 
-					dataMap.put("EVALSIGNDATE", evalDateObj);
+					dataMap.put("EVAL_SIGNED_DATE", evalDateObj);
 					dataMap.put("EMP_DECL_CB", empCB);
-					dataMap.put("WAIVEPERIOD", waivePeriod);
-
 					Object empSignObj = null;
 					if (empSignDate != null && empSignDate != "") {
 						Date empDateNew = Date.valueOf(empSignDate);
 						empSignObj = empDateNew;
 					}
-					dataMap.put("EMPSIGNDATE", empSignObj);
-					dataMap.put("EMPCOMMENT", empComment);
+					dataMap.put("EMP_SIGNED_DATE", empSignObj);
+					dataMap.put("EMP_COMMENT", empComment);
 					dataMap.put("EMPSIGN", empSign);
-					dataMap.put("REVIEWERCOMMENT", reviewerComments);
 					dataMap.put("ADMIN_DECL_CB", adminCB);
 
 					Object adminSignObj = null;
@@ -636,10 +640,19 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						Date adminDateNew = Date.valueOf(adminSignDate);
 						adminSignObj = adminDateNew;
 					}
-					dataMap.put("ADMINSIGNDATE", adminSignObj);
-					dataMap.put("ADMINCOMMENT", adminComments);
-					dataMap.put("ADMINISTRATORSIGNATURE", adminSign);
-					dataMap.put("ADMINISTRATORSPRINTEDNAME", adminPrintedName);
+					dataMap.put("ADMIN_SIGNED_DATE", adminSignObj);
+					dataMap.put("ADMIN_COMMENT", adminComments);
+					dataMap.put("ADMIN_SIGNATURE", adminSign);
+					dataMap.put("ADMIN_PRINTED_NAME", adminPrintedName);
+					dataMap.put("HRCOOCB", hrCooCB);
+					dataMap.put("HRCOO_SIGN", hrCoordinatorSign);
+					Object hrCooDateObj = null;
+					if (hrCoordinatorSignDate != null && hrCoordinatorSignDate != "") {
+						Date hrCooDateNew = Date.valueOf(hrCoordinatorSignDate);
+						hrCooDateObj = hrCooDateNew;
+					}
+					dataMap.put("HRCOO_SIGNED_DATE", hrCooDateObj);
+					dataMap.put("HRCOO_COMMENT", hrCoordinatorSignComment);
 					dataMap.put("HR_DECL_CB", hrCB);
 
 					Object hrDateObj = null;
@@ -648,10 +661,12 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 						hrDateObj = hrDateNew;
 					}
 
-					dataMap.put("HRDATE", hrDateObj);
-					dataMap.put("HRCOMMENT", hrComments);
-					dataMap.put("HRINITIALS", initials);
-					dataMap.put("HROVERALLRATE", hrOverallRate);
+					dataMap.put("HR_SIGNED_DATE", hrDateObj);
+					dataMap.put("HR_COMMENT", hrComments);
+					dataMap.put("HR_INITIALS", initials);
+					dataMap.put("HR_OVERALL_RATING", hrOverallRate);
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
+					log.error("put complete");
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {

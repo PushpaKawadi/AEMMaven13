@@ -87,6 +87,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 		String stepName = "";
 		String comments = "";
 		String sendBackResponse = "";
+		String expiryKeyVal = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		String wfInstanceID = workItem.getWorkflow().getId(); // Workflow instance id
@@ -101,33 +102,78 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 
 			workflowInstance = workItem.getWorkflow().getId();
 			payloadPath = workItem.getWorkflowData().getPayload().toString();
+
 			for (Map.Entry<String, Object> entry : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
-				if (entry.getKey().matches(actionTaken)) {
-					for (Map.Entry<String, Object> entry1 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
-						if (entry1.getKey().matches("empAction")) {
-							if (entry1.getValue().toString().equals("disagree")) {
-								sendBackResponse = "Disagree";
-								if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
-								entry1.setValue("");
-								}
-							} else {
-								sendBackResponse = "";
-							}
-						}
-					}
-					if (sendBackResponse.equals("Disagree")) {
-						stepResponse = sendBackResponse;
-						
-					} else {
-						stepResponse = entry.getValue().toString();
-					}
+				if (entry.getKey().matches("ExpiryKey")) {
+					expiryKeyVal = entry.getValue().toString();
+					break;
 				}
 			}
+			if (expiryKeyVal.equals("true")) {
+					
+						for (Map.Entry<String, Object> expEntry : workItem.getWorkflowData().getMetaDataMap()
+								.entrySet()) {
+							log.info("actionTaken="+actionTaken);
+							if (expEntry.getKey().matches(actionTaken)) {
+								
+								stepResponse = expEntry.getValue().toString();
+								break;
+							} 
+//							else {
+//								log.info(" mismatch");
+//								stepResponse = "Expired";
+//								
+//							}
+					}
+
+				} else {
+					
+					for (Map.Entry<String, Object> nonExpEntry : workItem.getWorkflowData().getMetaDataMap()
+							.entrySet()) {
+						if (nonExpEntry.getKey().matches(actionTaken)) {
+							for (Map.Entry<String, Object> nonExpEntry1 : workItem.getWorkflowData().getMetaDataMap()
+									.entrySet()) {
+								if (nonExpEntry1.getKey().matches("empAction")) {
+									
+									if (nonExpEntry1.getValue().toString().equals("disagree")) {
+										
+										sendBackResponse = "Disagree";
+										if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
+											nonExpEntry1.setValue("");
+										}
+									} else {
+										
+										sendBackResponse = "";
+									}
+								}
+
+							}
+							if (sendBackResponse.equals("Disagree")) {
+								stepResponse = sendBackResponse;
+
+							} else {
+
+								stepResponse = nonExpEntry.getValue().toString();
+
+							}
+						}
+
+					}
+				}
+			
+
+			if (expiryKeyVal.equals("true")) {
+				log.info("step response= " + stepResponse);
+				if (stepResponse == null || stepResponse == "") {
+					stepResponse = "Expired";
+				}
+
+			}
+
 			workflowName = workItem.getWorkflow().getWorkflowModel().getId();
 			stepStartTime = new java.sql.Timestamp(System.currentTimeMillis());
 			workflowInitiator = workItem.getWorkflow().getInitiator();
 			Resource attachmentXml = xmlFiles.next();
-			log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -191,109 +237,65 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager Review";
 								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-//											.getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 							if (stage.equals("ToManagerAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Evaluation Final - Manager";
 								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-//											.getTextContent();
-//								} else {
-//									comments = null;
-//								}
 
 							}
 							if (stage.equals("ToManagerFinalAcknowledge")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager Final Evaluation";
 								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-//											.getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
+							}
+							if (stage.equals("ToManagerAcknowledgeOnExpire")) {
+								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
+								stepName = "Evaluation Final - Manager";
+								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
+
 							}
 							if (stage.equals("ToManagerHRDI")) {
 								assignee = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
 								stepName = "Manager HRDI Changes";
 								comments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EvaluatorComment").item(0)
-//											.getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 							if (stage.equals("ToHRCoo")) {
 								assignee = eElement.getElementsByTagName("HrCoordId").item(0).getTextContent();
 								stepName = "HR Coordinator";
-								comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
-//											.getTextContent();
-//								} else {
-//									comments = null;
-//								}
+								comments = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
+										.getTextContent();
+
 							}
 							if (stage.equals("ToEmployee")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								stepName = "Employee Review";
 								comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 							if (stage.equals("ToEmployeeAck")) {
 								assignee = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								stepName = "Employee Acknowledgement";
 								comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("EmpComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 							if (stage.equals("ToAdmin")) {
 								assignee = eElement.getElementsByTagName("AdminUserID").item(0).getTextContent();
-								stepResponse = "Send To Appropriate Administrator";
+								// stepResponse = "Send To Appropriate Administrator";
 								stepName = "Appropriate Administrator Review";
 								comments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("AdminComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 							if (stage.equals("ToHRDI")) {
-								// assignee =
+								// assignee =ToManagerAcknowledgeOnExpire
 								// eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
 								assignee = "HR-Reviewers";
 								stepName = "HRDI Review";
 								comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
-//								if (eElement.getElementsByTagName("HRDIComment").item(0).getTextContent()
-//										.equals(null)) {
-//									comments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
-//								} else {
-//									comments = null;
-//								}
+
 							}
 
 						}
@@ -312,7 +314,7 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 
 				if (param1.equalsIgnoreCase("Start of the Workflow Assign Step")) {
 					stepCompleteTime = null;
-					//comments = null;
+					// comments = null;
 					stepType = "STEPSTART";
 					String firstStr = wId.substring(0, wId.indexOf('_'));
 					String secString = wId.substring(wId.indexOf('_') + 1, wId.length());
