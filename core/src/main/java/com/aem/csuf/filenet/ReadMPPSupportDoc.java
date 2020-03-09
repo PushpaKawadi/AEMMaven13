@@ -226,8 +226,7 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 									try {
 										String filenetUrl = globalConfigService.getMppFilenetURL();
 										url = new URL(filenetUrl);
-										
-									//	log.info("jsonString=" + jsonString);
+										//	log.info("jsonString=" + jsonString);
 									} catch (MalformedURLException e) {
 										e.printStackTrace();
 									}
