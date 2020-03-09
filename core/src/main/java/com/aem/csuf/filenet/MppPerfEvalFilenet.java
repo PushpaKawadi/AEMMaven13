@@ -230,7 +230,7 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPE\"" + ","  + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 		
-		 log.error("Json String:" + jsonString.toString());
+		// log.error("Json String:" + jsonString.toString());
 
 	
 		if (encodedPDF != null && lastName != null && firstName != null) {
