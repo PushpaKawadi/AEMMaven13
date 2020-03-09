@@ -224,7 +224,7 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 									log.error("Read inner suppoting doc");
 									URL url = null;
 									try {
-										String filenetUrl = globalConfigService.getFilenetURL();
+										String filenetUrl = globalConfigService.getMppFilenetURL();
 										url = new URL(filenetUrl);
 										
 									//	log.info("jsonString=" + jsonString);
