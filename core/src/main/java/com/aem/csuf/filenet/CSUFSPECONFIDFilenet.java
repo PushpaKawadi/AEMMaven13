@@ -186,15 +186,15 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"Rating\": \"" + rating + "\"," + "\"AttachmentType\": "
+		String jsonString = "{" + "\"StaffFirstName\": \"" + firstName + "\"," + "\"StaffLastName\": \"" + lastName + "\","
+				+ "\"EmplID\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
 				+ "\"SPECONFDISTDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+		 log.error("lastName="+lastName);
+		 log.error("firstName="+firstName);
+		 log.error("empId="+empId);
+		 log.error("Rating="+rating);
+		log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
