@@ -186,8 +186,8 @@ public class MppPerfEvalDB implements WorkflowProcess {
 									.getTextContent();
 							technicalSkills = eElement.getElementsByTagName("TechnicalSkills").item(0).getTextContent();
 							others = eElement.getElementsByTagName("OtherSkills").item(0).getTextContent();
-							overallPerformance = eElement.getElementsByTagName("OverallPerformance").item(0)
-									.getTextContent();
+//							overallPerformance = eElement.getElementsByTagName("OverallPerformance").item(0)
+//									.getTextContent();
 							overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
 							sectionBComments = eElement.getElementsByTagName("SectionB").item(0).getTextContent();
 							evalName = eElement.getElementsByTagName("EvaluatorNameSign").item(0).getTextContent();
@@ -219,21 +219,30 @@ public class MppPerfEvalDB implements WorkflowProcess {
 							hrCB = eElement.getElementsByTagName("HRDICB").item(0)
 									.getTextContent();
 							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
-
+                    log.info("val save complete");
 						}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
 					
 					dataMap.put("EMPID", empId);
+					
 					dataMap.put("LASTNAME", lastName);
+					
 					dataMap.put("FIRSTNAME", firstName);
+					
 					dataMap.put("CLASSIFICATION", classification);
+					
 					dataMap.put("EMPRCD", empRCD);
+					
 					dataMap.put("CBID", cbid);
+					
 					dataMap.put("DEPTNAME", departmentName);
+					
 					dataMap.put("RANGE", range);
+					
 					dataMap.put("DEPTID", departmentID);
+					
 					Object ratingPeriodFromObj = null;
 					if (ratingPeriodFrom != null && ratingPeriodFrom != "") {
 						Date ratingPeriodFromNew = Date.valueOf(ratingPeriodFrom);
@@ -254,7 +263,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("INTERPERSONALSKILLS", interPersonalSkills);
 					dataMap.put("TECHNICALSKILLS", technicalSkills);
 					dataMap.put("OTHERS", others);
-					dataMap.put("OVERALL_PERFORMANCE", overallPerformance);
+				//	dataMap.put("OVERALL_PERFORMANCE", overallPerformance);
 					dataMap.put("OVERALLRATING", overallRating);
 					dataMap.put("SECTIONBCOMMENTS", sectionBComments);
 					dataMap.put("ATHLETICEMP_IMP_TO_POS", atCritical);
@@ -265,7 +274,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("SUPPORTSTMT4", supportStmt4);
 					dataMap.put("EVALUATORNAMESIGN", evalName);
 					dataMap.put("EVALUATORSIGN", evalSign);
-					
+					log.info("Till Eval Sign");
 					Object evalDateObj = null;
 					if (evalDate != null && evalDate != "") {
 						Date evalDateNew = Date.valueOf(evalDate);
@@ -274,6 +283,7 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					//dataMap.put("EVALUATORDATE", null);
 					dataMap.put("EVALUATORDATE", evalDateObj);
 					dataMap.put("EVALUATORCOMMENT", evalComments);
+					log.info("Till eval comment"+evalComments);
 					dataMap.put("EVALCB", evalCB);
 					dataMap.put("ADMINNAME", adminName);
 					dataMap.put("ADMINSIGN", adminSign);
