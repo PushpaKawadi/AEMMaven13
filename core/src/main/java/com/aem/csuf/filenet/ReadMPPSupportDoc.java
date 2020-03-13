@@ -43,7 +43,7 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Staff Support Doc",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read MPP Support Doc",
 		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read MPP Support Doc" })
 public class ReadMPPSupportDoc implements WorkflowProcess {
 

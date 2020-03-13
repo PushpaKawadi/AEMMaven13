@@ -17,8 +17,12 @@ package com.aem.community.core.servlets;
 
 import java.io.IOException;
 import java.sql.Connection;
+import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import org.apache.sling.api.SlingHttpServletRequest;
@@ -69,6 +73,7 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 			reviewPeriodTo = req.getParameter("reviewPeriodTo");
 			reviewPeriodFrom = req.getParameter("reviewPeriodFrom");
 			deptID = req.getParameter("deptID");
+			
 		}
 
 		if (dbConn != null) {
@@ -92,11 +97,13 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		//String userIDSQL = "select * from aem_mpp_self_eval where empid='899943393' and review_period_from='16-APR-19' and review_period_to='15-APR-20' and deptid='10100'";
-		
+		SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd");
+		SimpleDateFormat reqFormat = new SimpleDateFormat("dd-MMM-yy");
 		String userIDSQL = ConfigManager.getValue("MPPReviewSQL");
+		
 		userIDSQL = userIDSQL.replaceAll("<<empid>>", empID);
-		userIDSQL = userIDSQL.replaceAll("<<review_period_from>>", reviewPeriodFrom);
-		userIDSQL = userIDSQL.replaceAll("<<review_period_to>>", reviewPeriodTo);
+		userIDSQL = userIDSQL.replaceAll("<<review_period_from>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
+		userIDSQL = userIDSQL.replaceAll("<<review_period_to>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
 		userIDSQL = userIDSQL.replaceAll("<<deptid>>", deptID);
 		
 		logger.info("userIDSQL="+userIDSQL);
