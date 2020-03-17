@@ -58,18 +58,18 @@ public class ReadMPPSelfEvalSupportingDocs implements WorkflowProcess {
 
 		Document doc = null;
 		InputStream is = null;
-		String firstName = null;
-		String lastName = null;
-		String encodedPDF = null;
-		String empId = null;
-		String cbid = null;
-		String deptId = null;
-		String overallRating = null;
-		String evaluationType = null;
-		String empUserId = null;
-		String managerUserId = null;
-		String hrCoordId = null;
-		String administratorId = null;
+		String firstName = "";
+		String lastName = "";
+		String encodedPDF = "";
+		String empId = "";
+		String cbid = "";
+		String deptId = "";
+		String overallRating = "";
+		String evaluationType = "";
+		String empUserId = "";
+		String managerUserId = "";
+		String hrCoordId = "";
+		String administratorId = "";
 		String attachmentMimeType = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 
@@ -212,7 +212,7 @@ public class ReadMPPSelfEvalSupportingDocs implements WorkflowProcess {
 
 									String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
 											+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
-											+ "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + ","
+											+ "\"AttachmentType\": " + "\"EmpSelfEvalSupDOR\"" + ","
 											+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
 											+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
 											+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPSESD\""
@@ -223,14 +223,14 @@ public class ReadMPPSelfEvalSupportingDocs implements WorkflowProcess {
 											+ "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
 											+ "\"HRCoordUserID\":\"" + hrCoordId + "\","
 											+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
-
+									 log.info("jsonString=" + jsonString);
 									if (encodedPDF != null && lastName != null && firstName != null) {
 										log.error("Read Self Eval suppoting doc");
 										URL url = null;
 										try {
 											String filenetUrl = globalConfigService.getMppFilenetURL();
 											url = new URL(filenetUrl);
-										 //log.info("jsonString=" + jsonString);
+										 log.info("jsonString=" + jsonString);
 										} catch (MalformedURLException e) {
 											e.printStackTrace();
 										}
