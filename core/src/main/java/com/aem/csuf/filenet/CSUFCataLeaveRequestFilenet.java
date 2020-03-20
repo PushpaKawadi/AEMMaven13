@@ -115,7 +115,7 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EMPLID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 

@@ -376,8 +376,10 @@ public class CSUFStudentPerfEvalDB implements WorkflowProcess {
 				}
 			}
 			try {
+				log.info("Before AEM_STUDENT_PERF_EVAL Insertion");
 				preparedStmt.execute();
 				conn.commit();
+				log.info("After AEM_STUDENT_PERF_EVAL Insertion");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
