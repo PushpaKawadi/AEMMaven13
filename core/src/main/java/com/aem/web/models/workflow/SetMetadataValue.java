@@ -26,6 +26,11 @@ public class SetMetadataValue implements WorkflowProcess {
 			String[] itemsArray = items.split("=");
 			String valueObtained = itemsArray[1];
 			String keyObtained = itemsArray[0];
+			
+			if(valueObtained.equals("null")) {
+				valueObtained = "";
+				
+			}
 			try {
 			MetaDataMap wfd = workItem.getWorkflow().getWorkflowData().getMetaDataMap();
 			wfd.put(keyObtained, valueObtained);
