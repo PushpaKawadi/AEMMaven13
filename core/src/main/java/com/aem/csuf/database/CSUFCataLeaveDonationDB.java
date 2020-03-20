@@ -76,6 +76,7 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
+		String wfInstanceID = workItem.getWorkflow().getId();
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -184,6 +185,7 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 					dataMap.put("VACATION_CREDITS", vacationHours);
 					dataMap.put("DONAR_CATAGORY", donarCatagory);
 					dataMap.put("SIGNATURE", signature);
+					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();

@@ -88,6 +88,8 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
+		String wfInstanceID = workItem.getWorkflow().getId();
+		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -242,6 +244,7 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("EMP_REPRESENTATIVE", empRepresentative);
 					dataMap.put("DEPARTMENT", department);
 					dataMap.put("PAYROLL", payroll);
+					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();
