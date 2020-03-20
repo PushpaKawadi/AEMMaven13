@@ -118,6 +118,7 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 				employeeEvalDetails.put("evaluation2", oRresultSet.getString("EVALUATION2"));
 				employeeEvalDetails.put("evaluation3", oRresultSet.getString("EVALUATION3"));
 				employeeEvalDetails.put("evaluation4", oRresultSet.getString("EVALUATION4"));
+				//employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
 				jArray.put(employeeEvalDetails);
 			}
 
