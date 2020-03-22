@@ -41,10 +41,10 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
+//import com.aem.community.util.ConfigManager;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPEUNIT8DIST", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=SPEUNIT8DISTDOR" })
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=SPECONFIDENTIALDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=SPECONFIDENTIALDOR" })
 public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPEUNIT8DISTFilenet.class);
@@ -73,14 +73,14 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-		    
+			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				
-				// 
+				log.info("xmlFiles=" + filePath);
+				// /
 				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
@@ -114,7 +114,7 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
@@ -126,7 +126,7 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//HrOverallRate", doc,
+						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
 								XPathConstants.NODE);
 						rating = ratingNode.getFirstChild().getNodeValue();
 
@@ -149,7 +149,6 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 			// Base encoder
 
 			if (filePath.contains("Staff_Performance_Evaluation_Unit8.pdf")) {
-				
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -187,20 +186,19 @@ public class CSUFSPEUNIT8DISTFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		log.info("before json string");
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"Rating\": \"" + rating + "\"," + "\"AttachmentType\": "
-				+ "\"SPEUnit8DOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
+		String jsonString = "{" + "\"StaffFirstName\": \"" + firstName + "\"," + "\"StaffLastName\": \"" + lastName + "\","
+				+ "\"EmpID\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
+				+ "\"SPECONFDISTDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
+		 log.error("lastName="+lastName);
+		 log.error("firstName="+firstName);
+		 log.error("empId="+empId);
+		 log.error("Rating="+rating);
 		log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPEUnit8Dist");
+			log.info("Read SPEConfDist");
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService.getFilenetURL();

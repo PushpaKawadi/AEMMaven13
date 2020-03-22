@@ -41,7 +41,7 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
+//import com.aem.community.util.ConfigManager;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=SPECONFIDENTIALDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=SPECONFIDENTIALDOR" })
@@ -114,7 +114,7 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
@@ -187,7 +187,7 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"StaffFirstName\": \"" + firstName + "\"," + "\"StaffLastName\": \"" + lastName + "\","
-				+ "\"EmplID\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
+				+ "\"EmpID\": \"" + empId + "\"," + "\"OverallRating\": \"" + rating + "\"," + "\"AttachmentType\": "
 				+ "\"SPECONFDISTDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		 log.error("lastName="+lastName);

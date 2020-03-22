@@ -41,10 +41,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class CSUFSPEUnit6DB implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPEUnit6DB.class);
-	
+
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-	
+
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -54,9 +54,8 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
-		String ratingPeriodFrom = "";
-		String ratingPeriodTo = "";
+		
+		String staffPosDesc = "";
 		String empId = "";
 		String empRCD = "";
 		String cbid = "";
@@ -67,10 +66,11 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String lastName = "";
 		String departmentID = "";
 		String departmentName = "";
-		String draftDate = "";
-		String staffposdesc = "";
+		String draftDate = "";		
 		String evaluatorsName = "";
 		String evaluatorsTitle = "";
+		String reviewPeriodFrom = "";
+		String reviewPeriodTo = "";
 		String qualityRB = "";
 		String quality1 = "";
 		String quality2 = "";
@@ -182,31 +182,25 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String evalSign = "";
 		String evalSignDate = "";
 		String evalComments = "";
-		
-		String hrCooCB = "";
-		String hrCoordinatorSign = "";
-		String hrCoordinatorDate = "";
-		String hrCoordinatorComment = "";
-		
-		
 		String empCB = "";
-		String empSign = "";
-		String empSignDate = "";
-		String empComment = "";
-		String waivePeriod = "";
+		String empSign = "";	
+		String empComment = "";	
 		String adminCB = "";
-		String adminName = "";
 		String adminSign = "";
-		String adminSignDate = "";
-		String adminComments = "";
-		String reviewerComments = "";
-		String hrComments = "";
-		String hrOverallRate = "";
-		String hrCB = "";
-		String initials = "";
-		String hrDate = "";
 		String addCriteriaSelection1 = "";
 		String addCriteriaSelection2 = "";
+		String hrCoordCB = "";
+		String hrCoordSign = "";
+		String hrCoordDate = "";
+		String hrCoordComment = "";
+		String empDate = "";
+		String adminName = "";	
+		String adminDate = "";
+		String adminComment = "";
+		String hrdiCB = "";
+		String hrdiInitials = "";
+		String hrdiDate = "";
+		String hrdiComment = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -215,12 +209,9 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		// factory to parse the xml and fetch the required values for the
 		// filenet
 		// attachment
-		
-		String wfInstanceID = workItem.getWorkflow().getId(); 
-		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			
+			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -261,25 +252,26 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 						org.w3c.dom.Node nNode = nList.item(temp);
 
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-							
+
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							
-							ratingPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0)
-									.getTextContent();
-							ratingPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
+							// initials =
+							// eElement.getElementsByTagName("Initials").item(0).getTextContent();
+							draftDate = eElement.getElementsByTagName("DraftDate").item(0).getTextContent();
+							staffPosDesc = eElement.getElementsByTagName("Staffposdesc").item(0).getTextContent();
 							empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
 							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
 							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
-							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
-							range = eElement.getElementsByTagName("Range").item(0).getTextContent();
 							evaluationType = eElement.getElementsByTagName("EvaluationType").item(0).getTextContent();
 							firstName = eElement.getElementsByTagName("StaffFirstName").item(0).getTextContent();
 							lastName = eElement.getElementsByTagName("StaffLastName").item(0).getTextContent();
-							departmentID = eElement.getElementsByTagName("Department_ID").item(0).getTextContent();
+							classification = eElement.getElementsByTagName("Classification").item(0).getTextContent();
+							range = eElement.getElementsByTagName("Range").item(0).getTextContent();
 							departmentName = eElement.getElementsByTagName("Department").item(0).getTextContent();
-							draftDate = eElement.getElementsByTagName("DraftDate").item(0).getTextContent();
-
-							staffposdesc = eElement.getElementsByTagName("Staffposdesc").item(0).getTextContent();
+							departmentID = eElement.getElementsByTagName("Department_ID").item(0).getTextContent();
+							evaluatorsName = eElement.getElementsByTagName("EvaluatorsName").item(0).getTextContent();
+							evaluatorsTitle = eElement.getElementsByTagName("EvaluatorsTitle").item(0).getTextContent();
+							reviewPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0).getTextContent();
+							reviewPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
 							evaluatorsName = eElement.getElementsByTagName("EvaluatorsName").item(0).getTextContent();
 							evaluatorsTitle = eElement.getElementsByTagName("EvaluatorsTitle").item(0).getTextContent();
 							qualityRB = eElement.getElementsByTagName("Quality").item(0).getTextContent();
@@ -300,8 +292,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							oralComm3 = eElement.getElementsByTagName("OC3").item(0).getTextContent();
 							oralComm4 = eElement.getElementsByTagName("OC4").item(0).getTextContent();
 							oralComm5 = eElement.getElementsByTagName("OC5").item(0).getTextContent();
-							interpersonalSkillsRB = eElement.getElementsByTagName("InterpersonalSkills").item(0)
-									.getTextContent();
+							interpersonalSkillsRB = eElement.getElementsByTagName("InterpersonalSkills").item(0).getTextContent();
 							interpersonalSkills1 = eElement.getElementsByTagName("IPSkill1").item(0).getTextContent();
 							interpersonalSkills2 = eElement.getElementsByTagName("IPSkill2").item(0).getTextContent();
 							interpersonalSkills3 = eElement.getElementsByTagName("IPSkill3").item(0).getTextContent();
@@ -313,8 +304,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							initiative3 = eElement.getElementsByTagName("Initiative3").item(0).getTextContent();
 							initiative4 = eElement.getElementsByTagName("Initiative4").item(0).getTextContent();
 							initiative5 = eElement.getElementsByTagName("Initiative5").item(0).getTextContent();
-							serviceOrientationRB = eElement.getElementsByTagName("ServiceOrientation").item(0)
-									.getTextContent();
+							serviceOrientationRB = eElement.getElementsByTagName("ServiceOrientation").item(0).getTextContent();
 							serviceOrientation1 = eElement.getElementsByTagName("SC1").item(0).getTextContent();
 							serviceOrientation2 = eElement.getElementsByTagName("SC2").item(0).getTextContent();
 							serviceOrientation3 = eElement.getElementsByTagName("SC3").item(0).getTextContent();
@@ -362,13 +352,11 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							accepting3 = eElement.getElementsByTagName("Accepting3").item(0).getTextContent();
 							accepting4 = eElement.getElementsByTagName("Accepting4").item(0).getTextContent();
 							accepting5 = eElement.getElementsByTagName("Accepting5").item(0).getTextContent();
-							addCriteriaSelection1 = eElement.getElementsByTagName("AddCriteriaImpToPos_1").item(0)
-									.getTextContent();
-							addCriteriaSelection2 = eElement.getElementsByTagName("AddCriteriaImpToPos_2").item(0)
-									.getTextContent();
+							addCriteriaSelection1 = eElement.getElementsByTagName("AddCriteriaImpToPostion_1").item(0).getTextContent();
+							addCriteriaSelection2 = eElement.getElementsByTagName("AddCriteriaImpToPostion_2").item(0).getTextContent();
 							addCriteriaCom1 = eElement.getElementsByTagName("AddCriteria1").item(0).getTextContent();
-							log.error("val of com 1:" + addCriteriaCom1);
-
+							log.error("val of com 1:" + addCriteriaCom1);						
+							
 							addCriteriaCom2 = eElement.getElementsByTagName("AddCriteria2").item(0).getTextContent();
 							log.error("val of com 2:" + addCriteriaCom2);
 							addCriteriaRating1 = eElement.getElementsByTagName("Additional1").item(0).getTextContent();
@@ -402,9 +390,10 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 									.getTextContent();
 							criteriaComment10 = eElement.getElementsByTagName("AdditionalCriteria10").item(0)
 									.getTextContent();
-							overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
-							supportFactorComments1 = eElement.getElementsByTagName("supportFactorComments1").item(0)
-									.getTextContent();
+							overallRating = eElement.getElementsByTagName("OverallRating")
+									.item(0).getTextContent();
+							supportFactorComments1 = eElement.getElementsByTagName("supportFactorComments1")
+									.item(0).getTextContent();
 							supportFactorComments2 = eElement.getElementsByTagName("supportFactorComments2").item(0)
 									.getTextContent();
 							performanceGoalComment1 = eElement.getElementsByTagName("performanceGoalComment1").item(0)
@@ -414,39 +403,32 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							performanceGoalComment3 = eElement.getElementsByTagName("performanceGoalComment3").item(0)
 									.getTextContent();
 							evalCB = eElement.getElementsByTagName("EvalCB").item(0).getTextContent();
-//							evalPrintedName = eElement.getElementsByTagName("EvaluatorsPrintedName").item(0)
-//									.getTextContent();
 							evalPrintedName = eElement.getElementsByTagName("EvaluatorNameSign").item(0)
 									.getTextContent();
 							evalSign = eElement.getElementsByTagName("EvaluatorSign").item(0).getTextContent();
 							evalSignDate = eElement.getElementsByTagName("EvaluatorDate").item(0).getTextContent();
+							log.info("The Evaluator Date is:= " + evalSignDate);
 							evalComments = eElement.getElementsByTagName("EvaluatorComment").item(0).getTextContent();
-							
+							hrCoordCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
+							hrCoordSign = eElement.getElementsByTagName("HRCoordinatorSign").item(0).getTextContent();
+							hrCoordDate = eElement.getElementsByTagName("HRCoordinatorSignDate").item(0).getTextContent();
+							hrCoordComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent();
 							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
-							empSignDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
-							empComment = eElement.getElementsByTagName("EmpComment").item(0).getTextContent();
-							waivePeriod = eElement.getElementsByTagName("WaivePeriod").item(0).getTextContent();
-							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
-							adminName = eElement.getElementsByTagName("AdminName").item(0)
+							empDate = eElement.getElementsByTagName("EmpDate").item(0)
 									.getTextContent();
+							empComment = eElement.getElementsByTagName("EmpComment").item(0)
+									.getTextContent();
+							adminCB = eElement.getElementsByTagName("AdminCB").item(0).getTextContent();
+							adminName = eElement.getElementsByTagName("AdminName").item(0).getTextContent();
 							adminSign = eElement.getElementsByTagName("AdminSign").item(0)
 									.getTextContent();
-							adminSignDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
-							adminComments = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
-//							reviewerComments = eElement.getElementsByTagName("ReviewerComment").item(0)
-//									.getTextContent();
-							hrCB = eElement.getElementsByTagName("HRDICB").item(0).getTextContent();
-							initials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
-							hrDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();
-							hrComments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
-							hrOverallRate = eElement.getElementsByTagName("HrOverallRate").item(0).getTextContent();
-
-							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
-							hrCoordinatorComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0).getTextContent();
-							hrCoordinatorDate = eElement.getElementsByTagName("HRCoordinatorSignDate").item(0).getTextContent();
-							hrCoordinatorSign = eElement.getElementsByTagName("HRCoordinatorSign").item(0).getTextContent();
-							
+							adminDate = eElement.getElementsByTagName("AdminDate").item(0).getTextContent();
+							adminComment = eElement.getElementsByTagName("AdminComment").item(0).getTextContent();
+							hrdiCB = eElement.getElementsByTagName("HRDICB").item(0).getTextContent();
+							hrdiInitials = eElement.getElementsByTagName("HRDIInitials").item(0).getTextContent();
+							hrdiDate = eElement.getElementsByTagName("HRDIDate").item(0).getTextContent();
+							hrdiComment = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
 						}
 					}
 					Object draftDateGivenObj = null;
@@ -456,34 +438,34 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
-					dataMap.put("DRAFTDATE", draftDateGivenObj);
-					dataMap.put("STAFFPOSDESC", staffposdesc);
-					dataMap.put("EMPLID", empId);
-					dataMap.put("EMPRCD", empRCD);
+					dataMap.put("DRAFT_DATE", draftDateGivenObj);
+					dataMap.put("STAFF_POS_DESC", staffPosDesc);
+					dataMap.put("EMPL_ID", empId);
+					dataMap.put("EMP_RCD", empRCD);
 					dataMap.put("CBID", cbid);
-					dataMap.put("EVALUATIONTYPE", evaluationType);
-					dataMap.put("FIRSTNAME", firstName);
-					dataMap.put("LASTNAME", lastName);
+					dataMap.put("EVALUATION_TYPE", evaluationType);
+					dataMap.put("FIRST_NAME", firstName);
+					dataMap.put("LAST_NAME", lastName);
 					dataMap.put("CLASSIFICATION", classification);
-					dataMap.put("EMPRANGE", range);
+					dataMap.put("EMP_RANGE", range);
 					dataMap.put("DEPARTMENT", departmentName);
-					// Integer deptartmentId = Integer.parseInt(departmentID);
-					// Object deptId = deptartmentId;
-					dataMap.put("DEPARTMENTID", Integer.parseInt(departmentID));
-					dataMap.put("EVALUATORSNAME", evaluatorsName);
-					dataMap.put("EVALUATORSTITLE", evaluatorsTitle);
+					dataMap.put("DEPARTMENT_ID", Integer.parseInt(departmentID));
+					dataMap.put("EVALUATORS_NAME", evaluatorsName);
+					dataMap.put("EVALUATORS_TITLE", evaluatorsTitle);
+					
 					Object reviewPeriodFromObj = null;
-					if (ratingPeriodFrom != null && ratingPeriodFrom != "") {
-						Date reviewPeriodFromNew = Date.valueOf(ratingPeriodFrom);
+					if (reviewPeriodFrom != null && reviewPeriodFrom != "") {
+						Date reviewPeriodFromNew = Date.valueOf(reviewPeriodFrom);
 						reviewPeriodFromObj = reviewPeriodFromNew;
 					}
-					dataMap.put("REVIEWPERIODFROM", reviewPeriodFromObj);
+					dataMap.put("REVIEW_PERIOD_FROM", reviewPeriodFromObj);
+					
 					Object reviewPeriodToObj = null;
-					if (ratingPeriodTo != null && ratingPeriodTo != "") {
-						Date reviewPeriodToNew = Date.valueOf(ratingPeriodTo);
+					if (reviewPeriodTo != null && reviewPeriodTo != "") {
+						Date reviewPeriodToNew = Date.valueOf(reviewPeriodTo);
 						reviewPeriodToObj = reviewPeriodToNew;
 					}
-					dataMap.put("REVIEWPERIODTO", reviewPeriodToObj);
+					dataMap.put("REVIEW_PERIOD_TO", reviewPeriodToObj);
 
 					dataMap.put("QUALITY", qualityRB);
 					dataMap.put("QUALITY_RATING_1", quality1);
@@ -603,67 +585,68 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 
 					dataMap.put("OVERALLRATING", overallRating);
 
-					dataMap.put("SUPPORTFACTORCOMMENTS1", supportFactorComments1);
-					dataMap.put("SUPPORTFACTORCOMMENTS2", supportFactorComments2);
-					dataMap.put("PERFORMANCEGOALCOMMENT1", performanceGoalComment1);
-					dataMap.put("PERFORMANCEGOALCOMMENT2", performanceGoalComment2);
-					dataMap.put("PERFORMANCEGOALCOMMENT3", performanceGoalComment3);
+					dataMap.put("SUPPORT_FACTOR_COMMENTS1", supportFactorComments1);
+					dataMap.put("SUPPORT_FACTOR_COMMENTS2", supportFactorComments2);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT1", performanceGoalComment1);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT2", performanceGoalComment2);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT3", performanceGoalComment3);
 
-					dataMap.put("EVAL_DECL_CB", evalCB);
-					dataMap.put("EVALUATORS_PRINTED_NAME", evalPrintedName);
-					dataMap.put("EVALUATORS_SIGNATURE", evalSign);
-					dataMap.put("EVALUATORS_COMMENTS", evalComments);
-
-					Object evalDateObj = null;
+					dataMap.put("EVALUATOR_CB", evalCB);
+					dataMap.put("EVALUATOR_NAME", evalPrintedName);
+					dataMap.put("EVALUATOR_SIGNATURE", evalSign);
+					
+					Object evalSignDateObj = null;
 					if (evalSignDate != null && evalSignDate != "") {
-						Date evalDateNew = Date.valueOf(evalSignDate);
-						evalDateObj = evalDateNew;
+						Date evalSignDateNew = Date.valueOf(evalSignDate);
+						evalSignDateObj = evalSignDateNew;
 					}
-
-					dataMap.put("EVALUATOR_SIGN_DATE", evalDateObj);
+					dataMap.put("EVALUATOR_DATE", evalSignDateObj);
+					dataMap.put("EVALUATOR_COMMENT", evalComments);				
+					dataMap.put("HR_COORD_CB", hrCoordCB);
+					dataMap.put("HR_COORD_SIGN", hrCoordSign);
 					
-					dataMap.put("HR_COORDINATOR_CB", hrCooCB);
-					dataMap.put("HR_COORDINATOR_SIGN", hrCoordinatorSign);
-					dataMap.put("HR_COORDINATOR_DATE", hrCoordinatorDate);
-					dataMap.put("HR_COORDINATOR_COMMENT", hrCoordinatorComment);
+					Object hrCoordDateObj = null;
+					if (hrCoordDate != null && hrCoordDate != "") {
+						Date hrCoordDateNew = Date.valueOf(hrCoordDate);
+						hrCoordDateObj = hrCoordDateNew;
+					}
+					dataMap.put("HR_COORD_DATE", hrCoordDateObj);
+					dataMap.put("HR_COORD_COMMENT", hrCoordComment);
 
+					dataMap.put("EMP_CB", empCB);
+					dataMap.put("EMP_SIGN", empSign);
 					
-					dataMap.put("EMP_DECL_CB", empCB);
-					dataMap.put("WAIVEPERIOD", null);
-
-					Object empSignObj = null;
-					if (empSignDate != null && empSignDate != "") {
-						Date empDateNew = Date.valueOf(empSignDate);
-						empSignObj = empDateNew;
+					Object empDateObj = null;
+					if (empDate != null && empDate != "") {
+						Date adminDateNew = Date.valueOf(empDate);
+						empDateObj = adminDateNew;
 					}
-					dataMap.put("EMPSIGNDATE", empSignObj);
-					dataMap.put("EMPCOMMENT", empComment);
-					dataMap.put("EMPSIGN", empSign);
-//					dataMap.put("REVIEWERCOMMENT", reviewerComments);
-					dataMap.put("ADMIN_DECL_CB", adminCB);
+					dataMap.put("EMP_DATE", empDateObj);
+					dataMap.put("EMPLOYEE_COMMENT", empComment);
 
-					Object adminSignObj = null;
-					if (adminSignDate != null && adminSignDate != "") {
-						Date adminDateNew = Date.valueOf(adminSignDate);
-						adminSignObj = adminDateNew;
+					dataMap.put("ADMIN_CB", adminCB);
+					dataMap.put("ADMIN_NAME", adminName);
+					dataMap.put("ADMIN_SIGNATURE", adminSign);
+					
+					Object adminDateObj = null;
+					if (adminDate != null && adminDate != "") {
+						Date adminDateNew = Date.valueOf(adminDate);
+						adminDateObj = adminDateNew;
 					}
-					dataMap.put("ADMINSIGNDATE", adminSignObj);
-					dataMap.put("ADMINCOMMENT", adminComments);
-					dataMap.put("ADMINISTRATORSIGNATURE", adminSign);
-					dataMap.put("ADMINISTRATORSPRINTEDNAME", adminName);
-					dataMap.put("HR_DECL_CB", hrCB);
+					dataMap.put("ADMIN_DATE", adminDateObj);
+					dataMap.put("ADMIN_COMMENT", adminComment);
 
-					Object hrDateObj = null;
-					if (hrDate != null && hrDate != "") {
-						Date hrDateNew = Date.valueOf(hrDate);
-						hrDateObj = hrDateNew;
+					dataMap.put("HRDI_CB", hrdiCB);
+					dataMap.put("HRDI_INITIALS", hrdiInitials);
+					
+					Object hrdiDateObj = null;
+					if (hrdiDate != null && hrdiDate != "") {
+						Date hrdiDateNew = Date.valueOf(hrdiDate);
+						hrdiDateObj = hrdiDateNew;
 					}
+					dataMap.put("HRDI_DATE", hrdiDateObj);
+					dataMap.put("HRDI_Comment", hrdiComment);
 
-					dataMap.put("HRDATE", hrDateObj);
-					dataMap.put("HRCOMMENT", hrComments);
-					dataMap.put("HRINITIALS", initials);
-					//dataMap.put("HROVERALLRATE", hrOverallRate);
-					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {
@@ -726,7 +709,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
 			}
-			String tableName = "AEM_STAFF_PERF_EVAL_UNIT6";
+			String tableName = "AEM_STAFF_PERF_EVAL_UNIT8";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
 			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {

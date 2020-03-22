@@ -258,7 +258,7 @@ public class CSUFSPEConfidentialDB implements WorkflowProcess {
 							// eElement.getElementsByTagName("Initials").item(0).getTextContent();
 							draftDate = eElement.getElementsByTagName("DraftDate").item(0).getTextContent();
 							staffPosDesc = eElement.getElementsByTagName("Staffposdesc").item(0).getTextContent();
-							empId = eElement.getElementsByTagName("EmplID").item(0).getTextContent();
+							empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
 							empRCD = eElement.getElementsByTagName("EmpRCD").item(0).getTextContent();
 							cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
 							evaluationType = eElement.getElementsByTagName("EvaluationType").item(0).getTextContent();
