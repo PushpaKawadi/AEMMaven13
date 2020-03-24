@@ -185,7 +185,7 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 					dataMap.put("VACATION_CREDITS", vacationHours);
 					dataMap.put("DONAR_CATAGORY", donarCatagory);
 					dataMap.put("SIGNATURE", signature);
-					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
+					//dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();

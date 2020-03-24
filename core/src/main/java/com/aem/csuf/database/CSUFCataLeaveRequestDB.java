@@ -244,7 +244,7 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("EMP_REPRESENTATIVE", empRepresentative);
 					dataMap.put("DEPARTMENT", department);
 					dataMap.put("PAYROLL", payroll);
-					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
+					//dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();
