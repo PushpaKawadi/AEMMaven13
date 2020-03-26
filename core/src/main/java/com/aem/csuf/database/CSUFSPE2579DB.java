@@ -606,11 +606,11 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 
 					dataMap.put("OVERALLRATING", overallRating);
 
-					dataMap.put("SUPPORTFACTORCOMMENTS1", supportFactorComments1);
-					dataMap.put("SUPPORTFACTORCOMMENTS2", supportFactorComments2);
-					dataMap.put("PERFORMANCEGOALCOMMENT1", performanceGoalComment1);
-					dataMap.put("PERFORMANCEGOALCOMMENT2", performanceGoalComment2);
-					dataMap.put("PERFORMANCEGOALCOMMENT3", performanceGoalComment3);
+					dataMap.put("SUPPORTFACTOR_COMMENTS1", supportFactorComments1);
+					dataMap.put("SUPPORTFACTOR_COMMENTS2", supportFactorComments2);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT1", performanceGoalComment1);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT2", performanceGoalComment2);
+					dataMap.put("PERFORMANCE_GOAL_COMMENT3", performanceGoalComment3);
 
 					dataMap.put("EVAL_DECL_CB", evalCB);
 					dataMap.put("EVALUATORS_PRINTED_NAME", evalPrintedName);

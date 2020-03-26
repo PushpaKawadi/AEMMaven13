@@ -198,7 +198,7 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -242,7 +242,7 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 
 	
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read MppPerfEvalDOR");
+			log.info("Read SPE 2,5,7,9 DOR");
 			URL url = null;
 			try {
 				//String filenetUrl = ConfigManager.getValue("filenetUrl");

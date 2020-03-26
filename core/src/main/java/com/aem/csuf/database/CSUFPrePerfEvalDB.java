@@ -62,7 +62,6 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 		String supervisor = "";
 		String firstName = "";
 		String lastName = "";
-		String midName = "";
 		String deptName = "";
 		String deptId = "";
 		String evaluationCom1 = "";
@@ -75,11 +74,8 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 		String empCB = "";
 		String empSign = "";
 		String empDate = "";
-		String empComments = "";
-		String evalCB = "";
-		String evaluatorSign = "";
-		String evaluatorDate = "";
-		String evalComments = "";
+		String workflowInstanceID = "";
+		
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -91,7 +87,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-
+			workflowInstanceID = workItem.getWorkflow().getId();
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -157,12 +153,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 							empCB = eElement.getElementsByTagName("EmpCB").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
 							empDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
-							empComments = eElement.getElementsByTagName("empComments").item(0).getTextContent();
-							evalCB = eElement.getElementsByTagName("EvalCB").item(0).getTextContent();
-							evaluatorSign = eElement.getElementsByTagName("EvaluatorSign").item(0).getTextContent();
-							evaluatorDate = eElement.getElementsByTagName("EvaluatorDate").item(0).getTextContent();
-							evalComments = eElement.getElementsByTagName("evalComments").item(0).getTextContent();
-
+							
 						}
 					}
 
@@ -177,7 +168,6 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 					dataMap.put("FIRSTNAME", firstName);
 					dataMap.put("LASTNAME", lastName);
-					dataMap.put("MIDNAME", midName);
 					dataMap.put("EMPRCD", empRCD);
 					Object reviewPeriodFromObj = null;
 					if (reviewPeriodFrom != null && reviewPeriodFrom != "") {
@@ -214,17 +204,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 					dataMap.put("EMP_SIGN_DATE", empSignDateObj);
 					dataMap.put("EMP_SIGN", empSign);
-					dataMap.put("EMP_COMMMENT", empComments);
-					dataMap.put("EVALCB", evalCB);
-					dataMap.put("EVAL_SIGN", evaluatorSign);
-					Object evalSignDateObj = null;
-					if (evaluatorDate != null && evaluatorDate != "") {
-						Date evalDateNew = Date.valueOf(evaluatorDate);
-						evalSignDateObj = evalDateNew;
-					}
-
-					dataMap.put("EVAL_SIGN_DATE", evalSignDateObj);
-					dataMap.put("EVAL_COMMENT", evalComments);
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstanceID);
 
 					log.error("Datamap Size=" + dataMap.size());
 
@@ -329,6 +309,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 			}
 			try {
 				preparedStmt.execute();
+				log.info("preparedstmt="+preparedStmt);
 				conn.commit();
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
@@ -337,6 +318,7 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 				if (preparedStmt != null) {
 					try {
 						preparedStmt.close();
+						log.info("preparedstmt closed");
 						conn.close();
 					} catch (SQLException e) {
 						log.error("SQLException=" + e.getMessage());

@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -48,7 +47,7 @@ import com.aem.community.util.ConfigManager;
 public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalFilenet.class);
-	
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
@@ -59,11 +58,15 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-		//String firstName = null;
-		//String lastName = null;
+		String firstName = null;
+		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		// String rating = null;
+		String rating = null;
+		String cbid = null;
+		String depId = null;
+		String empUserID = null;
+		String managerUserID = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -114,22 +117,31 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpID", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
-//								XPathConstants.NODE);
-//						firstName = fnNode.getFirstChild().getNodeValue();
-//
-//						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
-//								XPathConstants.NODE);
-//						lastName = lnNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//FirstName", doc,
+										XPathConstants.NODE);
+						firstName = fnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
-//								XPathConstants.NODE);
-//						rating = ratingNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LastName", doc,
+										XPathConstants.NODE);
+						lastName = lnNode.getFirstChild().getNodeValue();
 
+						org.w3c.dom.Node depVal = (org.w3c.dom.Node) xpath
+								.evaluate("//DeptID", doc, XPathConstants.NODE);
+						depId = depVal.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node logVal = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpUserID", doc, XPathConstants.NODE);
+						empUserID = logVal.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node managerUid = (org.w3c.dom.Node) xpath
+								.evaluate("//ManagerUserID", doc, XPathConstants.NODE);
+						managerUserID = managerUid.getFirstChild().getNodeValue();
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -186,15 +198,28 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"PrePerfEvalDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-
+		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
+				+ empId + "\"," + "\"OverallRating\": \"" + "" + "\","
+				+ "\"EvaluationType\": \"" + "" + "\","
+				+ "\"AttachmentType\": " + "\"PrePerfEvalDOR\"" + ","
+				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
+				+ "\"CBID\": \"" + "" + "\"," + "\"DepartmentID\": \""
+				+ depId + "\"," + "\"DocType\":" + "\"STAFFSE\"" + ","
+				+ "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":"
+				+ "\"2020\"" + "," + "\"StartMonth\":" + "\"04\"" + ","
+				+ "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\""
+				+ empUserID + "\"," + "\"ManagerUserID\":\"" + managerUserID + "\","
+				+ "\"HRCoordUserID\":\"" + "" + "\","
+				+ "\"AppropriateAdminUserID\":\"" + "" + "\","
+				+ "\"Attachment\":\"" + encodedPDF + "\"}";
 		if (encodedPDF != null && empId != null) {
-			log.info("Read SudentPerfEval");
+			log.info("Read Pre Perf Eval DOR");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService.getMppFilenetURL();
 				url = new URL(filenetUrl);
+				log.info("json ="+jsonString);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
