@@ -104,12 +104,10 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 		userIDSQL = userIDSQL.replaceAll("<<emplid>>", empID);
 		logger.info("Empid="+userIDSQL);
 		
-		//userIDSQL = userIDSQL.replaceAll("<<review_from_dt>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
-		userIDSQL = userIDSQL.replaceAll("<<review_from_dt>>", reviewPeriodFrom);
+		userIDSQL = userIDSQL.replaceAll("<<review_from_dt>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
 		logger.info("From="+userIDSQL);
 		
-		//userIDSQL = userIDSQL.replaceAll("<<review_to_dt>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
-		userIDSQL = userIDSQL.replaceAll("<<review_to_dt>>", reviewPeriodTo);
+		userIDSQL = userIDSQL.replaceAll("<<review_to_dt>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
 		logger.info("To="+userIDSQL);
 		
 		userIDSQL = userIDSQL.replaceAll("<<deptid>>", deptID);
@@ -129,6 +127,7 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 				employeeEvalDetails.put("evalComment6", oRresultSet.getString("EVAL_COMMENT6"));
 				employeeEvalDetails.put("evalComment7", oRresultSet.getString("EVAL_COMMENT7"));
 				//employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
+				
 				jArray.put(employeeEvalDetails);
 			}
 
@@ -147,7 +146,7 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 				exp.printStackTrace();
 			}
 		}
-
+		logger.info("jArray=" + jArray);
 		return jArray;
 	}
 }
