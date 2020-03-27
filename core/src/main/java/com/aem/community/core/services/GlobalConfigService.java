@@ -12,4 +12,5 @@ public interface GlobalConfigService {
 	String getDbDocMgrProd();
 	String getDbAemDev();
 	String getMppFilenetURL();
+	String getStaffEvalFilenetURL();
 }

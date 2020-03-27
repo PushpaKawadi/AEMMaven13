@@ -77,14 +77,10 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
-
-			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
@@ -169,7 +165,6 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -217,7 +212,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 			log.info("Read Pre Perf Eval DOR");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getMppFilenetURL();
+				String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 				url = new URL(filenetUrl);
 				log.info("json ="+jsonString);
 			} catch (MalformedURLException e) {
@@ -244,7 +239,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 				os.write(jsonString.getBytes("utf-8"));
 				os.close();
 				con.getResponseCode();
-
+				log.error("Res=" + con.getResponseCode());
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
