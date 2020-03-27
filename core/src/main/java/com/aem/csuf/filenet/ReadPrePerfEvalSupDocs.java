@@ -75,7 +75,6 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 
 		    while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.error("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 			
 			if (filePath.contains("Attachments")) {
@@ -83,7 +82,6 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 
 				  while (fileList.hasNext()) {
 					Resource xmlFile = fileList.next();
-					// log.error("fileList inside ");
 					String xmlPath = xmlFile.getPath();
 					if (xmlPath.contains("Data.xml")) {
 
@@ -103,9 +101,7 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 							log.error("Exception3=" + e2);
 							e2.printStackTrace();
 						}
-						// log.error("Test="+is.available());
-
-						// Document doc = null;
+						
 
 						try {
 							DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -181,7 +177,6 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 							Iterator<Resource> innerAttachmentFiles = attachmentSupDoc.listChildren();
 							while (innerAttachmentFiles.hasNext()) {
 							Resource innerAttachmentSupDoc = innerAttachmentFiles.next();
-							//log.info("name of doc inside="+innerAttachmentSupDoc);
 							Path attachmentSource = Paths.get(innerAttachmentSupDoc.getPath());
 							String attachmentDoc = innerAttachmentSupDoc.getPath().concat("/jcr:content");
 							Node attachmentSubNode = resolver.getResource(attachmentDoc).adaptTo(Node.class);
@@ -194,7 +189,6 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 							try {
 								is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
 								byte[] bytes = IOUtils.toByteArray(is);
-								// log.error("bytes="+bytes);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
 								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
@@ -217,7 +211,7 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 									log.error("Read Pre Perf Eval suppoting doc");
 									URL url = null;
 									try {
-										String filenetUrl = globalConfigService.getMppFilenetURL();
+										String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 										url = new URL(filenetUrl);
 										log.info("jsonString=" + jsonString);
 									} catch (MalformedURLException e) {
@@ -239,7 +233,6 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 									con.setDoOutput(true);
 
 									try (OutputStream os = con.getOutputStream()) {
-										// byte[] input = jsonInputString.getBytes("utf-8");
 										os.write(jsonString.getBytes("utf-8"));
 										os.close();
 										con.getResponseCode();

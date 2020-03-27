@@ -78,7 +78,6 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.error("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 			if (filePath.contains("Data.xml")) {
 
@@ -98,9 +97,6 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 					log.error("Exception3=" + e2);
 					e2.printStackTrace();
 				}
-				// log.error("Test="+is.available());
-
-				// Document doc = null;
 
 				try {
 					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
@@ -202,7 +198,6 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 							Iterator<Resource> innerAttachmentFiles = attachmentSupDoc.listChildren();
 							while (innerAttachmentFiles.hasNext()) {
 							Resource innerAttachmentSupDoc = innerAttachmentFiles.next();
-							//log.info("name of doc inside="+innerAttachmentSupDoc);
 							Path attachmentSource = Paths.get(innerAttachmentSupDoc.getPath());
 							String attachmentDoc = innerAttachmentSupDoc.getPath().concat("/jcr:content");
 							Node attachmentSubNode = resolver.getResource(attachmentDoc).adaptTo(Node.class);
@@ -215,7 +210,6 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 							try {
 								is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
 								byte[] bytes = IOUtils.toByteArray(is);
-								// log.error("bytes="+bytes);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
 								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPE2579SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
@@ -224,7 +218,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 									log.error("Read inner suppoting doc");
 									URL url = null;
 									try {
-										String filenetUrl = globalConfigService.getMppFilenetURL();
+										String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 										url = new URL(filenetUrl);
 											log.info("jsonString=" + jsonString);
 									} catch (MalformedURLException e) {
@@ -303,7 +297,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 								log.error("Read outer suppoting doc");
 								URL url = null;
 								try {
-									String filenetUrl = globalConfigService.getMppFilenetURL();
+									String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 									url = new URL(filenetUrl);
 									
 									log.info("jsonString=" + jsonString);

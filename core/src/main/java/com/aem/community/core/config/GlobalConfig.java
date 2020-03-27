@@ -20,4 +20,7 @@ public @interface GlobalConfig {
 	
 	@AttributeDefinition(name = "MPP Filenet URL", description = "MPP Filenet URL", type = AttributeType.STRING, defaultValue = "http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addCourseWithdrawalDocuments")
 	String mpp_filenet_URL();
+	
+	@AttributeDefinition(name = "Staff Eval Filenet URL", description = "Staff Eval Filenet URL", type = AttributeType.STRING, defaultValue = "http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addStaffEvalDocuments")
+	String staff_eval_filenet_URL();
 }

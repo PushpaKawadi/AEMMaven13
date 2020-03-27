@@ -75,13 +75,9 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
-
-			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=" + filePath);
 				Node subNode = resolver.getResource(filePath).adaptTo(
 						Node.class);
 
@@ -237,19 +233,14 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 				+ "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","
 				+ "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
 				+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
-		
-		 log.error("Json String:" + jsonString.toString());
-
 	
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read SPE 2,5,7,9 DOR");
 			URL url = null;
 			try {
-				//String filenetUrl = ConfigManager.getValue("filenetUrl");
-				String filenetUrl = globalConfigService.getMppFilenetURL();
-				
+				String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 				url = new URL(filenetUrl);
-				// url = new URL("");
+				log.error("Json String:" + jsonString.toString());
 
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
