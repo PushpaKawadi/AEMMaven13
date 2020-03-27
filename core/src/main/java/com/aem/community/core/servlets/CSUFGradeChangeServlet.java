@@ -80,6 +80,7 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 			if (gradChangeDetails != null && !gradChangeDetails.equals("")) {
 				response.getWriter().write(gradChangeDetails.toString());
 			} else {
+				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
 			}
 		} else {
@@ -103,14 +104,14 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails=" + cwid);
-
+		
 		ResultSet oRresultSet = null;
 		JSONObject studentInfo;
 		JSONArray jArray = new JSONArray();
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-			if (cwid != null && cwid != "") {
+			if (!cwid.equals("null") && !cwid.equals("")) {
 				studentCourseInfoSQL = ConfigManager
 						.getValue("gradeChangeSingleStudent");
 				studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
