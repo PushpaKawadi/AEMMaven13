@@ -48,29 +48,41 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 			IOException {
 		Connection conn = null;
 		String cwid = "";
-		String instUserId = "";
-		String courseId = "";
-		String strm = "";
+		String instCwid = "";
+		String courseName= "";
+		String termDesc = "";
 		String sectionNo = "";
 		String classNo = "";
 
 		JSONArray gradChangeDetails = null;
-		if (req.getParameter("instUserid") != null
-				&& !req.getParameter("instUserid").trim().equals("")) {
-			strm = req.getParameter("strm");
-			courseId = req.getParameter("courseId");
+		if (req.getParameter("instCwid") != null
+				&& !req.getParameter("instCwid").trim().equals("")) {
+			//strm = req.getParameter("strm");
+			//courseId = req.getParameter("courseId");
+			//instUserId = req.getParameter("instUserid");
+			
+			termDesc = req.getParameter("termDesc");
+			courseName = req.getParameter("courseName");
+			instCwid = req.getParameter("instCwid");
 			sectionNo = req.getParameter("classSection");
 			classNo = req.getParameter("classNumber");
-			instUserId = req.getParameter("instUserid");
 			cwid = req.getParameter("cwid");
+			
+			logger.error("termDesc="+termDesc);
+			logger.error("courseName="+courseName);
+			logger.error("instCwid="+instCwid);
+			logger.error("sectionNo="+sectionNo);
+			logger.error("classNo="+classNo);
+			logger.error("cwid="+cwid);
+			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChnageDetails(strm, courseId,
-						sectionNo, classNo, instUserId, cwid, conn);
+				gradChangeDetails = getGradeChnageDetails(termDesc, courseName,
+						sectionNo, classNo, instCwid, cwid, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -99,8 +111,8 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChnageDetails(String strm, String courseId,
-			String sectionNo, String classNo, String instUserId, String cwid,
+	public static JSONArray getGradeChnageDetails(String termDesc, String courseName,
+			String sectionNo, String classNo, String instCwid, String cwid,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails=" + cwid);
@@ -121,16 +133,25 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 						.getValue("gradeChangeBulk");
 			}
 
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<STRM>>",
-					strm);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
+					termDesc);
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<courseId>>", courseName);
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<classNo>>", classNo);
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<sectionNo>>", sectionNo);
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<instUserId>>", instCwid);
+			
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<courseId>>", courseId);
+					"<<CRSE_NAME>>", courseName);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<classNo>>", classNo);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<sectionNo>>", sectionNo);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<instUserId>>", instUserId);
+					"<<instCwid>>", instCwid);
 
 			String lookupFields = ConfigManager.getValue("gradeChangeFields");
 			String[] fields = lookupFields.split(",");
