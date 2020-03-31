@@ -58,18 +58,18 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-		String firstName = null;
-		String lastName = null;
-		String encodedPDF = null;
-		String empId = null;
-		String cbid = null;
-		String deptId = null;
-		String overallRating = null;
-		String evaluationType = null;
-		String empUserId = null;
-		String managerUserId = null;
-		String hrCoordId = null;
-		String administratorId = null;
+		String firstName = "";
+		String lastName = "";
+		String encodedPDF = "";
+		String empId = "";
+		String cbid = "";
+		String deptId = "";
+		String overallRating = "";
+		String evaluationType = "";
+		String empUserId = "";
+		String managerUserId = "";
+		String hrCoordId = "";
+		String administratorId = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -116,17 +116,17 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
 								.evaluate("//EmpID", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
-
+						log.info("empId =" + empId);
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
 								.evaluate("//StaffFirstName", doc,
 										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
-
+						log.info("firstName =" + firstName);
 						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
 								.evaluate("//StaffLastName", doc,
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
-											
+						log.info("StaffLastName =" + lastName);					
 						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath
 								.evaluate("//CBID", doc, XPathConstants.NODE);
 						cbid = cbidNode.getFirstChild().getNodeValue();
@@ -228,9 +228,9 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"FinalSPEPerfEval2579DOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"Attachment\":\"" + encodedPDF + "\","
 				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579\""
-				+ "," + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\""
+				+ "," + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\""
 				+ overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
-				+ "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","
+				+ "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","
 				+ "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
 				+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 	
@@ -240,7 +240,7 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 			try {
 				String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 				url = new URL(filenetUrl);
-				log.error("Json String:" + jsonString.toString());
+				//log.error("Json String:" + jsonString.toString());
 
 			} catch (MalformedURLException e) {
 				e.printStackTrace();

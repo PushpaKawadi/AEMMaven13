@@ -126,7 +126,7 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 				employeeEvalDetails.put("evalComment5", oRresultSet.getString("EVAL_COMMENT5"));
 				employeeEvalDetails.put("evalComment6", oRresultSet.getString("EVAL_COMMENT6"));
 				employeeEvalDetails.put("evalComment7", oRresultSet.getString("EVAL_COMMENT7"));
-				//employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
+				employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
 				
 				jArray.put(employeeEvalDetails);
 			}

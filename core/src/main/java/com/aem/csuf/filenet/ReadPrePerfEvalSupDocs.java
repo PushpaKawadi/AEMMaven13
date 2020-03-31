@@ -58,15 +58,15 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 
 		Document doc = null;
 		InputStream is = null;
-		String firstName = null;
-		String lastName = null;
-		String encodedPDF = null;
-		String empId = null;
-		String rating = null;
-		String cbid = null;
-		String depId = null;
-		String empUserID = null;
-		String managerUserID = null;
+		String firstName = "";
+		String lastName = "";
+		String encodedPDF = "";
+		String empId = "";
+		String rating = "";
+		String cbid = "";
+		String depId = "";
+		String empUserID = "";
+		String managerUserID = "";
 		String attachmentMimeType = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 
@@ -196,7 +196,7 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 										+ empId + "\"," + "\"OverallRating\": \"" + "" + "\","
 										+ "\"EvaluationType\": \"" + "" + "\","
 										+ "\"AttachmentType\": " + "\"PrePerfEvalSupDoc\"" + ","
-										+ "\"AttachmentMimeType\": " + attachmentMimeType + ","
+										+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
 										+ "\"CBID\": \"" + "" + "\"," + "\"DepartmentID\": \""
 										+ depId + "\"," + "\"DocType\":" + "\"STAFFSESD\"" + ","
 										+ "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":"
@@ -213,7 +213,7 @@ public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
 									try {
 										String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 										url = new URL(filenetUrl);
-										log.info("jsonString=" + jsonString);
+										//log.info("jsonString=" + jsonString);
 									} catch (MalformedURLException e) {
 										e.printStackTrace();
 									}
