@@ -49,6 +49,8 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
 		Connection conn = null;
+		
+		log.info("Cobra Final DB Servlet");
 
 		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
@@ -564,7 +566,13 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 					dataMap.put("COMMENT2", coment2);
 					dataMap.put("COMMENTS", comment);
 					dataMap.put("CONTACTS", contact);
-					dataMap.put("REPLY_BY", replyBy);
+					
+					Object replyByObj= null;
+					if(replyBy != null && replyBy != "") {
+						Date replyByNew = Date.valueOf(replyBy);
+						replyByObj = replyByNew;
+					}
+					dataMap.put("REPLY_BY", replyByObj);
 					dataMap.put("THE_PLAN1", plan1);
 					dataMap.put("DEPENDENT_NAME1", dependentName1);
 					

@@ -43,11 +43,11 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read SPE2579 Support Doc",
-		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE2579 Support Doc" })
-public class ReadSPE2579SupDocs implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read SPE Unit4 Support Doc",
+		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE Unit4 Support Doc" })
+public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(ReadSPE2579SupDocs.class);
+	private static final Logger log = LoggerFactory.getLogger(ReadSPEUnit4SupDocs.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
 	@Override
@@ -122,12 +122,12 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 						empId = empIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//StaffFirstName", doc,
+								.evaluate("//FirstName", doc,
 										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//StaffLastName", doc,
+								.evaluate("//LastName", doc,
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 											
@@ -136,7 +136,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 						cbid = cbidNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Department_ID", doc,
+								.evaluate("//DepartmentID", doc,
 										XPathConstants.NODE);
 						deptId = deptIdNode.getFirstChild().getNodeValue();
 
@@ -212,7 +212,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 								byte[] bytes = IOUtils.toByteArray(is);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPE2579SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUNIT4SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPEUNIT4SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
 									log.error("Read inner suppoting doc");
@@ -291,7 +291,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 							// log.error("bytes="+bytes);
 							encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPE2579SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUNIT4SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPEUNIT4SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 							if (encodedPDF != null && lastName != null && firstName != null) {
 								log.error("Read outer suppoting doc");
@@ -300,7 +300,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 									String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 									url = new URL(filenetUrl);
 									
-									log.info("jsonString=" + jsonString);
+									//log.info("jsonString=" + jsonString);
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}
