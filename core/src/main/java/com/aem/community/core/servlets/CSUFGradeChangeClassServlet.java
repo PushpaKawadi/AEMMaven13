@@ -47,13 +47,14 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String classNo = "";
+		String courseName = "";
 		String instUserId ="";
 
 		JSONArray gradChangeDetails = null;
-		if (req.getParameter("classNbr") != null
-				&& !req.getParameter("classNbr").trim().equals("")) {
-			classNo = req.getParameter("classNbr");
+		if (req.getParameter("courseName") != null
+				&& !req.getParameter("courseName").trim().equals("")) {
+			//classNo = req.getParameter("classNbr");
+			courseName = req.getParameter("courseName");
 			instUserId = req.getParameter("instUserID");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -61,7 +62,7 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeClsDetails(classNo,instUserId, conn);
+				gradChangeDetails = getGradeChangeClsDetails(courseName,instUserId, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -90,10 +91,10 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeClsDetails(String classNo,String instUserId,
+	public static JSONArray getGradeChangeClsDetails(String courseName,String instUserId,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails=" + classNo);
+		logger.info("Inside getGradeChnageDetails=" + courseName);
 
 		ResultSet oRresultSet = null;
 		JSONObject instInfo = new JSONObject();
@@ -104,8 +105,10 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 			studentCourseInfoSQL = ConfigManager
 					.getValue("gradeChangeClassDetails");
 
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<class_nbr>>", classNo);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<class_nbr>>", classNo);
+					"<<CRSE_NAME>>", courseName);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<instr_userid>>", instUserId);
 			

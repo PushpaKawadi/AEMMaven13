@@ -115,7 +115,8 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 			while (oRresultSet.next()) {
 				instInfo = new JSONObject();
 				instInfo.put("instCwid", oRresultSet.getString("INSTR_CWID"));
-				instInfo.put("class_nbr", oRresultSet.getString("CLASS_NBR"));
+				//instInfo.put("class_nbr", oRresultSet.getString("CLASS_NBR"));
+				instInfo.put("crse_name", oRresultSet.getString("CRSE_NAME"));
 				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
 				jArray.put(instInfo);
 			}
