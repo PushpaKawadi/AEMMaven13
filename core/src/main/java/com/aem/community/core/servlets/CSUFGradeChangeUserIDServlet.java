@@ -13,13 +13,13 @@ import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.json.JSONArray;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
@@ -34,10 +34,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getGradeChangeDetails" })
-public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getGCUserID" })
+public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFGradeChangeServlet.class);
+			.getLogger(CSUFGradeChangeUserIDServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -47,42 +47,22 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String cwid = "";
-		String instCwid = "";
-		String courseName= "";
-		String termDesc = "";
-		String sectionNo = "";
-		String classNo = "";
+		String instUserId = "";
+		String strm = "";
 
 		JSONArray gradChangeDetails = null;
-		if (req.getParameter("instCwid") != null
-				&& !req.getParameter("instCwid").trim().equals("")) {
-			//strm = req.getParameter("strm");
-			//courseId = req.getParameter("courseId");
-			//instUserId = req.getParameter("instUserid");
-			
-			termDesc = req.getParameter("termDesc");
-			courseName = req.getParameter("courseName");
-			instCwid = req.getParameter("instCwid");
-			sectionNo = req.getParameter("classSection");
-			classNo = req.getParameter("classNumber");
-			cwid = req.getParameter("cwid");
-			
-			logger.error("termDesc="+termDesc);
-			logger.error("courseName="+courseName);
-			logger.error("instCwid="+instCwid);
-			logger.error("sectionNo="+sectionNo);
-			logger.error("classNo="+classNo);
-			logger.error("cwid="+cwid);
-			
+		if (req.getParameter("instUserID") != null
+				&& !req.getParameter("instUserID").trim().equals("")) {
+			instUserId = req.getParameter("instUserID");
+			strm = req.getParameter("strm");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChnageDetails(termDesc, courseName,
-						sectionNo, classNo, instCwid, cwid, conn);
+				gradChangeDetails = getGradeChangeUserDetails(instUserId, strm,
+						conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -111,70 +91,44 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChnageDetails(String termDesc, String courseName,
-			String sectionNo, String classNo, String instCwid, String cwid,
-			Connection conn) throws Exception {
+	public static JSONArray getGradeChangeUserDetails(String instUserId,
+			String strm, Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails=" + cwid);
-		
+		logger.info("Inside getGradeChnageDetails=" + instUserId);
+
 		ResultSet oRresultSet = null;
-		JSONObject studentInfo;
+		JSONObject instInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-			if (!cwid.equals("null") && !cwid.equals("")) {
-				studentCourseInfoSQL = ConfigManager
-						.getValue("gradeChangeSingleStudent");
-				studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-						"<<cwid>>", cwid);
-			} else {
-				studentCourseInfoSQL = ConfigManager
-						.getValue("gradeChangeBulk");
-			}
+			studentCourseInfoSQL = ConfigManager
+					.getValue("gradeChangeUserDetails");
 
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
-					termDesc);
-//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-//					"<<courseId>>", courseName);
-//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-//					"<<classNo>>", classNo);
-//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-//					"<<sectionNo>>", sectionNo);
-//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-//					"<<instUserId>>", instCwid);
-			
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<CRSE_NAME>>", courseName);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<classNo>>", classNo);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<sectionNo>>", sectionNo);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<instCwid>>", instCwid);
-
-			String lookupFields = ConfigManager.getValue("gradeChangeFields");
-			String[] fields = lookupFields.split(",");
+					"<<instr_userid>>", instUserId);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<STRM>>",
+					strm);
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
 			while (oRresultSet.next()) {
-				studentInfo = new JSONObject();
-				for (int i = 0; i < fields.length; i++) {
-					studentInfo
-							.put(fields[i], oRresultSet.getString(fields[i]));
-				}
-				jArray.put(studentInfo);
+				instInfo = new JSONObject();
+				instInfo.put("instCwid", oRresultSet.getString("INSTR_CWID"));
+				instInfo.put("class_nbr", oRresultSet.getString("CLASS_NBR"));
+				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
+				jArray.put(instInfo);
 			}
-			//logger.info("studentInfo=" + jArray);
+			
+			
 		} catch (Exception oEx) {
-			studentInfo = null;
+			instInfo = null;
 
 		} finally {
 			try {
 				if (oStatement != null)
 					oStatement.close();
-				    oRresultSet.close();
+				oRresultSet.close();
 				if (conn != null) {
 					conn.close();
 				}
