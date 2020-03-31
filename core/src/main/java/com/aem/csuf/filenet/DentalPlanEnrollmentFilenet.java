@@ -116,21 +116,23 @@ public class DentalPlanEnrollmentFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//Fname", doc,
+						org.w3c.dom.Node sSecurityNumber = (org.w3c.dom.Node) xpath.evaluate("//socialSecNo", doc,
+								XPathConstants.NODE);
+						socialSecurityNumber = sSecurityNumber.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//fname", doc,
 								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node mnNode = (org.w3c.dom.Node) xpath.evaluate("//MiddleName", doc,
+						org.w3c.dom.Node mnNode = (org.w3c.dom.Node) xpath.evaluate("//middleName", doc,
 								XPathConstants.NODE);
 						middleName = mnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//Lname", doc,
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//lname", doc,
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node sSecurityNumber = (org.w3c.dom.Node) xpath.evaluate("//SpouseSocialSecNo", doc,
-								XPathConstants.NODE);
-						socialSecurityNumber = sSecurityNumber.getFirstChild().getNodeValue();
+						
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -188,8 +190,8 @@ public class DentalPlanEnrollmentFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"Fname\": \"" + firstName + "\"," + "\"MiddleName\": \"" + middleName + "\","
-				+ "\"Lname\": \"" + lastName + "\"," + "\"SpouseSocialSecNo\": \"" + socialSecurityNumber + "\"," + "\"AttachmentType\": "
+		String jsonString = "{" + "\"socialSecNo\": \"" + socialSecurityNumber + "\"," + "\"fname\": \"" + firstName + "\","
+				+ "\"middleName\": \"" + middleName + "\"," + "\"lname\": \"" + lastName + "\"," + "\"AttachmentType\": "
 				+ "\"FinalDentalPlanEnrollmentDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		

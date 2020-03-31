@@ -55,7 +55,10 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 		Document doc = null;
 		InputStream is = null;
 
-		String action = "";
+		String action1 = "";
+		String action2 = "";
+		String action3 = "";
+		String action4 = "";
 		String fName = "";
 		String middleName = "";
 		String lName = "";
@@ -191,9 +194,21 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-							action = eElement.getElementsByTagName("action")
+							action1 = eElement.getElementsByTagName("typeOfAction1")
 									.item(0).getTextContent();
-							log.info("reductionHourdate Value is: " + nameOfDentalPlan);
+							log.info("typeOfAction1 Value is: " + action1);
+							
+							action2 = eElement.getElementsByTagName("typeOfAction2")
+									.item(0).getTextContent();
+							log.info("typeOfAction1 Value is: " + action1);
+							
+							action3 = eElement.getElementsByTagName("typeOfAction3")
+									.item(0).getTextContent();
+							log.info("typeOfAction1 Value is: " + action1);
+							
+							action4 = eElement.getElementsByTagName("typeOfAction4")
+									.item(0).getTextContent();
+							log.info("typeOfAction1 Value is: " + action1);
 
 							fName = eElement.getElementsByTagName("fname")
 									.item(0).getTextContent();
@@ -220,12 +235,12 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 									.item(0).getTextContent();
 							log.info("permanentEmp Value is: " + permanentEmp);
 
-							sex = eElement.getElementsByTagName("sex")
-									.item(0).getTextContent();
-
-							marritalStatus = eElement.getElementsByTagName("marritalStatus")
-									.item(0).getTextContent();
-							log.info("marritalStatus Value is: " + marritalStatus);
+//							sex = eElement.getElementsByTagName("sex")
+//									.item(0).getTextContent();
+//
+//							marritalStatus = eElement.getElementsByTagName("marritalStatus")
+//									.item(0).getTextContent();
+//							log.info("marritalStatus Value is: " + marritalStatus);
 
 							socialSecNo = eElement.getElementsByTagName("socialSecNo")
 									.item(0).getTextContent();
@@ -417,7 +432,10 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 
 					dataMap = new LinkedHashMap<String, Object>();
 
-					dataMap.put("TYPE_OF_ACTION", action);
+					dataMap.put("TYPE_OF_ACTION1", action1);
+					dataMap.put("TYPE_OF_ACTION2", action2);
+					dataMap.put("TYPE_OF_ACTION3", action3);
+					dataMap.put("TYPE_OF_ACTION4", action4);
 					dataMap.put("FNAME", fName);
 					dataMap.put("MIDDLENAME", middleName);
 					dataMap.put("LNAME", lName);					
@@ -425,8 +443,8 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					dataMap.put("CITY", city);
 					dataMap.put("STATE", state);
 					dataMap.put("ZIP", zip);					
-					dataMap.put("SEX", sex);					
-					dataMap.put("MARITAL_STATUS", marritalStatus);					
+//					dataMap.put("SEX", sex);					
+//					dataMap.put("MARITAL_STATUS", marritalStatus);					
 					dataMap.put("SOCIAL_SEC_NO", socialSecNo);									
 					dataMap.put("SPOUSE_SOCIAL_SEC_NO", spouseSocialSecNo);	
 					dataMap.put("PERMANENT_EMP", permanentEmp);
