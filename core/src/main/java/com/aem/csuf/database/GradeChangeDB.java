@@ -57,23 +57,50 @@ public class GradeChangeDB implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
-
-
+		String workflowInstanceID = "";
+		String term = "";
+		String instCwid = "";
+		String instName = "";
+		String courseName = "";
+		String classNumber = "";
+		String sectionNumber = "";
+		String unitValue = "";
+		String courseLevel = "";
+		String todayDate = "";
+		String massGradeChange = "";
+		String instSign = "";
+		String instSignDate = "";
+		String instComments = "";
+		String chairSign = "";
+		String chairSignDate = "";
+		String chairComments = "";
+		String deanSign = "";
+		String deanSignDate = "";
+		String deanComments = "";
+		String recordsSign = "";
+		String recordsSignDate = "";
+		String recordsComments = "";
+		String enrollmentRequestID = "";
+		String recordersName = "";
+		String cmsUpdateCompleted = "";
 		String studentLastName = "";
 		String studentFirstName = "";
-		String studentID ="";
-		String gradeChangeFrom ="";
+		String studentID = "";
+		String studentMiddleName = "";
+		String gradeChangeFrom = "";
 		String gradeChangeTo = "";
-		String reasonsToChange ="";
-		String description ="";
+		String gradeChangeReasons = "";
+		String comments = "";
+		String rpWorkCompleted = "";
 
-		LinkedHashMap<String, Object> dataMap = null;
+		LinkedHashMap<String, Object> dataMapFormInfo = null;
+		LinkedHashMap<String, Object> dataMapStudentInfo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			while (xmlFiles.hasNext()) {
+				workflowInstanceID = workItem.getWorkflow().getId();
 				Resource attachmentXml = xmlFiles.next();
 				// log.info("xmlFiles inside ");
 				String filePath = attachmentXml.getPath();
@@ -88,7 +115,7 @@ public class GradeChangeDB implements WorkflowProcess {
 						is = subNode.getProperty("jcr:data").getBinary()
 								.getStream();
 					} catch (ValueFormatException e2) {
-						log.error("Exception1=" + e2.getMessage());
+						log.error("Exception1 Pushpa=" + e2.getMessage());
 						e2.printStackTrace();
 					} catch (PathNotFoundException e2) {
 						log.error("Exception2=" + e2.getMessage());
@@ -119,12 +146,176 @@ public class GradeChangeDB implements WorkflowProcess {
 							org.w3c.dom.Node nNode = nList.item(temp);
 
 							if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-
 								org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
-								// instID = eElement
-								// .getElementsByTagName("InstructorID").item(0)
-								// .getTextContent();
+								term = eElement.getElementsByTagName("Term")
+										.item(0).getTextContent();
+								
+								log.error("term="+term);
+								
+								instCwid = eElement
+										.getElementsByTagName("InstructorCWID")
+										.item(0).getTextContent();
+								
+								log.error("instCwid="+instCwid);
+								
+								instName = eElement
+										.getElementsByTagName(
+												"InstructorName").item(0)
+										.getTextContent();
+								
+								courseName = eElement
+										.getElementsByTagName("CourseName")
+										.item(0).getTextContent();
+								
+								classNumber = eElement
+										.getElementsByTagName("ClassNumber")
+										.item(0).getTextContent();
+								courseLevel = eElement
+										.getElementsByTagName("CourseLevel")
+										.item(0).getTextContent();
+								
+								sectionNumber = eElement
+										.getElementsByTagName("SectionNumber")
+										.item(0).getTextContent();
+								
+								todayDate = eElement
+										.getElementsByTagName("TodayDate")
+										.item(0).getTextContent();
+
+								instSign = eElement
+										.getElementsByTagName("InstructorSign")
+										.item(0).getTextContent();
+								instSignDate = eElement
+										.getElementsByTagName("InstructorDate")
+										.item(0).getTextContent();
+								instComments = eElement
+										.getElementsByTagName(
+												"InstructorComment").item(0)
+										.getTextContent();
+
+								chairSign = eElement
+										.getElementsByTagName("ChairSign")
+										.item(0).getTextContent();
+								chairSignDate = eElement
+										.getElementsByTagName("ChairDate")
+										.item(0).getTextContent();
+								chairComments = eElement
+										.getElementsByTagName("ChairComment")
+										.item(0).getTextContent();
+
+								deanSign = eElement
+										.getElementsByTagName("DeanSign")
+										.item(0).getTextContent();
+								deanSignDate = eElement
+										.getElementsByTagName("DeanDate")
+										.item(0).getTextContent();
+								deanComments = eElement
+										.getElementsByTagName("DeanComment")
+										.item(0).getTextContent();
+
+								enrollmentRequestID = eElement
+										.getElementsByTagName("EnrollmentReqID")
+										.item(0).getTextContent();
+								cmsUpdateCompleted = eElement
+										.getElementsByTagName("CMSUpdate")
+										.item(0).getTextContent();
+								recordersName = eElement
+										.getElementsByTagName("RecordersName")
+										.item(0).getTextContent();
+								cmsUpdateCompleted = eElement
+										.getElementsByTagName("CMSUpdate")
+										.item(0).getTextContent();
+								recordsComments = eElement
+										.getElementsByTagName(
+												"RecordersComments").item(0)
+										.getTextContent();
+								
+								log.error("Here=============================");
+
+								dataMapFormInfo = new LinkedHashMap<String, Object>();
+								dataMapFormInfo.put("TERM", term);
+								dataMapFormInfo
+										.put("INSTRUCTOR_CWID", instCwid);
+								dataMapFormInfo
+										.put("INSTRUCTOR_NAME", instName);
+								dataMapFormInfo.put("COURSE_NAME", courseName);
+								dataMapFormInfo
+										.put("CLASS_NUMBER", classNumber);
+								dataMapFormInfo.put("SECTION_NUMBER",
+										sectionNumber);
+								dataMapFormInfo
+										.put("COURSE_LEVEL", courseLevel);
+								
+								Object todayDtObj = null;
+								if (todayDate != null && todayDate != "") {
+									Date todayDateNew = Date.valueOf(todayDate);
+									todayDtObj = todayDateNew;
+								}
+								
+								dataMapFormInfo.put("TODAYS_DATE", todayDtObj);
+								dataMapFormInfo.put("MASS_GRADE_CHANGE",
+										massGradeChange);
+								dataMapFormInfo.put("INSTRUCTOR_SIGNATURE",
+										instSign);
+								
+								Object instDateObj = null;
+								if (instSignDate != null && instSignDate != "") {
+									Date instSignNew = Date.valueOf(instSignDate);
+									instDateObj = instSignNew;
+								}
+								dataMapFormInfo.put("INSTRUCTOR_SIGN_DATE",
+										instDateObj);
+								dataMapFormInfo.put("INSTRUCTOR_COMMENT",
+										instComments);
+								
+								Object chairDateObj = null;
+								if (chairSignDate != null && chairSignDate != "") {
+									Date chairSignNew = Date.valueOf(chairSignDate);
+									chairDateObj = chairSignNew;
+								}
+								
+								
+								dataMapFormInfo.put("CHAIR_SIGNATURE",
+										chairSign);
+								dataMapFormInfo.put("CHAIR_SIGN_DATE",
+										chairDateObj);
+								dataMapFormInfo.put("CHAIR_COMMENT",
+										chairComments);
+								dataMapFormInfo.put("DEAN_SIGNATURE", deanSign);
+								
+								Object deanDateObj = null;
+								if (deanSignDate != null && deanSignDate != "") {
+									Date deanSignNew = Date.valueOf(deanSignDate);
+									deanDateObj = deanSignNew;
+								}
+								
+								dataMapFormInfo.put("DEAN_SIGN_DATE",
+										deanDateObj);
+								dataMapFormInfo.put("DEAN_COMMENT",
+										deanComments);
+								dataMapFormInfo.put("RECORDS_SIGNATURE",
+										recordsSign);
+								
+								Object recordDateObj = null;
+								if (recordsSignDate != null && recordsSignDate != "") {
+									Date recordSignNew = Date.valueOf(recordsSignDate);
+									recordDateObj = recordSignNew;
+								}
+								
+								dataMapFormInfo.put("RECORDS_SIGN_DATE",
+										recordDateObj);
+								dataMapFormInfo.put("RECORDS_COMMENT",
+										recordsComments);
+
+								dataMapFormInfo.put("ENROLLMENT_REQUEST_ID",
+										enrollmentRequestID);
+								dataMapFormInfo.put("RECORDERS_NAME",
+										recordersName);
+								dataMapFormInfo.put("CMS_UPDATE_COMPLETED",
+										cmsUpdateCompleted);
+								dataMapFormInfo.put("WORKFLOW_INSTANCE_ID",
+										workflowInstanceID);
 
 								for (int i = 0; i < eElement
 										.getElementsByTagName("Row1")
@@ -143,51 +334,84 @@ public class GradeChangeDB implements WorkflowProcess {
 												.getElementsByTagName("Row1")
 												.item(i).getChildNodes()
 												.item(1).getTextContent();
-										
-//										studentID = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(2).getTextContent();
-//										
-//										gradeChangeFrom = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(3).getTextContent();
-//										
-//										gradeChangeTo = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(4).getTextContent();
-//										
-//										gradeChangeTo = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(5).getTextContent();
-//
-//										reasonsToChange = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(6).getTextContent();
-//										
-//										description = eElement
-//												.getElementsByTagName("Row1")
-//												.item(i).getChildNodes()
-//												.item(7).getTextContent();
-										
-										
+
+										studentID = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(2).getTextContent();
+
+										unitValue = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(3).getTextContent();
+
+										gradeChangeFrom = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(4).getTextContent();
+
+										gradeChangeTo = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(5).getTextContent();
+
+										gradeChangeReasons = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(6).getTextContent();
+
+										comments = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(7).getTextContent();
+
+										rpWorkCompleted = eElement
+												.getElementsByTagName("Row1")
+												.item(i).getChildNodes()
+												.item(8).getTextContent();
+
 										break;
 
 									}
-									dataMap = new LinkedHashMap<String, Object>();
-									dataMap.put("STUDENT_FIRST_NAME",
-											studentFirstName);
-									dataMap.put("STUDENT_LAST_NAME",
-											studentLastName);
-									
-									insertGCData(conn,dataMap);
 
-									// insertGradeChange(conn,
-									// studentFirstName, studentFirstName);
+									dataMapStudentInfo = new LinkedHashMap<String, Object>();
+
+									dataMapStudentInfo.put("TERM", term);
+									dataMapStudentInfo.put("INSTRUCTOR_CWID",
+											instCwid);
+									dataMapStudentInfo.put("CLASS_NUMBER",
+											classNumber);
+									dataMapStudentInfo.put("SECTION_NUMBER",
+											sectionNumber);
+									dataMapStudentInfo.put("TODAYS_DATE",
+											todayDate);
+									dataMapStudentInfo.put("STUDENT_CWID",
+											studentID);
+									dataMapStudentInfo.put("MIDDLE_NAME",
+											studentMiddleName);
+									dataMapStudentInfo.put("FIRST_NAME",
+											studentFirstName);
+									dataMapStudentInfo.put("LAST_NAME",
+											studentLastName);
+									dataMapStudentInfo.put("GRADE_CHANGE_FROM",
+											gradeChangeFrom);
+									dataMapStudentInfo.put("GRADE_CHANGE_TO",
+											gradeChangeTo);
+									dataMapStudentInfo.put(
+											"GRADE_CHANGE_REASON",
+											gradeChangeReasons);
+									dataMapStudentInfo
+											.put("COMMENTS", comments);
+									dataMapStudentInfo.put("RP_WORK_COMPLETED",
+											rpWorkCompleted);
+									dataMapStudentInfo.put(
+											"WORKFLOW_INSTANCE_ID",
+											workflowInstanceID);
+
+									//insertGCFormData(conn, dataMapFormInfo);
+
+									insertGCStudentData(conn,
+											dataMapStudentInfo);
 								}
 							}
 						}
@@ -196,10 +420,12 @@ public class GradeChangeDB implements WorkflowProcess {
 						log.error("SAXException=" + e.getMessage());
 						e.printStackTrace();
 					} catch (Exception e) {
-						log.error("Exception1");
+						//log.error("Exception1");
 						log.error("Exception=" + e.getMessage());
 						e.printStackTrace();
-					} finally {
+					} 
+					
+					/*finally {
 						try {
 							is.close();
 							conn.close();
@@ -211,38 +437,16 @@ public class GradeChangeDB implements WorkflowProcess {
 							e.printStackTrace();
 						}
 
-					}
+					}*/
 
 				}
 			}
 
 			// log.error("Connection Successfull");
+			
+			insertGCFormData(conn, dataMapFormInfo);
 			// insertCataLeaveDonationData(conn,emplId, dateAbsent,hoursAbsent);
 		}
-	}
-
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} /*
-		 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
-		 * (Exception exp) { exp.printStackTrace(); } }
-		 */
-		return null;
 	}
 
 	/**
@@ -250,53 +454,8 @@ public class GradeChangeDB implements WorkflowProcess {
 	 * @param conn
 	 * @param dataMap
 	 */
-	public void insertGradeChangeOld(Connection conn, String studentFirstName,
-			String studentLastName) {
-		// log.error("empID=" + empID);
-		log.error("First=" + studentFirstName);
-		log.error("Last=" + studentLastName);
-		PreparedStatement preparedStmt = null;
-		log.error("conn=" + conn);
-		if (conn != null) {
-			try {
-				conn.setAutoCommit(false);
-			} catch (SQLException e1) {
-				log.error("SQLException=" + e1.getMessage());
-				e1.printStackTrace();
-			} catch (Exception e) {
-				log.error("Exception=" + e.getMessage());
-				e.printStackTrace();
-			}
 
-			String inserteventQuery = "insert into AEM_GRADE_CHANGE (STUDENT_FIRST_NAME,STUDENT_LAST_NAME) values (?,?)";
-			try {
-				preparedStmt = conn.prepareStatement(inserteventQuery);
-				log.error("preparedStmt=" + preparedStmt);
-				preparedStmt.setString(1, studentFirstName);
-				preparedStmt.setString(2, studentLastName);
-				log.error("Before GC");
-				preparedStmt.execute();
-				log.error("After GC");
-				conn.commit();
-			} catch (SQLException e2) {
-				log.error("aaa=" + e2.getMessage());
-				e2.printStackTrace();
-			} catch (Exception e2) {
-				log.error("e2=" + e2.getMessage());
-				e2.printStackTrace();
-			}
-
-			/*
-			 * finally { if (preparedStmt != null) { try { preparedStmt.close();
-			 * conn.close(); } catch (SQLException e) {
-			 * log.error("SQLException=" + e.getMessage()); e.printStackTrace();
-			 * } catch (Exception e) { log.error("Exception=" + e.getMessage());
-			 * e.printStackTrace(); } } }
-			 */
-		}
-	}
-
-	public void insertGCData(Connection conn,
+	public void insertGCStudentData(Connection conn,
 			LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
@@ -310,7 +469,7 @@ public class GradeChangeDB implements WorkflowProcess {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
-			String tableName = "AEM_GRADE_CHANGE";
+			String tableName = "AEM_AR_GRADE_CHANGE_STUDENT_INFO";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
 					tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
@@ -328,11 +487,9 @@ public class GradeChangeDB implements WorkflowProcess {
 			try {
 				preparedStmt = conn.prepareStatement(sql.toString());
 			} catch (SQLException e1) {
-				log.error("Exception3");
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
 			} catch (Exception e) {
-				log.error("Exception2");
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();
 			}
@@ -341,10 +498,8 @@ public class GradeChangeDB implements WorkflowProcess {
 			try {
 				for (Object value : dataMap.values()) {
 					if (value instanceof Date) {
-						log.error("Date=" + value);
 						preparedStmt.setDate(++i, (Date) value);
 					} else if (value instanceof Integer) {
-						log.error("Integ=" + value);
 						preparedStmt.setInt(++i, (Integer) value);
 					} else {
 						if (value != "" && value != null) {
@@ -364,10 +519,10 @@ public class GradeChangeDB implements WorkflowProcess {
 				e.printStackTrace();
 			}
 			try {
-				log.error("Before Prepared stmt GC");
+				log.error("Before Prepared stmt GC Student Info");
 				preparedStmt.execute();
 				conn.commit();
-				log.error("After Prepared stmt GC");
+				log.error("After Prepared stmt GC Student Info");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
@@ -386,6 +541,80 @@ public class GradeChangeDB implements WorkflowProcess {
 					} catch (Exception e) {
 						log.error("Exception7");
 						log.error("Exception=" + e.getMessage());
+						e.printStackTrace();
+					}
+				}
+			}
+		}
+	}
+
+	public void insertGCFormData(Connection conn,
+			LinkedHashMap<String, Object> dataMap) {
+		PreparedStatement preparedStmt = null;
+		if (conn != null) {
+			try {
+				conn.setAutoCommit(false);
+			} catch (SQLException e1) {
+				log.error("SQLException=" + e1.getMessage());
+				e1.printStackTrace();
+			}
+			String tableName = "AEM_AR_GRADE_CHANGE_FORM";
+			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(
+					tableName).append(" (");
+			StringBuilder placeholders = new StringBuilder();
+			for (Iterator<String> iter = dataMap.keySet().iterator(); iter
+					.hasNext();) {
+				sql.append(iter.next());
+				placeholders.append("?");
+				if (iter.hasNext()) {
+					sql.append(",");
+					placeholders.append(",");
+				}
+			}
+			sql.append(") VALUES (").append(placeholders).append(")");
+			log.error("SQL=" + sql.toString());
+			try {
+				preparedStmt = conn.prepareStatement(sql.toString());
+			} catch (SQLException e1) {
+				log.error("SQLException=" + e1.getMessage());
+				e1.printStackTrace();
+			}
+			int i = 0;
+			log.info("Datamap values=" + dataMap.values());
+			for (Object value : dataMap.values()) {
+				try {
+					if (value instanceof Date) {
+						preparedStmt.setDate(++i, (Date) value);
+					} else if (value instanceof Integer) {
+						preparedStmt.setInt(++i, (Integer) value);
+					} else {
+						if (value != "" && value != null) {
+							preparedStmt.setString(++i, value.toString());
+						} else {
+							preparedStmt.setString(++i, null);
+						}
+					}
+				} catch (SQLException e) {
+					log.error("SQLException=" + e.getMessage());
+					e.printStackTrace();
+				}
+			}
+			try {
+				log.error("Before GC");
+				preparedStmt.execute();
+				conn.commit();
+				log.error("After GC");
+			} catch (SQLException e1) {
+				log.error("SQLException=" + e1.getMessage());
+				e1.printStackTrace();
+			} finally {
+				if (preparedStmt != null) {
+					try {
+						preparedStmt.close();
+						log.info("preparedstmt closed");
+						conn.close();
+					} catch (SQLException e) {
+						log.error("SQLException=" + e.getMessage());
 						e.printStackTrace();
 					}
 				}
