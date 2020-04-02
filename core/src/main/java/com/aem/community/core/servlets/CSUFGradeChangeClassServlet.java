@@ -49,6 +49,7 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 		Connection conn = null;
 		String courseName = "";
 		String instUserId ="";
+		String termDesc ="";
 
 		JSONArray gradChangeDetails = null;
 		if (req.getParameter("courseName") != null
@@ -56,13 +57,14 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 			//classNo = req.getParameter("classNbr");
 			courseName = req.getParameter("courseName");
 			instUserId = req.getParameter("instUserID");
+			termDesc = req.getParameter("termDesc");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeClsDetails(courseName,instUserId, conn);
+				gradChangeDetails = getGradeChangeClsDetails(courseName,instUserId,termDesc, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -91,7 +93,7 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeClsDetails(String courseName,String instUserId,
+	public static JSONArray getGradeChangeClsDetails(String courseName,String instUserId,String termDesc,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails=" + courseName);
@@ -111,6 +113,8 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 					"<<CRSE_NAME>>", courseName);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<instr_userid>>", instUserId);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
+					termDesc);
 			
 			String lookupFields = ConfigManager.getValue("gradeChangeFields");
 			String[] fields = lookupFields.split(",");

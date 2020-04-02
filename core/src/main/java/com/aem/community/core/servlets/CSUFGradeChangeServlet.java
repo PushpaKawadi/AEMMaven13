@@ -166,7 +166,7 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 				}
 				jArray.put(studentInfo);
 			}
-			//logger.info("studentInfo=" + jArray);
+			logger.info("studentInfo=" + jArray);
 		} catch (Exception oEx) {
 			studentInfo = null;
 
