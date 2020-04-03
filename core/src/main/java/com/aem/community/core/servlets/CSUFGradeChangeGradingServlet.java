@@ -73,6 +73,7 @@ public class CSUFGradeChangeGradingServlet extends SlingSafeMethodsServlet {
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
 			if (gradChangeDetails != null && !gradChangeDetails.equals("")) {
+				logger.error("Pushpa====="+gradChangeDetails.length());
 				response.getWriter().write(gradChangeDetails.toString());
 			} else {
 				logger.info("Data not available");
