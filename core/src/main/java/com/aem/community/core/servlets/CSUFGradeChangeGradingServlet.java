@@ -14,6 +14,7 @@ import org.apache.sling.api.servlets.HttpConstants;
 import org.apache.sling.api.servlets.SlingAllMethodsServlet;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.osgi.framework.Constants;
 import org.osgi.service.component.annotations.Component;
@@ -73,8 +74,43 @@ public class CSUFGradeChangeGradingServlet extends SlingSafeMethodsServlet {
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
 			if (gradChangeDetails != null && !gradChangeDetails.equals("")) {
-				logger.error("Pushpa====="+gradChangeDetails.length());
-				response.getWriter().write(gradChangeDetails.toString());
+				logger.info("Grading To Array Lenght ="
+						+ gradChangeDetails.length());
+				JSONObject gradingInfo = new JSONObject();
+				JSONArray gradingArray = new JSONArray();
+				if (gradChangeDetails.length() == 0) {
+					try {
+						gradingArray.put("WU");
+						gradingArray.put("D+");
+						gradingArray.put("A+");
+						gradingArray.put("D-");
+						gradingArray.put("F");
+						gradingArray.put("A");
+						gradingArray.put("WE");
+						gradingArray.put("RD");
+						gradingArray.put("A-");
+						gradingArray.put("C");
+						gradingArray.put("C-");
+						gradingArray.put("B+");
+						gradingArray.put("B");
+						gradingArray.put("IC");
+						gradingArray.put("RP");
+						gradingArray.put("D");
+						gradingArray.put("W");
+						gradingArray.put("B-");
+						gradingArray.put("I");
+					} catch (Exception e) {
+						e.printStackTrace();
+					}
+					try {
+						gradingInfo.put("Grade To", gradingArray);
+					} catch (JSONException e) {
+						e.printStackTrace();
+					}
+					response.getWriter().write(gradingInfo.toString());
+				} else {
+					response.getWriter().write(gradChangeDetails.toString());
+				}
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
