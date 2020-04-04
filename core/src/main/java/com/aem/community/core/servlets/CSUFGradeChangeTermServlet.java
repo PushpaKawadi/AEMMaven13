@@ -34,10 +34,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getGCLoggedinUserID" })
-public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getGCTermServlet" })
+public class CSUFGradeChangeTermServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFGradeChangeUserIDServlet.class);
+			.getLogger(CSUFGradeChangeTermServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -47,21 +47,22 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String instUserId = "";
-		// String strm = "";
+		String instCwid = "";
+		String termDesc = "";
 
 		JSONArray gradChangeDetails = null;
-		if (req.getParameter("instUserID") != null
-				&& !req.getParameter("instUserID").trim().equals("")) {
-			instUserId = req.getParameter("instUserID");
-			// strm = req.getParameter("strm");
+		if (req.getParameter("instCwid") != null
+				&& !req.getParameter("instCwid").trim().equals("")) {
+			instCwid = req.getParameter("instCwid");
+			termDesc = req.getParameter("termDesc");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeUserDetails(instUserId, conn);
+				gradChangeDetails = getGradeChangeTermDetails(instCwid,
+						termDesc, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -90,10 +91,10 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeUserDetails(String instUserId,
-			Connection conn) throws Exception {
+	public static JSONArray getGradeChangeTermDetails(String instCwid,
+			String termDesc, Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails=" + instUserId);
+		logger.info("Inside getGradeChnageDetails=" + instCwid);
 
 		ResultSet oRresultSet = null;
 		JSONObject instInfo = new JSONObject();
@@ -101,35 +102,44 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-			studentCourseInfoSQL = ConfigManager
-					.getValue("gradeChangeLoggedIn");
+			studentCourseInfoSQL = ConfigManager.getValue("gradeChangeTerm");
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<instr_userid>>", instUserId);
+					"<<INSTR_CWID>>", instCwid);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+					"<<TERM_DESCR>>", termDesc);
+
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
-
+			
 			while (oRresultSet.next()) {
 				instInfo = new JSONObject();
-				// String crName = null;
-				// String clsNbr = null;
-				// String result = null;
+				String crName = null;
+				String clsNbr = null;
+				String clsSection = null;
+				String clsCrsResult = null;
+				String clsCrsSecResult = null;
 
+				instInfo.put("crse_name", oRresultSet.getString("CRSE_NAME"));
+				instInfo.put("class_nbr", oRresultSet.getString("CLASS_NBR"));
 				instInfo.put("instCwid", oRresultSet.getString("INSTR_CWID"));
-				// instInfo.put("class_nbr",
-				// oRresultSet.getString("CLASS_NBR"));
-				// instInfo.put("crse_name",
-				// oRresultSet.getString("CRSE_NAME"));
-				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
-				// instInfo.put("inst_userId",
-				// oRresultSet.getString("INSTR_USERID"));
-				//
-				// crName = oRresultSet.getString("CRSE_NAME");
-				// clsNbr = oRresultSet.getString("CLASS_NBR");
-				// result = clsNbr.concat(" - ").concat(crName);
+				instInfo.put("inst_userId",
+						oRresultSet.getString("INSTR_USERID"));
+				instInfo.put("class_section",
+						oRresultSet.getString("CLASS_SECTION"));
+				instInfo.put("course_level",
+						oRresultSet.getString("COURSE_LEVEL"));
+				//instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
 
-				// instInfo.put("clsCrs", result);
+				crName = oRresultSet.getString("CRSE_NAME");
+				clsNbr = oRresultSet.getString("CLASS_NBR");
+				clsSection = oRresultSet.getString("CLASS_SECTION");
+				clsCrsResult = clsNbr.concat(" - ").concat(crName);
+				clsCrsSecResult = clsNbr.concat(" - ").concat(crName).concat(" - ").concat(clsSection);
+				
+				instInfo.put("clsCrs", clsCrsResult);
+				instInfo.put("clsCrsSec", clsCrsSecResult);
 				jArray.put(instInfo);
 			}
 
