@@ -60,6 +60,7 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 		String empId = "";
 		String empRCD = "";
 		String cbid = "";
+		String draftDate = "";
 		String evaluationType = "";
 		String firstName = "";
 		String lastName = "";
@@ -165,6 +166,8 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 									.item(0).getTextContent();
 							log.info("RatingPeriodFrom="+ratingPeriodFrom);
 							ratingPeriodTo = eElement.getElementsByTagName("RatingPeriodTo")
+									.item(0).getTextContent();
+							draftDate = eElement.getElementsByTagName("draftDate")
 									.item(0).getTextContent();
 							log.info("RatingPeriodTo="+ratingPeriodTo);
 							empId = eElement.getElementsByTagName("EmpID")
@@ -315,6 +318,13 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 						reviewPeriodToObj = reviewPeriodToNew;
 					}
 					dataMap.put("RATE_PERIOD_TO", reviewPeriodToObj);
+					
+					Object draftDateObj = null;
+					if (draftDate != null && draftDate != "") {
+						Date draftDateNew = Date.valueOf(draftDate);
+						draftDateObj = draftDateNew;
+					}
+					dataMap.put("DRAFT_DATE", draftDateObj);
 					dataMap.put("EMPL_ID", empId);
 					dataMap.put("EMP_RCD", empRCD);
 					dataMap.put("CBID", cbid);

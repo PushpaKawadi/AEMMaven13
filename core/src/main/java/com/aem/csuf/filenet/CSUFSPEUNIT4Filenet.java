@@ -227,9 +227,9 @@ public class CSUFSPEUNIT4Filenet implements WorkflowProcess {
 		// Base 64 to
 		// the Filenet rest call to save the document
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"FinalSPEPerfEval2579DOR\"" + ","
+				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"FinalSPEUnit4DOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"Attachment\":\"" + encodedPDF + "\","
-				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579\""
+				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE4\""
 				+ "," + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\""
 				+ overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
 				+ "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","

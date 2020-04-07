@@ -66,6 +66,14 @@ public class MPPPerfEvalParticipantChooser implements ParticipantStepChooser {
 						}
 					}
 				}
+				if (valStr1.equals("ToDirector") ) {  
+					for (Map.Entry<String, Object> entry6 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
+						if (entry6.getKey().matches("directorUserId")) {
+							valStr2 = entry6.getValue().toString();
+							participant = valStr2;
+						}
+					}
+				}
 			}
 		}
 

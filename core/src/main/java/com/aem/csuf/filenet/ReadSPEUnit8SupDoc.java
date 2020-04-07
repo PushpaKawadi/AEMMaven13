@@ -43,11 +43,11 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read SPE2579 Support Doc",
-		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE2579 Support Doc" })
-public class ReadSPE2579SupDocs implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Unit8 Support Doc",
+		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE Unit8 Support Doc" })
+public class ReadSPEUnit8SupDoc implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(ReadSPE2579SupDocs.class);
+	private static final Logger log = LoggerFactory.getLogger(ReadSPEUnit8SupDoc.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
 	@Override
@@ -212,7 +212,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 								byte[] bytes = IOUtils.toByteArray(is);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPE2579SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUnit8SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE8SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
 									log.error("Read inner suppoting doc");
@@ -291,7 +291,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 							// log.error("bytes="+bytes);
 							encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPE2579SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUnit8SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE8SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 							if (encodedPDF != null && lastName != null && firstName != null) {
 								log.error("Read outer suppoting doc");
@@ -299,6 +299,7 @@ public class ReadSPE2579SupDocs implements WorkflowProcess {
 								try {
 									String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 									url = new URL(filenetUrl);
+									
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}

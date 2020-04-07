@@ -183,7 +183,11 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String empSign = "";
 		String empSignDate = "";
 		String empComment = "";
-		
+		String directorCB = "";
+		String directorSign = "";
+		String directorDate = "";
+		String directorName = "";
+		String directorComment = "";
 		String adminCB = "";
 		String adminPrintedName = "";
 		String adminSign = "";
@@ -413,6 +417,13 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 									.getTextContent();
 							hrCoordinatorSignComment = eElement.getElementsByTagName("HRCoordinatorSignComment").item(0)
 									.getTextContent();
+							
+							directorCB = eElement.getElementsByTagName("directorCB").item(0).getTextContent();;
+							directorSign = eElement.getElementsByTagName("directorSign").item(0).getTextContent();;
+							directorDate = eElement.getElementsByTagName("directorDate").item(0).getTextContent();;
+							directorComment = eElement.getElementsByTagName("directorComment").item(0).getTextContent();
+							directorName = eElement.getElementsByTagName("directorName").item(0).getTextContent();
+							
 							hrCB = eElement.getElementsByTagName("HRDICB").item(0)
 									.getTextContent();
 							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
@@ -488,10 +499,10 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 
 					dataMap.put("SERVICEORIENTATION", serviceOrientationRB);
 					dataMap.put("SO1_RATING_1", serviceOrientation1);
-					dataMap.put("SO2_RATING_2", serviceOrientation1);
-					dataMap.put("SO3_RATING_3", serviceOrientation1);
-					dataMap.put("SO4_RATING_4", serviceOrientation1);
-					dataMap.put("SO5_RATING_5", serviceOrientation1);
+					dataMap.put("SO2_RATING_2", serviceOrientation2);
+					dataMap.put("SO3_RATING_3", serviceOrientation3);
+					dataMap.put("SO4_RATING_4", serviceOrientation4);
+					dataMap.put("SO5_RATING_5", serviceOrientation5);
 
 					dataMap.put("ADAPTABILITY", adaptabilityRB);
 					dataMap.put("ADAPTABILITY_RATING_1", adaptability1);
@@ -601,6 +612,18 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 					dataMap.put("ADMIN_COMMENT", adminComments);
 					dataMap.put("ADMIN_SIGNATURE", adminSign);
 					dataMap.put("ADMIN_PRINTED_NAME", adminPrintedName);
+					
+					dataMap.put("DIRECTOR_DECL_CB", directorCB);
+					Object directorSignObj = null;
+					if (directorDate != null && directorDate != "") {
+						Date directorDateNew = Date.valueOf(directorDate);
+						directorSignObj = directorDateNew;
+					}
+					dataMap.put("DIRECTOR_SIGNED_DATE", directorSignObj);
+					dataMap.put("DIRECTOR_COMMENT", directorComment);
+					dataMap.put("DIRECTORSIGN", directorSign);
+					dataMap.put("DIRECTOR_PRINTED_NAME", directorName);
+					
 					dataMap.put("HRCOOCB", hrCooCB);
 					dataMap.put("HRCOO_SIGN", hrCoordinatorSign);
 					Object hrCooDateObj = null;

@@ -520,10 +520,10 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 
 					dataMap.put("SERVICEORIENTATION", serviceOrientationRB);
 					dataMap.put("SO1_RATING_1", serviceOrientation1);
-					dataMap.put("SO2_RATING_2", serviceOrientation1);
-					dataMap.put("SO3_RATING_3", serviceOrientation1);
-					dataMap.put("SO4_RATING_4", serviceOrientation1);
-					dataMap.put("SO5_RATING_5", serviceOrientation1);
+					dataMap.put("SO2_RATING_2", serviceOrientation2);
+					dataMap.put("SO3_RATING_3", serviceOrientation3);
+					dataMap.put("SO4_RATING_4", serviceOrientation4);
+					dataMap.put("SO5_RATING_5", serviceOrientation5);
 
 					dataMap.put("ADAPTABILITY", adaptabilityRB);
 					dataMap.put("ADAPTABILITY_RATING_1", adaptability1);
