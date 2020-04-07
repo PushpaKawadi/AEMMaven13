@@ -46,14 +46,14 @@ public class CSUFGradeChangeCWIDServlet extends SlingSafeMethodsServlet {
 			IOException {
 		Connection conn = null;
 		String instCwid = "";
-		// String strm = "";
-		String termDesc = "";
+		//String strm = "";
+		//String termDesc = "";
 
 		JSONArray gradChangeDetails = null;
 		if (req.getParameter("instCwid") != null
 				&& !req.getParameter("instCwid").trim().equals("")) {
 			instCwid = req.getParameter("instCwid");
-			termDesc = req.getParameter("termDesc");
+			//termDesc = req.getParameter("termDesc");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
@@ -61,7 +61,7 @@ public class CSUFGradeChangeCWIDServlet extends SlingSafeMethodsServlet {
 			try {
 				logger.info("Connection Success=" + conn);
 				gradChangeDetails = getGradeChangeCwidDeatils(instCwid,
-						termDesc, conn);
+						conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -91,7 +91,7 @@ public class CSUFGradeChangeCWIDServlet extends SlingSafeMethodsServlet {
 	 * @throws Exception
 	 */
 	public static JSONArray getGradeChangeCwidDeatils(String instCwid,
-			String termDesc, Connection conn) throws Exception {
+			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails=" + instCwid);
 
@@ -106,15 +106,15 @@ public class CSUFGradeChangeCWIDServlet extends SlingSafeMethodsServlet {
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<INSTR_CWID>>", instCwid);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<TERM_DESCR>>", termDesc);
+//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+//					"<<TERM_DESCR>>", termDesc);
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
 			while (oRresultSet.next()) {
 				instInfo = new JSONObject();
-				instInfo.put("inst_cwid", oRresultSet.getString("INSTR_CWID"));
-				instInfo.put("crse_name", oRresultSet.getString("CRSE_NAME"));
+				instInfo.put("inst_userId", oRresultSet.getString("INSTR_USERID"));
+				//instInfo.put("crse_name", oRresultSet.getString("CRSE_NAME"));
 				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
 				jArray.put(instInfo);
 			}

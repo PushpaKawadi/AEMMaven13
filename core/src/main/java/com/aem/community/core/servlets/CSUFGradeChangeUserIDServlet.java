@@ -48,20 +48,20 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 			IOException {
 		Connection conn = null;
 		String instUserId = "";
-		// String strm = "";
+		String termDesc = "";
 
 		JSONArray gradChangeDetails = null;
 		if (req.getParameter("instUserID") != null
 				&& !req.getParameter("instUserID").trim().equals("")) {
 			instUserId = req.getParameter("instUserID");
-			// strm = req.getParameter("strm");
+			termDesc = req.getParameter("termDesc");
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeUserDetails(instUserId, conn);
+				gradChangeDetails = getGradeChangeUserDetails(instUserId, termDesc, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -90,7 +90,7 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeUserDetails(String instUserId,
+	public static JSONArray getGradeChangeUserDetails(String instUserId, String termDesc,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails=" + instUserId);
@@ -106,6 +106,8 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<instr_userid>>", instUserId);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+					"<<TERM_DESCR>>", termDesc);
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
