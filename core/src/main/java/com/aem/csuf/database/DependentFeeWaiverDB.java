@@ -239,9 +239,9 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 							 .item(0).getTextContent();
 							 log.info("applicantDateOfBirth Value is: "+applicantDateOfBirth);
 
-//							 applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
-//							 .item(0).getTextContent();
-//							 log.info("applicantAddress Value is: " + applicantAddress);
+							 applicantEmailAddress = eElement.getElementsByTagName("applicantEmailAddress")
+							 .item(0).getTextContent();
+							 log.info("applicantAddress Value is: " + applicantAddress);
 
 							 applicantPhone = eElement.getElementsByTagName("applicantPhone")
 							 .item(0).getTextContent();
@@ -286,8 +286,8 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 									.getTextContent();
 							log.info("onlineCourse1Yes Value is: " + onlineCourse1Yes);
 
-							onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No").item(0).getTextContent();
-							log.info("onlineCourse1No Value is: " + onlineCourse1No);
+//							onlineCourse1No = eElement.getElementsByTagName("onlineCourse1No").item(0).getTextContent();
+//							log.info("onlineCourse1No Value is: " + onlineCourse1No);
 
 							courseTitle2 = eElement.getElementsByTagName("courseTitle2").item(0).getTextContent();
 							log.info("courseTitle2 Value is: " + courseTitle2);
@@ -296,8 +296,8 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 									.getTextContent();
 							log.info("onlineCourse2Yes Value is: " + onlineCourse2Yes);
 
-							onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No").item(0).getTextContent();
-							log.info("onlineCourse2No Value is: " + onlineCourse2No);
+//							onlineCourse2No = eElement.getElementsByTagName("onlineCourse2No").item(0).getTextContent();
+//							log.info("onlineCourse2No Value is: " + onlineCourse2No);
 
 							feeWaiverGranted = eElement.getElementsByTagName("feeWaiverGranted").item(0)
 									.getTextContent();
@@ -355,7 +355,7 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("OTHER", others);
 					dataMap.put("TERM_STATUS", termStatus);
 					dataMap.put("LEAVES_YES", leavesYes);
-					dataMap.put("LEAVES_NO", leavesYes);
+					dataMap.put("LEAVES_NO", leavesNo);
 					
 					dataMap.put("APPLICANT_FIRST_NAME", applicantFirstName);
 					dataMap.put("APPLICANT_LAST_NAME", applicantLastName);
@@ -363,8 +363,13 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("APPLICANT_ADDRESS", applicantAddress);
 					dataMap.put("APPLICANT_CITY", applicantCity);
 					dataMap.put("APPLICANT_STATE", applicantState);
-					dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirth);
-					//dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
+					Object applicantDateOfBirthObj = null;
+					if (applicantDateOfBirth != null && applicantDateOfBirth != "") {
+						Date applicantDateOfBirthNew = Date.valueOf(applicantDateOfBirth);
+						applicantDateOfBirthObj = applicantDateOfBirthNew;
+					}
+					dataMap.put("APPLICANT_DATE_OF_BIRTH", applicantDateOfBirthObj);
+					dataMap.put("APPLICANT_EMAIL_ADDRESS", applicantEmailAddress);
 					dataMap.put("APPLICANT_HOME_PHONE", applicantPhone);
 					dataMap.put("APPLICANT_ALTERNATE_PHONE", alternatePhone);
 					dataMap.put("RELATION_TO_EMPLOYEE", relationToEmployee);
@@ -375,12 +380,12 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("DEGREE_PROGRAM", degreeProgram);
 					dataMap.put("YEAR_SEMESTER", yearSemester);				
 
-					dataMap.put("COURSE_TITLE1", onlineCourse2Yes);
-					dataMap.put("ONLINE_COURSE1_YES", onlineCourse1No);
-					dataMap.put("ONLINE_COURSE1_NO", onlineCourse2No);
-					dataMap.put("COURSE_TITLE2", onlineCourse2Yes);
-					dataMap.put("ONLINE_COURSE2_YES", onlineCourse1No);
-					dataMap.put("ONLINE_COURSE2_NO", onlineCourse2No);
+					dataMap.put("COURSE_TITLE1", courseTitle1);
+					dataMap.put("ONLINE_COURSE1_YES", onlineCourse1Yes);
+					//dataMap.put("ONLINE_COURSE1_NO", onlineCourse2No);
+					dataMap.put("COURSE_TITLE2", courseTitle2);
+					dataMap.put("ONLINE_COURSE2_YES", onlineCourse2Yes);
+					//dataMap.put("ONLINE_COURSE2_NO", onlineCourse2No);
 					dataMap.put("FEE_WAIVER_GRANTED", feeWaiverGranted);
 					dataMap.put("FEE_WAIVER_DENIED", feeWaiverDenied);
 					dataMap.put("TERM", term);
