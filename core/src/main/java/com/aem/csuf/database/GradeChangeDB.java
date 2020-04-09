@@ -91,6 +91,7 @@ public class GradeChangeDB implements WorkflowProcess {
 		String gradeChangeReasons = "";
 		String comments = "";
 		String rpWorkCompleted = "";
+		String gradeCheck = "";
 
 		LinkedHashMap<String, Object> dataMapFormInfo = null;
 		LinkedHashMap<String, Object> dataMapStudentInfo = null;
@@ -314,6 +315,7 @@ public class GradeChangeDB implements WorkflowProcess {
 								dataMapFormInfo.put("WORKFLOW_INSTANCE_ID",
 										workflowInstanceID);
 
+								
 								for (int i = 0; i < eElement
 										.getElementsByTagName("Row1")
 										.getLength(); i++) {
@@ -322,111 +324,142 @@ public class GradeChangeDB implements WorkflowProcess {
 											.item(i).getChildNodes()
 											.getLength() - 1; j++) {
 
-										studentLastName = eElement
+										gradeCheck = eElement
 												.getElementsByTagName("Row1")
 												.item(i).getChildNodes()
 												.item(0).getTextContent();
 
-										studentFirstName = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(1).getTextContent();
+										if (gradeCheck.equals("1")) {
+											studentLastName = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(1)
+													.getTextContent();
 
-										studentID = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(2).getTextContent();
+											studentFirstName = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(2)
+													.getTextContent();
 
-										unitValue = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(3).getTextContent();
+											studentID = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(3)
+													.getTextContent();
 
-										gradeChangeFrom = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(4).getTextContent();
+											unitValue = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(4)
+													.getTextContent();
 
-										gradeChangeTo = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(5).getTextContent();
+											gradeChangeFrom = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(5)
+													.getTextContent();
 
-										gradeChangeReasons = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(6).getTextContent();
+											gradeChangeTo = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(6)
+													.getTextContent();
 
-										comments = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(7).getTextContent();
+											gradeChangeReasons = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(7)
+													.getTextContent();
 
-										rpWorkCompleted = eElement
-												.getElementsByTagName("Row1")
-												.item(i).getChildNodes()
-												.item(8).getTextContent();
+											comments = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(8)
+													.getTextContent();
 
-										break;
+											rpWorkCompleted = eElement
+													.getElementsByTagName(
+															"Row1").item(i)
+													.getChildNodes().item(9)
+													.getTextContent();
 
+											// DB
+
+											dataMapStudentInfo = new LinkedHashMap<String, Object>();
+
+											dataMapStudentInfo
+													.put("TERM", term);
+											dataMapStudentInfo
+													.put("INSTRUCTOR_CWID",
+															instCwid);
+											dataMapStudentInfo.put("COURSE_NAME", courseName);
+											dataMapStudentInfo
+													.put("CLASS_NUMBER",
+															classNumber);
+											dataMapStudentInfo.put(
+													"SECTION_NUMBER",
+													sectionNumber);
+
+											Object todayDtObjStu = null;
+											if (todayDate != null
+													&& todayDate != "") {
+												Date todayDateNew = Date
+														.valueOf(todayDate);
+												todayDtObjStu = todayDateNew;
+											}
+											dataMapStudentInfo.put(
+													"TODAYS_DATE",
+													todayDtObjStu);
+											dataMapStudentInfo.put(
+													"STUDENT_CWID", studentID);
+											dataMapStudentInfo.put(
+													"MIDDLE_NAME",
+													studentMiddleName);
+											dataMapStudentInfo.put(
+													"FIRST_NAME",
+													studentFirstName);
+											dataMapStudentInfo.put("LAST_NAME",
+													studentLastName);
+											dataMapStudentInfo.put("UNIT_VALUE",
+													unitValue);
+											dataMapStudentInfo.put(
+													"GRADE_CHANGE_FROM",
+													gradeChangeFrom);
+											dataMapStudentInfo.put(
+													"GRADE_CHANGE_TO",
+													gradeChangeTo);
+											dataMapStudentInfo.put(
+													"GRADE_CHANGE_REASON",
+													gradeChangeReasons);
+											dataMapStudentInfo.put("COMMENTS",
+													comments);
+
+											Object rpWorkObj = null;
+											if (rpWorkCompleted != null
+													&& rpWorkCompleted != "") {
+												Date rpNew = Date
+														.valueOf(rpWorkCompleted);
+												rpWorkObj = rpNew;
+											}
+
+											dataMapStudentInfo.put(
+													"RP_WORK_COMPLETED",
+													rpWorkObj);
+											dataMapStudentInfo.put(
+													"WORKFLOW_INSTANCE_ID",
+													workflowInstanceID);
+											
+											if (parentTable == 0) {
+												insertGCFormData(conn, dataMapFormInfo);
+											}
+
+
+											insertGCStudentData(conn,
+													dataMapStudentInfo);
+											break;
+										}
 									}
-
-									dataMapStudentInfo = new LinkedHashMap<String, Object>();
-
-									dataMapStudentInfo.put("TERM", term);
-									dataMapStudentInfo.put("INSTRUCTOR_CWID",
-											instCwid);
-									dataMapStudentInfo.put("CLASS_NUMBER",
-											classNumber);
-									dataMapStudentInfo.put("SECTION_NUMBER",
-											sectionNumber);
-
-									Object todayDtObjStu = null;
-									if (todayDate != null && todayDate != "") {
-										Date todayDateNew = Date
-												.valueOf(todayDate);
-										todayDtObjStu = todayDateNew;
-									}
-									dataMapStudentInfo.put("TODAYS_DATE",
-											todayDtObjStu);
-									dataMapStudentInfo.put("STUDENT_CWID",
-											studentID);
-									dataMapStudentInfo.put("MIDDLE_NAME",
-											studentMiddleName);
-									dataMapStudentInfo.put("FIRST_NAME",
-											studentFirstName);
-									dataMapStudentInfo.put("LAST_NAME",
-											studentLastName);
-									dataMapStudentInfo.put("GRADE_CHANGE_FROM",
-											gradeChangeFrom);
-									dataMapStudentInfo.put("GRADE_CHANGE_TO",
-											gradeChangeTo);
-									dataMapStudentInfo.put(
-											"GRADE_CHANGE_REASON",
-											gradeChangeReasons);
-									dataMapStudentInfo
-											.put("COMMENTS", comments);
-
-									Object rpWorkObj = null;
-									if (rpWorkCompleted != null
-											&& rpWorkCompleted != "") {
-										Date rpNew = Date
-												.valueOf(rpWorkCompleted);
-										rpWorkObj = rpNew;
-									}
-
-									dataMapStudentInfo.put("RP_WORK_COMPLETED",
-											rpWorkObj);
-									dataMapStudentInfo.put(
-											"WORKFLOW_INSTANCE_ID",
-											workflowInstanceID);
-
-									if (parentTable == 0) {
-										insertGCFormData(conn, dataMapFormInfo);
-									}
-
-									insertGCStudentData(conn,
-											dataMapStudentInfo);
 								}
 							}
 						}
@@ -447,7 +480,6 @@ public class GradeChangeDB implements WorkflowProcess {
 							log.error("IOException=" + e.getMessage());
 							e.printStackTrace();
 						} catch (SQLException e) {
-							// TODO Auto-generated catch block
 							e.printStackTrace();
 						}
 
@@ -467,7 +499,7 @@ public class GradeChangeDB implements WorkflowProcess {
 	public void insertGCStudentData(Connection conn,
 			LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
-		log.error("conn=" + conn);
+		log.error("Pushpa=" + dataMap);
 		if (conn != null) {
 			try {
 				conn.setAutoCommit(false);
