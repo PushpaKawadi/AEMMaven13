@@ -40,6 +40,7 @@ import org.slf4j.LoggerFactory;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 import com.day.commons.datasource.poolservice.DataSourcePool;
+import com.aem.community.util.CSUFConstants;
 
 /**
  * Servlet that writes some sample content into the response. It is mounted for
@@ -96,6 +97,10 @@ public class CSUFDockNoticeServlet extends
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
+		
+		String abc = CSUFConstants.sqlQuery;
+		
+		logger.error("ABC========="+abc);
 		
 		String sqlQuery = ConfigManager.getValue("dockNoticeUserIdSql");
 		logger.info("sqlQuery="+sqlQuery);
