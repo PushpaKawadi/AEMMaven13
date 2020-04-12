@@ -22,7 +22,6 @@ import java.sql.Statement;
 
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
-import javax.sql.DataSource;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
@@ -38,8 +37,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
-import com.aem.community.util.ConfigManager;
-import com.day.commons.datasource.poolservice.DataSourcePool;
 import com.aem.community.util.CSUFConstants;
 
 /**
@@ -52,13 +49,12 @@ import com.aem.community.util.CSUFConstants;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Dock Notice",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
-		"sling.servlet.paths=" + "/bin/getDockNotice" })
-public class CSUFDockNoticeServlet extends
-		SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getDockNoticeUserServlet" })
+public class CSUFDockNoticeUserServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFDockNoticeServlet.class);
+			.getLogger(CSUFDockNoticeUserServlet.class);
 	private static final long serialVersionUID = 1L;
-	
+
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -66,7 +62,7 @@ public class CSUFDockNoticeServlet extends
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		//String dataSourceName = ConfigManager.getValue("dbFrmMgrProd");
+		// String dataSourceName = ConfigManager.getValue("dbFrmMgrProd");
 		String userID = "";
 		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
@@ -79,8 +75,7 @@ public class CSUFDockNoticeServlet extends
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getCataLeaveRequestUserDetails(conn, userID,
-						"SPE2579");
+				emplEvalDetails = getDockNoticeDetails(conn, userID, "SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -91,25 +86,21 @@ public class CSUFDockNoticeServlet extends
 		}
 	}
 
-	public static JSONArray getCataLeaveRequestUserDetails(
-			Connection oConnection, String userID, String docType)
-			throws Exception {
+	public static JSONArray getDockNoticeDetails(Connection oConnection,
+			String userID, String docType) throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		
-		String abc = CSUFConstants.sqlQuery;
-		
-		logger.error("ABC========="+abc);
-		
-		String sqlQuery = ConfigManager.getValue("dockNoticeUserIdSql");
-		logger.info("sqlQuery="+sqlQuery);
-		String lookupFields = ConfigManager.getValue("dockNoticeFields");
-		logger.info("lookupFields="+lookupFields);
+
+		String sqlQuery = CSUFConstants.dockNoticeUserIdSql;
+		logger.info("sqlQuery=" + sqlQuery);
+		// String lookupFields = ConfigManager.getValue("dockNoticeFields");
+		String lookupFields = CSUFConstants.dockNoticeFields;
+		logger.info("lookupFields=" + lookupFields);
 		String[] fields = lookupFields.split(",");
 		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
 		// emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-		logger.info("emplIDSQL="+sqlQuery);
+		logger.info("emplIDSQL=" + sqlQuery);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
@@ -140,35 +131,6 @@ public class CSUFDockNoticeServlet extends
 			}
 		}
 		return jArray;
-	}
-
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
 	}
 
 }
