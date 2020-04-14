@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -49,86 +50,93 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getMppManagerIdLookup" })
-public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(MPPManagerLookupServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Special Consultant Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getSplEmpLookup" })
+public class SCPRStaffOrMPPEmpServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(SCPRStaffOrMPPEmpServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	
-	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
+	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
 
-		String emplId = "";
-		String deptid = "";
-		// JSONObject mppManagerDetails = null;
-		JSONArray mppManagerDetails = null;
-		if (req.getParameter("empId") != null) {
-			emplId = req.getParameter("empId");
-			deptid = req.getParameter("deptid");
-			logger.info("emplId =" + emplId);
-			logger.info("deptid =" + deptid);
+		String cwid = "";
+		// JSONObject emplEvalDetails = null;
+		JSONArray emplEvalDetails = null;
+		if (req.getParameter("cwid") != null && req.getParameter("cwid") != "") {
+			cwid = req.getParameter("cwid");
+			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				mppManagerDetails = getMppEvalManagerDetails(emplId,deptid, conn, "SPE2579");
+				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, "SPE2579");
+				logger.error("emplEvalDetails=" + emplEvalDetails);
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(mppManagerDetails.toString());
+			// Set JSON in String
+			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getMppEvalManagerDetails(String emplId,String deptid, Connection oConnection, String docType)
+	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String docType)
 			throws Exception {
+
 		ResultSet oRresultSet = null;
-		JSONObject mppEvalManagerDetails;
+		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String mppManagerIDSQL = ConfigManager.getValue("mppManagerSQL");
-		// String lookupFields = ConfigManager.getValue("lookupFields");
-		String lookupFields = ConfigManager.getValue("mppManagerLookupFields");
+
+		String lookupFields = CSUFConstants.SCPREmpIdLookupFields;
+
+		String emplIDSQL = CSUFConstants.SCPREmpIDSQL;
+
 		String[] fields = lookupFields.split(",");
 
-		mppManagerIDSQL = mppManagerIDSQL.replaceAll("<<EMPL_ID>>", emplId);
-		mppManagerIDSQL = mppManagerIDSQL.replaceAll("<<DEPTID>>", deptid);
-		logger.info("mppManagerIDSQL =" + mppManagerIDSQL);
+		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(mppManagerIDSQL);
+			oRresultSet = oStatement.executeQuery(emplIDSQL);
+
 			while (oRresultSet.next()) {
-				mppEvalManagerDetails = new JSONObject();
+
+				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					mppEvalManagerDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("employeeEvalDetails =" + employeeEvalDetails);
 				}
-				jArray.put(mppEvalManagerDetails);
+				jArray.put(employeeEvalDetails);
 			}
+
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			mppEvalManagerDetails = null;
+			employeeEvalDetails = null;
 		} finally {
 			try {
 				if (oConnection != null) {
 					oConnection.close();
-					logger.info("Connection closed");
 
 				}
-			} catch (Exception e) {
-				logger.error("Exception in CSUFEmployeeLookUpServlet=" + e.getMessage());
-				e.getStackTrace();
+				// oStatement.close();
+				// oRresultSet.close();
+			} catch (Exception exp) {
+
 			}
 		}
+
+		// return employeeEvalDetails;
 		return jArray;
 	}
 

@@ -37,8 +37,9 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
+import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -49,12 +50,12 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Special Consultant Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getSplEmpLookup" })
-public class SpecialConsultantEmpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(SpecialConsultantEmpServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Special Consultant User Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getSplUserLookup" })
+public class SCPRStaffOrMPPUserServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(SCPRStaffOrMPPUserServlet.class);
 	private static final long serialVersionUID = 1L;
-	
+
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -62,24 +63,17 @@ public class SpecialConsultantEmpServlet extends SlingSafeMethodsServlet {
 			throws ServletException, IOException {
 		Connection conn = null;
 		String userID = "";
-		String cwid = "";
-		//JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
-				&& req.getParameter("cwid") != "") {
+		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
-			cwid = req.getParameter("cwid");
 			logger.info("userid =" + userID);
-			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, userID, "SPE2579");
-				logger.error("emplEvalDetails="+emplEvalDetails);
-				
+				emplEvalDetails = getUserIDDetailsNew(userID, conn, "SPE2579");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -91,61 +85,55 @@ public class SpecialConsultantEmpServlet extends SlingSafeMethodsServlet {
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String userID, String docType)
+	public static JSONArray getUserIDDetailsNew(String userID, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
-		//JSONObject employeeEvalDetails = new JSONObject();
-		
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		
-		String lookupFields = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,BUILDING,CSU_UNIT,DEPTID,DEPTNAME,EXTENSTION,FUL_COLLEGE_NAME";
-
-		String emplIDSQL ="Select  A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, A.BUILDING, B.CSU_UNIT, B.DEPTID, B.DEPTNAME, substr(A.WORK_PHONE, 7, 10) as Extenstion, B.FUL_COLLEGE_NAME from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B where A.EMPLID = Replace('<<Empl_ID>>', '-','') and A.EMPLID = B.EMPLID AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
-		
-		//String emplIDSQL ="SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, B.UNION_CD, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle, E.USERID AS EMPUSERID,(Select USERID from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))) as MANAGERUSERID, (Select USERID from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR = (Select REPORTS_TO from FUL_ECM_JOB_VW where EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINUSERID, (Select (FNAME || ' ' || LNAME)  from cmsrda.ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (Select REPORTS_TO from FUL_ECM_JOB_VW where EMPLID =(Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<Empl_ID>>'))))) as ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID  WHERE B.EMPLID = '<<Empl_ID>>'";
-		
-		String[] fields = lookupFields.split(",");
-
-		// userIDSQL.replaceAll("<<getUser_ID>>",userID);
-		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
-		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-
 
 		Statement oStatement = null;
 		try {
+
+			String userIDSQL = CSUFConstants.SCPRUserIDSQL;
+
+			String lookupFields = CSUFConstants.SCPRUserIdLookupfields;
+			String[] fields = lookupFields.split(",");
+
+			userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
+
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(emplIDSQL);
-	
+			oRresultSet = oStatement.executeQuery(userIDSQL);
+
 			while (oRresultSet.next()) {
+				logger.info("oRresultSet=" + oRresultSet);
 
 				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("employeeEvalDetails ="+employeeEvalDetails);
+
 				}
 				jArray.put(employeeEvalDetails);
+				logger.info("jArray=" + jArray);
 			}
-			
+
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			employeeEvalDetails = null;
+
 		} finally {
 			try {
-				if (oConnection != null){
+				if (oConnection != null) {
 					oConnection.close();
-					
-				}
-				// oStatement.close();
-				// oRresultSet.close();
-			} catch (Exception exp) {
 
+				}
+
+			} catch (Exception exp) {
+				logger.info("Finally=" + exp);
+				exp.printStackTrace();
 			}
 		}
 
-		//return employeeEvalDetails;
 		return jArray;
 	}
 
