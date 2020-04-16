@@ -44,7 +44,7 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 public class SaveFormWFHistory implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(SaveMedicalWFHistory.class);
+			.getLogger(SaveFormWFHistory.class);
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;

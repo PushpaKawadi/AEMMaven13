@@ -177,6 +177,8 @@ public class GradeChangeDB implements WorkflowProcess {
 								todayDate = eElement
 										.getElementsByTagName("TodayDate")
 										.item(0).getTextContent();
+								
+								log.error("First");
 
 								instSign = eElement
 										.getElementsByTagName("InstructorSign")
@@ -198,6 +200,8 @@ public class GradeChangeDB implements WorkflowProcess {
 								chairComments = eElement
 										.getElementsByTagName("ChairComment")
 										.item(0).getTextContent();
+								
+								log.error("Second");
 
 								deanSign = eElement
 										.getElementsByTagName("DeanSign")
@@ -213,19 +217,20 @@ public class GradeChangeDB implements WorkflowProcess {
 										.getElementsByTagName("EnrollmentReqID")
 										.item(0).getTextContent();
 								cmsUpdateCompleted = eElement
-										.getElementsByTagName("CMSUpdate")
+										.getElementsByTagName("CMSUpdateDate")
 										.item(0).getTextContent();
 								recordersName = eElement
 										.getElementsByTagName("RecordersName")
 										.item(0).getTextContent();
-								cmsUpdateCompleted = eElement
-										.getElementsByTagName("CMSUpdate")
+								recordsSign = eElement
+										.getElementsByTagName("RecordersSignature")
 										.item(0).getTextContent();
 								recordsComments = eElement
 										.getElementsByTagName(
 												"RecordersComments").item(0)
 										.getTextContent();
 
+								log.error("Third");
 								dataMapFormInfo = new LinkedHashMap<String, Object>();
 								dataMapFormInfo.put("TERM", term);
 								dataMapFormInfo
@@ -245,7 +250,7 @@ public class GradeChangeDB implements WorkflowProcess {
 									Date todayDateNew = Date.valueOf(todayDate);
 									todayDtObj = todayDateNew;
 								}
-
+								log.error("Four");
 								dataMapFormInfo.put("TODAYS_DATE", todayDtObj);
 								dataMapFormInfo.put("MASS_GRADE_CHANGE",
 										massGradeChange);
@@ -258,6 +263,7 @@ public class GradeChangeDB implements WorkflowProcess {
 											.valueOf(instSignDate);
 									instDateObj = instSignNew;
 								}
+								log.error("5---------------------");
 								dataMapFormInfo.put("INSTRUCTOR_SIGN_DATE",
 										instDateObj);
 								dataMapFormInfo.put("INSTRUCTOR_COMMENT",
@@ -271,6 +277,7 @@ public class GradeChangeDB implements WorkflowProcess {
 									chairDateObj = chairSignNew;
 								}
 
+								log.error("6---------------------");
 								dataMapFormInfo.put("CHAIR_SIGNATURE",
 										chairSign);
 								dataMapFormInfo.put("CHAIR_SIGN_DATE",
@@ -301,6 +308,7 @@ public class GradeChangeDB implements WorkflowProcess {
 									recordDateObj = recordSignNew;
 								}
 
+								log.error("7---------------------");
 								dataMapFormInfo.put("RECORDS_SIGN_DATE",
 										recordDateObj);
 								dataMapFormInfo.put("RECORDS_COMMENT",
