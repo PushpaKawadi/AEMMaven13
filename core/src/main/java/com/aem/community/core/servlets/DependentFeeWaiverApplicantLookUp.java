@@ -1,18 +1,4 @@
-/*
- *  Copyright 2015 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.aem.community.core.servlets;
 
 import java.io.IOException;
@@ -37,6 +23,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
@@ -49,86 +37,104 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getMppManagerIdLookup" })
-public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(MPPManagerLookupServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Dependent Fee Waiver Applicant Request Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getDependentFeeWaiverApplicantLookUp" })
+public class DependentFeeWaiverApplicantLookUp extends SlingSafeMethodsServlet {
+    private final static Logger logger = LoggerFactory.getLogger(DependentFeeWaiverApplicantLookUp.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	
-	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
+	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-
-		String emplId = "";
-		String deptid = "";
-		// JSONObject mppManagerDetails = null;
-		JSONArray mppManagerDetails = null;
-		if (req.getParameter("empId") != null) {
-			emplId = req.getParameter("empId");
-			deptid = req.getParameter("deptid");
-			logger.info("emplId =" + emplId);
-			logger.info("deptid =" + deptid);
+		String applicantFirstName = "";
+		String cwid = "";
+		JSONArray dependentFeeWaiverDetails = null;
+		
+		if (req.getParameter("cwid") != null && req.getParameter("cwid") != ""
+				&& req.getParameter("applicantFirstName") != null && req.getParameter("applicantFirstName") != "") {
+			applicantFirstName = req.getParameter("applicantFirstName");
+			cwid = req.getParameter("cwid");
+			//logger.info("userid =" + userID);
+			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				mppManagerDetails = getMppEvalManagerDetails(emplId,deptid, conn, "SPE2579");
-
+				dependentFeeWaiverDetails = getDependentFeeWaiverDetails(cwid, applicantFirstName, conn, "dependentFeeWaiverApplicant");
+				logger.info("dependentFeeWaiverDetails ="+dependentFeeWaiverDetails);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
+
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			response.getWriter().write(mppManagerDetails.toString());
+			// Set JSON in String
+			response.getWriter().write(dependentFeeWaiverDetails.toString());
 		}
 	}
-
-	public static JSONArray getMppEvalManagerDetails(String emplId,String deptid, Connection oConnection, String docType)
+/**
+ * 
+ * @param cwid
+ * @param oConnection
+ * @param docType
+ * @return
+ * @throws Exception
+ */
+	public static JSONArray getDependentFeeWaiverDetails(String cwid, String applicantFirstName, Connection oConnection, String docType)
 			throws Exception {
-		ResultSet oRresultSet = null;
-		JSONObject mppEvalManagerDetails;
-		JSONArray jArray = new JSONArray();
-		String mppManagerIDSQL = ConfigManager.getValue("mppManagerSQL");
-		// String lookupFields = ConfigManager.getValue("lookupFields");
-		String lookupFields = ConfigManager.getValue("mppManagerLookupFields");
-		String[] fields = lookupFields.split(",");
 
-		mppManagerIDSQL = mppManagerIDSQL.replaceAll("<<EMPL_ID>>", emplId);
-		mppManagerIDSQL = mppManagerIDSQL.replaceAll("<<DEPTID>>", deptid);
-		logger.info("mppManagerIDSQL =" + mppManagerIDSQL);
+		ResultSet oRresultSet = null;
+		//JSONObject employeeEvalDetails = new JSONObject();
+		
+		JSONObject dependentWaiverDetails;
+		JSONArray jArray = new JSONArray();
+	
+		String emplIDSQL = ConfigManager.getValue("dependentFeeApplicantNameLookup");
+		String lookupFields = ConfigManager.getValue("dependentFeeApplicantNameLookupFields");
+		
+		String[] fields = lookupFields.split(",");
+		
+		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		emplIDSQL = emplIDSQL.replaceAll("<<Applicant_First_Name>>", applicantFirstName);
+
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(mppManagerIDSQL);
+			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-				mppEvalManagerDetails = new JSONObject();
+				dependentWaiverDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					mppEvalManagerDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					dependentWaiverDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("dependentWaiverDetails ="+dependentWaiverDetails);
 				}
-				jArray.put(mppEvalManagerDetails);
+				jArray.put(dependentWaiverDetails);
 			}
+			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			mppEvalManagerDetails = null;
+			dependentWaiverDetails = null;
 		} finally {
 			try {
-				if (oConnection != null) {
+				if (oConnection != null){
 					oConnection.close();
-					logger.info("Connection closed");
-
+					
 				}
-			} catch (Exception e) {
-				logger.error("Exception in CSUFEmployeeLookUpServlet=" + e.getMessage());
-				e.getStackTrace();
+				// oStatement.close();
+				// oRresultSet.close();
+			} catch (Exception exp) {
+
 			}
 		}
+
+		//return employeeEvalDetails;
 		return jArray;
 	}
 
@@ -146,12 +152,12 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 			return con;
 
 		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
+			logger.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				if (con != null) {
-					logger.info("Conn Exec=");
+					logger.info("Conn available=");
 				}
 			} catch (Exception exp) {
 				logger.info("Finally Exec=" + exp);

@@ -47,32 +47,35 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Student Course Withdrawal Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getStudentCourseWithdrawalInfo" })
-public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CourseWithdrawalInfoServlet.class);
+		"sling.servlet.paths=" + "/bin/getCourseInfoSummerWinterSession" })
+public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CourseWithdrawalInfoSummerWinterSession.class);
 	private static final long serialVersionUID = 1L;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-		String cwid = "";
+		String userId = "";
+		String typeOfWithdrawal = "";
 		String term = "";
-		JSONObject emplEvalDetails = null;
-		if (req.getParameter("cwid") != null && !req.getParameter("cwid").trim().equals("")
-				&& req.getParameter("term") != null && !req.getParameter("term").trim().equals("")) {
-			cwid = req.getParameter("cwid");
+		JSONObject courseDetails = null;
+		if (req.getParameter("userId") != null && !req.getParameter("userId").trim().equals("") && req.getParameter("typeOfWithdrawal") != null && !req.getParameter("typeOfWithdrawal").trim().equals("")) {
+			
+			userId = req.getParameter("userId");
+			typeOfWithdrawal = req.getParameter("typeOfWithdrawal");
 			term = req.getParameter("term");
-			logger.info("Cwid =" + cwid);
-			logger.info("Term =" + term);
+			logger.info("userId =" + userId);
+			logger.info("typeOfWithdrawal =" + typeOfWithdrawal);
+			logger.info("term =" + term);
 			conn = getConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getStudentCourseWithdrawalInfo(cwid, conn, term);
-				// emplEvalDetails = getStudentCourseWithdrawalInfo("802886937",
-				// conn, "2185");
+				
+					courseDetails = getStudentCourseWithdrawalInfo(userId, conn,typeOfWithdrawal,term );
+					
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,8 +83,8 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (emplEvalDetails != null && !emplEvalDetails.equals("")) {
-				response.getWriter().write(emplEvalDetails.toString());
+			if (courseDetails != null && !courseDetails.equals("")) {
+				response.getWriter().write(courseDetails.toString());
 			} else {
 				response.getWriter().write("Requested Data Unavailable");
 			}
@@ -128,7 +131,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONObject getStudentCourseWithdrawalInfo(String cwid, Connection oConnection, String term)
+	public static JSONObject getStudentCourseWithdrawalInfo(String userId, Connection oConnection,String typeOfWithdrawal, String term)
 			throws Exception {
 
 		logger.error("Inside getStudentCourseWithdrawalInfo");
@@ -140,19 +143,23 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 		Statement oStatement = null;
 		try {
-			// String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID
-			// = '<<CWID>>' and STRM = '2203'";
-			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
+			String studentCourseInfoSQL = "";
+			
+			if(typeOfWithdrawal.equals("1")) {			
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <=  NON_MED_WD_END_DT";	
+			}else {				
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <= MED_WD_END_DT";
+			}
+			
 
-			// Get current term details
-			String[] termInfo = getCurrentTerm(oConnection);
+			// Get current typeOfWithdrawal details
+			String termInfo = getCurrentTerm(oConnection,term);
 
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<CWID>>", cwid);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", termInfo[0]);
-
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<userId>>", userId);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", term);
+			logger.info("studentCourseInfoSQL1="+studentCourseInfoSQL);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
-
 			boolean isStudentInfoSet = false;
 			int i = 0;
 			while (oRresultSet.next()) {
@@ -167,23 +174,20 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 					
 					studentInfo.put("STUDENT_EMAIL", oRresultSet.getString("STUDENT_EMAIL"));
-					// studentInfo.put("STUDENT_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
-
+					
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
-					studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
+				//	studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM", oRresultSet.getString("STRM"));
-					// studentInfo.put("DESCR TERM_DESCR",oRresultSet.getString("DESCR
-					// TERM_DESCR"));
-					studentInfo.put("DESCR TERM_DESCR", oRresultSet.getString("TERM_DESCR"));
+					
+					studentInfo.put("DESCR_TERM_DESCR", oRresultSet.getString("TERM_DESCR"));
 
 					isStudentInfoSet = true;
 
 				}
-
-				// Course Info
+				
 				courseInfo = new JSONObject();
 
 				courseInfo.put("CLASS_NBR", oRresultSet.getString("CLASS_NBR"));
@@ -197,10 +201,10 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 				courseInfo.put("CLASS_SECTION", oRresultSet.getString("CLASS_SECTION"));
 				// courseInfo.put("INSTR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				// courseInfo.put("INSTR_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
-
+				
 				String courseID = oRresultSet.getString("CRSE_ID");
 				String courseName = oRresultSet.getString("CRSE_NAME");
-				logger.info("courseID=" + courseID);
+				
 				// String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
 				String[] chairInfo = getChairInfo(oConnection, courseID);
 
@@ -221,8 +225,8 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 				studentInfo.put("CASEID", caseID);
 
 				// Current Term details added to JSON response
-				studentInfo.put("TERM_CODE", termInfo[0]);
-				studentInfo.put("TERM_DESCR", termInfo[1]);
+				
+				studentInfo.put("TERM_DESCR", termInfo);
 
 				// Possible values :
 				// Yes
@@ -234,7 +238,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			} else {
 				studentInfo = null;
 			}
-			logger.info("studentInfo=" + studentInfo);
+			
 		} catch (Exception oEx) {
 			// logger.error(m_strClassName, methodName, oEx.getMessage());
 			// logger.error(m_strClassName, methodName, oEx.getMessage(),oEx);
@@ -265,21 +269,22 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 	 *         term description ex: Summer 2018
 	 * @throws Exception
 	 */
-	private static String[] getCurrentTerm(Connection oConnection) throws Exception {
+	private static String getCurrentTerm(Connection oConnection, String term) throws Exception {
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
 
-		String[] term = new String[2];
+		String termDesc = "";
 
 		try {
 
-			String sql = "Select distinct STRM,DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where TERM_BEGIN_DT <= sysdate and TERM_END_DT >=sysdate";
+			String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where STRM = '<<TERM>>'";
+			sql = sql.replaceAll("<<TERM>>", term);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);
 
 			if (oRresultSet.next()) {
-				term[0] = oRresultSet.getString("STRM");
-				term[1] = oRresultSet.getString("DESCR");
+				termDesc = oRresultSet.getString("DESCR");
+				
 			}
 		} catch (Exception oEx) {
 			// LogManager.traceErrMsg(m_strClassName, methodName, "Failed to get
@@ -296,7 +301,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 		 * } }
 		 */
 
-		return term;
+		return termDesc;
 
 	}
 
@@ -332,20 +337,11 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			}
 			logger.info("CaseID Function=" + caseID);
 		} catch (Exception oEx) {
-			// LogManager.traceErrMsg(m_strClassName, methodName, "Failed to
-			// Case ID from database. " + oEx.getMessage());
-			// LogManager.traceMethodException(m_strClassName, methodName,
-			// oEx.getMessage(),oEx);
+			
 			throw oEx;
 
 		}
-		/*
-		 * finally { try { if (oStatement != null) oStatement.close();
-		 * oRresultSet.close(); } catch (Exception exp) {
-		 * 
-		 * } }
-		 */
-
+		
 		return String.valueOf(caseID);
 
 	}
@@ -358,11 +354,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 		String[] chairVal = new String[4];
 
 		try {
-			// String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWL
-			// where CWID = '<<CWID>>' and STRM = '2185'";
-
-			// String sql = "Select * from AR_Course_Chair_Info where CRSE_ID =
-			// '<<CRSE_ID>>' and CRSE_NAME='<<courseName>>'";
+			
 
 			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>'";
 
