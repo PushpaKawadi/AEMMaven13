@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -42,23 +40,25 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=careerDevelopmentPlanFileNet1", Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = {
+		Constants.SERVICE_DESCRIPTION + "=careerDevelopmentPlanFileNet1",
+		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=careerDevelopmentPlanFileNet1" })
 public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CareerDevelopmentPlanFileNet.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CareerDevelopmentPlanFileNet.class);
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-
-        log.info("Career Development FileNet");
-
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -66,28 +66,28 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		String departmentName = null;
+		String deptID = null;
+		String logUserVal = null;
+		String initiatedDate = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
+
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath====== " + filePath);
+			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=======" + filePath);
+				log.info("xmlFiles=" + filePath);
 
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -100,37 +100,49 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
 					} catch (ParserConfigurationException e1) {
-						log.info("ParserConfigurationException=====" + e1);
+						log.info("ParserConfigurationException=" + e1);
 						e1.printStackTrace();
 					}
 					try {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
-						log.info("IOException======" + e1);
+						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//emplID", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//emplID", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//firstName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//firstName", doc,
+										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//lastName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//lastName", doc,
+										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node emplRCD = (org.w3c.dom.Node) xpath.evaluate("//departmentName", doc,
-								XPathConstants.NODE);
-                        departmentName = emplRCD.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
+								.evaluate("//departmentID", doc,
+										XPathConstants.NODE);
+						deptID = deptNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LogUser", doc, XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
+								.evaluate("//dateInitiated", doc, XPathConstants.NODE);
+						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -151,15 +163,17 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 			// Base encoder
 
 			if (filePath.contains("Career_Development_Plan.pdf")) {
-				log.info("filePath ======" + filePath);
+				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						log.info("encodedPDF===="+encodedPDF);
+						// log.info("encodedPDF="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -184,60 +198,54 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 				}
 			}
 		}
+		JsonObject json = new JsonObject();
+		json.addProperty("FirstName", firstName);
+		json.addProperty("LastName", lastName);
+		json.addProperty("CWID", empId);
+		json.addProperty("SSN", "");
+		json.addProperty("DepartmentID", deptID);
+		json.addProperty("DocType", "CDP");
+		json.addProperty("InitiatedDate", initiatedDate);
+		json.addProperty("EmpUserID", logUserVal);
+		json.addProperty("AttachmentMimeType", "application/pdf");
+		json.addProperty("Attachment", encodedPDF);
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"firstName\": \"" + firstName + "\"," + "\"lastName\": \"" + lastName + "\","
-				+ "\"emplID\": \"" + empId + "\"," + "\"departmentName\": \"" + departmentName + "\"," + "\"AttachmentType\": "
-				+ "\"CareerDevelopmentPlanDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		log.error("lastName="+lastName);
-		log.error("firstName="+firstName);
-		log.error("empId="+empId);
-		log.error("EMPL_RCD="+departmentName);
-		log.error("Json String:" + jsonString.toString());
-
-		log.error("encodedPDF===="+encodedPDF);
-		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read careerDevelopmentPlan");
-			URL url = null;
-			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
-				url = new URL(filenetUrl);
-				// url = new URL("");
-
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			HttpURLConnection con = null;
-			try {
-				con = (HttpURLConnection) url.openConnection();
-				log.info("Con=" + con);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				con.setRequestMethod("POST");
-				con.setRequestProperty("Content-Type", "application/json");
-
-			} catch (ProtocolException e) {
-				log.info("ProtocolException=" + e.getMessage());
-				e.printStackTrace();
-			}
-			con.setDoOutput(true);
-
-			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
-				os.close();
-				con.getResponseCode();
-
-			} catch (IOException e1) {
-				log.error("IOException=" + e1.getMessage());
-				e1.printStackTrace();
-			}
-
+		log.info("Read Career Development Plan");
+		URL url = null;
+		try {
+			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			url = new URL(filenetUrl);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
+		HttpURLConnection con = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+			log.info("Con=" + con);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
 
+		} catch (ProtocolException e) {
+			log.info("ProtocolException=" + e.getMessage());
+			e.printStackTrace();
+		}
+		con.setDoOutput(true);
+
+		try (OutputStream os = con.getOutputStream()) {
+			os.write(json.toString().getBytes("utf-8"));
+			os.close();
+			con.getResponseCode();
+			log.debug("Result=" + con.getResponseCode());
+
+		} catch (IOException e1) {
+			log.error("IOException=" + e1.getMessage());
+			e1.printStackTrace();
+		}finally{
+			con.disconnect();
+		}
 	}
 }

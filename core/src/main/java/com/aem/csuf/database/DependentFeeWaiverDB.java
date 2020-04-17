@@ -321,7 +321,7 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 							hrDate = eElement.getElementsByTagName("hrDate").item(0).getTextContent();
 							log.info("hrDate Value is: " + hrDate);
 
-							employeeComments = eElement.getElementsByTagName("employeeCommet").item(0)
+							employeeComments = eElement.getElementsByTagName("employeeComments").item(0)
 									.getTextContent();
 							log.info("employeeComments Value is: " + employeeComments);
 
