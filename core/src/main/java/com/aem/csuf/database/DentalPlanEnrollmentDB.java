@@ -237,7 +237,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 
 //							sex = eElement.getElementsByTagName("sex")
 //									.item(0).getTextContent();
-//
+
 //							marritalStatus = eElement.getElementsByTagName("marritalStatus")
 //									.item(0).getTextContent();
 //							log.info("marritalStatus Value is: " + marritalStatus);
@@ -443,8 +443,8 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					dataMap.put("CITY", city);
 					dataMap.put("STATE", state);
 					dataMap.put("ZIP", zip);					
-//					dataMap.put("SEX", sex);					
-//					dataMap.put("MARITAL_STATUS", marritalStatus);					
+					//dataMap.put("SEX", sex);					
+					//dataMap.put("MARITAL_STATU", marritalStatus);					
 					dataMap.put("SOCIAL_SEC_NO", socialSecNo);									
 					dataMap.put("SPOUSE_SOCIAL_SEC_NO", spouseSocialSecNo);	
 					dataMap.put("PERMANENT_EMP", permanentEmp);
@@ -546,7 +546,13 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					dataMap.put("EMP_DED_CODE2", empDEDCode2);
 					dataMap.put("DENTAL_ORG_CODE", dentalOrgCode);				
 					dataMap.put("PARTY_CODE", partyCode);
-					dataMap.put("PAY_PERIOD", payPeriod);
+					
+					Object payPeriodObj= null;
+					if(payPeriod != null && payPeriod != "") {
+						Date epayPeriodNew = Date.valueOf(payPeriod);
+						payPeriodObj = epayPeriodNew;
+					}
+					dataMap.put("PAY_PERIOD", payPeriodObj);
 					dataMap.put("STATE_SHARE_AMOUNT", stateShareAmount);
 					dataMap.put("EMP_DEDUCTION_AMOUNT", empDeductionAmount);
 					dataMap.put("EMP_DESIGNATION", empDesignation);
@@ -556,9 +562,21 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					dataMap.put("PRIOR_EMP_DED_CODE2", priorEmpDEDCode2);					
 					dataMap.put("PRIOR_DENTAL_ORG_CODE", priorDentalOrgCode);
 					dataMap.put("PRIOR_PARTY_CODE", priorPartyCode);
-					dataMap.put("PERMITTING_EVENT_DATE", permittingEventDate);
-					dataMap.put("PERMITTING_EVENT_CODE", permittingEventCode);					
-					dataMap.put("ELECTIVE_DATE_OF_ACTION", electiveDateOfAction);
+					
+					Object permittingEventDateObj= null;
+					if(permittingEventDate != null && permittingEventDate != "") {
+						Date permittingEventDateNew = Date.valueOf(permittingEventDate);
+						permittingEventDateObj = permittingEventDateNew;
+					}
+					dataMap.put("PERMITTING_EVENT_DATE", permittingEventDateObj);
+					dataMap.put("PERMITTING_EVENT_CODE", permittingEventCode);
+					
+					Object electiveDateOfActionObj= null;
+					if(electiveDateOfAction != null && electiveDateOfAction != "") {
+						Date electiveDateOfActionNew = Date.valueOf(electiveDateOfAction);
+						electiveDateOfActionObj = electiveDateOfActionNew;
+					}
+					dataMap.put("ELECTIVE_DATE_OF_ACTION", electiveDateOfActionObj);
 					dataMap.put("AGENCY_CODE", agencyCode);
 					dataMap.put("UNIT_CODE", unitCode);
 					dataMap.put("AGENCY_NAME1", agencyName1);

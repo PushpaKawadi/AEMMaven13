@@ -128,6 +128,7 @@ public class CSUFGradeChangeTermServlet extends SlingSafeMethodsServlet {
 				instInfo.put("class_section", oRresultSet.getString("CLASS_SECTION"));
 				instInfo.put("course_level", oRresultSet.getString("COURSE_LEVEL"));
 				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
+				instInfo.put("department_code", oRresultSet.getString("DEPT_CD"));
 
 				crName = oRresultSet.getString("CRSE_NAME");
 				clsNbr = oRresultSet.getString("CLASS_NBR");
