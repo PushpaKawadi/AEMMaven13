@@ -13,4 +13,6 @@ public interface GlobalConfigService {
 	String getDbAemDev();
 	String getMppFilenetURL();
 	String getStaffEvalFilenetURL();
+	String getHRBenefitsFilenetURL();
+	String getGradeChangeFilenetURL();
 }

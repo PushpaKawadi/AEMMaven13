@@ -92,13 +92,25 @@ public class GlobalConfigServiceImpl implements GlobalConfigService {
 	
 	@Override
 	public String getMppFilenetURL() {	
-		log.debug("Filenet Value="+config.mpp_filenet_URL());
+		log.debug("MPP Filenet Value="+config.mpp_filenet_URL());
 		return config.mpp_filenet_URL();
 	}
 	
 	@Override
 	public String getStaffEvalFilenetURL() {	
-		log.debug("Filenet Value="+config.staff_eval_filenet_URL());
+		log.debug("Staff Eval Filenet Value="+config.staff_eval_filenet_URL());
 		return config.staff_eval_filenet_URL();
+	}
+	
+	@Override
+	public String getHRBenefitsFilenetURL() {	
+		log.debug("HR Benefits Filenet Value="+config.hr_Benefits_Filenet_URL());
+		return config.hr_Benefits_Filenet_URL();
+	}
+	
+	@Override
+	public String getGradeChangeFilenetURL() {	
+		log.debug("Grade Change Filenet Value="+config.grade_Change_Filenet_URL());
+		return config.grade_Change_Filenet_URL();
 	}
 }

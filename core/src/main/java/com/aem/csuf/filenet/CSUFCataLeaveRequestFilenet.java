@@ -33,9 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
-
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -43,22 +40,25 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
 import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=CatastrophicRequestDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = {
+		Constants.SERVICE_DESCRIPTION + "=CatastrophicRequestDOR",
+		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCataLeaveRequestFilenet" })
 public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalFilenet.class);
+	private static final Logger log = LoggerFactory
+			.getLogger(CSUFCataLeaveRequestFilenet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
-	
+
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -71,7 +71,6 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
-		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -81,11 +80,13 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -98,7 +99,8 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -114,28 +116,28 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EMPLID", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EMPLID", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//FirstName", doc,
+										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LastName", doc,
+										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath.evaluate("//DepartmentID", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
+								.evaluate("//DepartmentID", doc,
+										XPathConstants.NODE);
 						deptID = deptNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//logUser", doc,
-								XPathConstants.NODE);
+
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+								.evaluate("//logUser", doc, XPathConstants.NODE);
 						logUserVal = logUserNode.getFirstChild().getNodeValue();
-						
-						
-						
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -158,9 +160,11 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 			if (filePath.contains("Catastrophic_Leave_Request.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
@@ -189,12 +193,6 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 				}
 			}
 		}
-
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-//		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"CatastrophicLeaveRequestDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-//				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		JsonObject json = new JsonObject();
 		json.addProperty("FirstName", firstName);
 		json.addProperty("LastName", lastName);
@@ -205,50 +203,42 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 		json.addProperty("InitiatedDate", "");
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
-		//json.addProperty("Attachment", encodedPDF);
-		
-		// log.error("encodedPDF="+encodedPDF);
-		if (encodedPDF != null && empId != null) {
-			log.info("Read Catastrophic Leave Request");
-			URL url = null;
-			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
-				//url = new URL(filenetUrl);
-				
-				url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addHRIntExtFeeWaiverBenefitsDocuments");
-				// url = new URL("");
+		json.addProperty("Attachment", encodedPDF);
 
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			HttpURLConnection con = null;
-			try {
-				con = (HttpURLConnection) url.openConnection();
-				log.info("Con=" + con);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				con.setRequestMethod("POST");
-				con.setRequestProperty("Content-Type", "application/json");
-
-			} catch (ProtocolException e) {
-				log.info("ProtocolException=" + e.getMessage());
-				e.printStackTrace();
-			}
-			con.setDoOutput(true);
-
-			try (OutputStream os = con.getOutputStream()) {
-				os.write(json.toString().getBytes("utf-8"));
-				os.close();
-				con.getResponseCode();
-
-			} catch (IOException e1) {
-				log.error("IOException=" + e1.getMessage());
-				e1.printStackTrace();
-			}
-
+		log.info("Read Catastrophic Leave Request");
+		URL url = null;
+		try {
+			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			url = new URL(filenetUrl);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
+		HttpURLConnection con = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+			log.info("Con=" + con);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
 
+		} catch (ProtocolException e) {
+			log.info("ProtocolException=" + e.getMessage());
+			e.printStackTrace();
+		}
+		con.setDoOutput(true);
+
+		try (OutputStream os = con.getOutputStream()) {
+			os.write(json.toString().getBytes("utf-8"));
+			os.close();
+			con.getResponseCode();
+			log.debug("Result=" + con.getResponseCode());
+
+		} catch (IOException e1) {
+			log.error("IOException=" + e1.getMessage());
+			e1.printStackTrace();
+		}
 	}
 }
