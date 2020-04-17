@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 
 
 
+
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -43,6 +44,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=CatastrophicRequestDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCataLeaveRequestFilenet" })
@@ -64,15 +66,12 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		//String rating = null;
+		String deptID = null;
+		String logUserVal = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
+		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -127,9 +126,16 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
-//								XPathConstants.NODE);
-//						rating = ratingNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath.evaluate("//DepartmentID", doc,
+								XPathConstants.NODE);
+						deptID = deptNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//logUser", doc,
+								XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+						
+						
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -187,21 +193,29 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"CatastrophicLeaveRequestDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
-
+//		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"CatastrophicLeaveRequestDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
+//				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
+		JsonObject json = new JsonObject();
+		json.addProperty("FirstName", firstName);
+		json.addProperty("LastName", lastName);
+		json.addProperty("CWID", empId);
+		json.addProperty("SSN", "");
+		json.addProperty("DepartmentID", deptID);
+		json.addProperty("DocType", "CLR");
+		json.addProperty("InitiatedDate", "");
+		json.addProperty("EmpUserID", logUserVal);
+		json.addProperty("AttachmentMimeType", "application/pdf");
+		//json.addProperty("Attachment", encodedPDF);
+		
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && empId != null) {
-			log.info("Read Catastrophic ");
+			log.info("Read Catastrophic Leave Request");
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService.getFilenetURL();
-				url = new URL(filenetUrl);
+				//url = new URL(filenetUrl);
+				
+				url = new URL("http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addHRIntExtFeeWaiverBenefitsDocuments");
 				// url = new URL("");
 
 			} catch (MalformedURLException e) {
@@ -225,7 +239,7 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 			con.setDoOutput(true);
 
 			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
+				os.write(json.toString().getBytes("utf-8"));
 				os.close();
 				con.getResponseCode();
 
