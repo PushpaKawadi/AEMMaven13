@@ -77,7 +77,7 @@ public class MppSelfEvalDB implements WorkflowProcess {
 		String evaluation4 = "";
 		String evalSign = "";
 		String evalDate = "";
-
+		String workflowInstanceId = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -90,7 +90,7 @@ public class MppSelfEvalDB implements WorkflowProcess {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
-
+			workflowInstanceId = workItem.getWorkflow().getId();
 			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
@@ -217,7 +217,7 @@ public class MppSelfEvalDB implements WorkflowProcess {
 
 					dataMap.put("EVALUATOR_SIGN", evalSign);
 					dataMap.put("EVALUATOR_DATE", Date.valueOf(evalDate));
-
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstanceId);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();

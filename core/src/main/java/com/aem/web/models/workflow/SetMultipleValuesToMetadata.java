@@ -72,7 +72,7 @@ public class SetMultipleValuesToMetadata implements WorkflowProcess {
         	 String valueOne = value[j];
         	 org.w3c.dom.Node node = (org.w3c.dom.Node)xPath.compile(valueOne).evaluate(xmlDocument, XPathConstants.NODE);
         	 textValue = textValue.concat(", ").concat(node.getTextContent());            
-            //log.info("%%%%Bingo Getting node text content" + node.getTextContent());
+            log.info("%%%%Bingo Getting node text content" + node.getTextContent());
             
          }
         

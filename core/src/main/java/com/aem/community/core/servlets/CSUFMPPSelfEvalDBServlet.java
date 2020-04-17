@@ -38,6 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 
@@ -99,7 +100,7 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 		//String userIDSQL = "select * from aem_mpp_self_eval where empid='899943393' and review_period_from='16-APR-19' and review_period_to='15-APR-20' and deptid='10100'";
 		SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat reqFormat = new SimpleDateFormat("dd-MMM-yy");
-		String userIDSQL = ConfigManager.getValue("MPPReviewSQL");
+		String userIDSQL = CSUFConstants.MPPReviewSQL;
 		
 		userIDSQL = userIDSQL.replaceAll("<<empid>>", empID);
 		userIDSQL = userIDSQL.replaceAll("<<review_period_from>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
@@ -118,7 +119,7 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 				employeeEvalDetails.put("evaluation2", oRresultSet.getString("EVALUATION2"));
 				employeeEvalDetails.put("evaluation3", oRresultSet.getString("EVALUATION3"));
 				employeeEvalDetails.put("evaluation4", oRresultSet.getString("EVALUATION4"));
-				//employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
+				employeeEvalDetails.put("instanceId", oRresultSet.getString("WORKFLOW_INSTANCE_ID"));
 				jArray.put(employeeEvalDetails);
 			}
 
