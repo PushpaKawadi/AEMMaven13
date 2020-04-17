@@ -42,14 +42,13 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.google.gson.JsonObject;
 
-@Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=CatastrophicRequestDOR",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Support Doc1",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=CSUFCataLeaveRequestFilenet" })
-public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
+		"process.label" + "=Catastrophic Support Doc" })
+public class CSUFCataRequestSupDocFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(CSUFCataLeaveRequestFilenet.class);
+			.getLogger(CSUFCataRequestSupDocFilenet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -68,15 +67,77 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 		String empId = null;
 		String deptID = null;
 		String logUserVal = null;
+		String mimeType = null;
+		InputStream sd1 = null;
+		String docEncoded1 = null;
+
+		String attachmentsPath = "attachments";
 		Resource xmlNode = resolver.getResource(payloadPath);
+
+		// if (xmlNode != null) {
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
+			if (filePath.contains("attachments")) {
+				String attachmentsFilePath = payloadPath + "/"
+						+ attachmentsPath + "/supportDoc1";
+				Resource attachment1 = resolver
+						.getResource(attachmentsFilePath);
+				if (attachment1 != null) {
+					Iterator<Resource> attFiles = attachment1.listChildren();
+					while (attFiles.hasNext()) {
+						Resource supDoc1 = attFiles.next();
 
-			log.info("filePath= " + filePath);
+						String attDoc1 = supDoc1.getPath().concat(
+								"/jcr:content");
+
+						String fileMimeType = supDoc1.getName();
+						if (fileMimeType.toLowerCase().endsWith(".jpg")
+								|| fileMimeType.toLowerCase().endsWith(".jpeg")) {
+							mimeType = "image/jpeg";
+						} else if (fileMimeType.toLowerCase().endsWith(".pdf")) {
+							mimeType = "application/pdf";
+						} else if (fileMimeType.toLowerCase().endsWith(".png")) {
+							mimeType = "image/png";
+						} else if (fileMimeType.toLowerCase().endsWith(".tiff")) {
+							mimeType = "image/tiff";
+						} else {
+							mimeType = "application/pdf";
+						}
+
+						Node subNode1 = resolver.getResource(attDoc1).adaptTo(
+								Node.class);
+
+						try {
+							sd1 = subNode1.getProperty("jcr:data").getBinary()
+									.getStream();
+							byte[] bytes = IOUtils.toByteArray(sd1);
+							// log.error("bytes="+bytes);
+							docEncoded1 = Base64.getEncoder().encodeToString(
+									bytes);
+						} catch (ValueFormatException e) {
+							e.printStackTrace();
+						} catch (PathNotFoundException e) {
+							e.printStackTrace();
+						} catch (RepositoryException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								sd1.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+						}
+					}
+				}
+			}
+
+			// log.error("filePath= "+filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
@@ -154,69 +215,35 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 				}
 
 			}
-			// Payload path contains the PDF, get the inputstream, convert to
-			// Base encoder
-
-			if (filePath.contains("Catastrophic_Leave_Request.pdf")) {
-				log.info("filePath =" + filePath);
-				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
-				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
-					try {
-						byte[] bytes = IOUtils.toByteArray(is);
-						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (ValueFormatException e) {
-					log.error("ValueFormatException=" + e.getMessage());
-					e.printStackTrace();
-				} catch (PathNotFoundException e) {
-					log.error("PathNotFoundException=" + e.getMessage());
-					e.printStackTrace();
-				} catch (RepositoryException e) {
-					log.error("RepositoryException=" + e.getMessage());
-					e.printStackTrace();
-				} finally {
-					try {
-						is.close();
-					} catch (IOException e) {
-						log.error("IOException=" + e.getMessage());
-						e.printStackTrace();
-					}
-
-				}
-			}
 		}
+
 		JsonObject json = new JsonObject();
 		json.addProperty("FirstName", firstName);
 		json.addProperty("LastName", lastName);
 		json.addProperty("CWID", empId);
 		json.addProperty("SSN", "");
 		json.addProperty("DepartmentID", deptID);
-		json.addProperty("DocType", "CLR");
+		json.addProperty("DocType", "CLRSD");
 		json.addProperty("InitiatedDate", "");
 		json.addProperty("EmpUserID", logUserVal);
-		json.addProperty("AttachmentMimeType", "application/pdf");
-		json.addProperty("Attachment", encodedPDF);
+		json.addProperty("AttachmentMimeType", mimeType);
+		json.addProperty("Attachment", docEncoded1);
+		
+		log.error("Pushpa========="+json.toString());
 
-		log.info("Read Catastrophic Leave Request");
 		URL url = null;
 		try {
+
 			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
 			url = new URL(filenetUrl);
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
 		HttpURLConnection con = null;
 		try {
 			con = (HttpURLConnection) url.openConnection();
-			log.info("Con=" + con);
+			log.info("Connection=" + con);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -225,7 +252,6 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 			con.setRequestProperty("Content-Type", "application/json");
 
 		} catch (ProtocolException e) {
-			log.info("ProtocolException=" + e.getMessage());
 			e.printStackTrace();
 		}
 		con.setDoOutput(true);
@@ -234,13 +260,13 @@ public class CSUFCataLeaveRequestFilenet implements WorkflowProcess {
 			os.write(json.toString().getBytes("utf-8"));
 			os.close();
 			con.getResponseCode();
-			log.debug("Result=" + con.getResponseCode());
+			log.error("Result=" + con.getResponseCode());
 
 		} catch (IOException e1) {
-			log.error("IOException=" + e1.getMessage());
 			e1.printStackTrace();
-		}finally{
+		} finally {
 			con.disconnect();
 		}
+
 	}
 }
