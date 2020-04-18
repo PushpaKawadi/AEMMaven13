@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Iterator;
 
@@ -33,8 +35,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -42,37 +42,39 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=DonationDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=DonationDOR",
+		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCertEligibilityFilenet" })
 public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalFilenet.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(CSUFPrePerfEvalFilenet.class);
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
 		String firstName = null;
 		String lastName = null;
 		String encodedPDF = null;
+		String ssn = null;
 		String empId = null;
-		//String rating = null;
+		String deptID = null;
+		String dateInitiated = null;
+		String dateComp = null;
+		String logUserValue = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -82,11 +84,13 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
-				
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -99,7 +103,8 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -113,23 +118,59 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					XPath xpath = XPathFactory.newInstance().newXPath();
-					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmplID", doc,
-								XPathConstants.NODE);
-						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
-								XPathConstants.NODE);
-						firstName = fnNode.getFirstChild().getNodeValue();
+					org.w3c.dom.NodeList nList1 = doc
+							.getElementsByTagName("afUnboundData");
+					for (int temp1 = 0; temp1 < nList1.getLength(); temp1++) {
+						org.w3c.dom.Node nNode1 = nList1.item(temp1);
+						org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode1;
+						logUserValue = eElement.getElementsByTagName("logUser")
+								.item(0).getTextContent();
+					}
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
-								XPathConstants.NODE);
-						lastName = lnNode.getFirstChild().getNodeValue();
+					org.w3c.dom.NodeList nList = doc
+							.getElementsByTagName("afBoundData");
+					for (int temp = 0; temp < nList.getLength(); temp++) {
+						org.w3c.dom.Node nNode = nList.item(temp);
 
+						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
-					} catch (XPathExpressionException e) {
-						e.printStackTrace();
+							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
+							empId = eElement.getElementsByTagName("EmplID")
+									.item(0).getTextContent();
+							dateInitiated = eElement
+									.getElementsByTagName("DateInitiated")
+									.item(0).getTextContent();
+
+							SimpleDateFormat fromDate = new SimpleDateFormat(
+									"yyyy-MM-dd");
+							SimpleDateFormat toDate = new SimpleDateFormat(
+									"MM/dd/yyyy");
+
+							if (dateInitiated != null
+									&& !dateInitiated.equals("")) {
+								try {
+									dateComp = toDate.format(fromDate
+											.parse(dateInitiated));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
+
+							firstName = eElement
+									.getElementsByTagName("FirstName").item(0)
+									.getTextContent();
+							lastName = eElement
+									.getElementsByTagName("LastName").item(0)
+									.getTextContent();
+							ssn = eElement.getElementsByTagName("SSN").item(0)
+									.getTextContent();
+							deptID = eElement.getElementsByTagName("DeptID")
+									.item(0).getTextContent();
+							ssn = eElement.getElementsByTagName("SSN").item(0)
+									.getTextContent();
+
+						}
 					}
 				} catch (SAXException e) {
 					e.printStackTrace();
@@ -149,9 +190,11 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 			if (filePath.contains("Certificate_Of_Eligibility.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
@@ -181,23 +224,24 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 			}
 		}
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"CertificateOfEligibilityDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
-
-		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && empId != null) {
+			JsonObject json = new JsonObject();
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", empId);
+			json.addProperty("SSN", ssn);
+			json.addProperty("DepartmentID", deptID);
+			json.addProperty("DocType", "COEFW");
+			json.addProperty("InitiatedDate", dateComp);
+			json.addProperty("EmpUserID", logUserValue);
+			json.addProperty("AttachmentMimeType", "application/pdf");
+			json.addProperty("Attachment", encodedPDF);
+
 			log.info("Read Certificate Of Eligibility");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService
+						.getHRBenefitsFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
@@ -222,13 +266,15 @@ public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 			con.setDoOutput(true);
 
 			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
+				os.write(json.toString().getBytes("utf-8"));
 				os.close();
 				con.getResponseCode();
 
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			} finally {
+				con.disconnect();
 			}
 
 		}

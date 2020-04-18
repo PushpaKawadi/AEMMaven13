@@ -34,6 +34,7 @@ import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
 
+
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -42,6 +43,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=DonationDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=CSUFCataLeaveDonationFilenet" })
@@ -63,7 +65,8 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		//String rating = null;
+		String deptID = "";
+		String logUserVal = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -127,9 +130,15 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
-//								XPathConstants.NODE);
-//						rating = ratingNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath.evaluate("//DeptID", doc,
+								XPathConstants.NODE);
+						deptID = deptNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//logUser", doc,
+								XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+						
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -184,23 +193,24 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 			}
 		}
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"CatastrophicLeaveRequestDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
-
-		// log.error("encodedPDF="+encodedPDF);
+		
 		if (encodedPDF != null && empId != null) {
-			log.info("Read Catastrophic ");
+			JsonObject json = new JsonObject();
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", empId);
+			json.addProperty("SSN", "");
+			json.addProperty("DepartmentID", deptID);
+			json.addProperty("DocType", "CLDONATION");
+			json.addProperty("InitiatedDate", "");
+			json.addProperty("EmpUserID", logUserVal);
+			json.addProperty("AttachmentMimeType", "application/pdf");
+			json.addProperty("Attachment", encodedPDF);
+			
+			log.info("Read Catastrophic Donation ");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
@@ -225,13 +235,15 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 			con.setDoOutput(true);
 
 			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
+				os.write(json.toString().getBytes("utf-8"));
 				os.close();
 				con.getResponseCode();
 
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			} finally{
+				con.disconnect();
 			}
 
 		}
