@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
+import javax.jcr.Session;
 import javax.jcr.ValueFormatException;
 //import javax.jcr.Node;
 import javax.servlet.Servlet;
@@ -29,6 +30,7 @@ import org.apache.commons.io.IOUtils;
 
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
+import org.apache.sling.api.resource.LoginException;
 import org.apache.sling.api.resource.Resource;
 import org.apache.sling.api.resource.ResourceResolver;
 import org.apache.sling.api.servlets.SlingSafeMethodsServlet;
@@ -38,6 +40,7 @@ import org.json.JSONException;
 import org.osgi.framework.Constants;
 //import org.osgi.resource.Resource;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -56,20 +59,29 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowNode;
 //import com.fasterxml.jackson.databind.ObjectMapper;
 //import com.day.cq.wcm.foundation.List;
+import com.aem.community.core.services.GlobalConfigService;
 
 @Component(service = Servlet.class, immediate = true, property = {
 		Constants.SERVICE_DESCRIPTION + "= Get Support Docs", "sling.servlet.paths=/bin/getSelfEvalSupDoc" })
 public class GetSelfEvalSupportingDocs extends SlingSafeMethodsServlet {
-
+	@Reference
+	private GlobalConfigService globalConfigService;
+	
 	private static final long serialVersionUID = 1L;
 	Logger logger = LoggerFactory.getLogger(this.getClass());
 
 	@Override
 	protected void doGet(SlingHttpServletRequest request, SlingHttpServletResponse response)
 			throws ServletException, IOException {
-		 WorkflowSession wfSession = request.getResourceResolver().adaptTo(WorkflowSession.class);
 		
-		ResourceResolver resolver = wfSession.adaptTo(ResourceResolver.class);
+		ResourceResolver resolver = null;
+		try {
+			resolver = globalConfigService.getResourceResolver();
+		} catch (LoginException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		WorkflowSession wfSession = resolver.adaptTo(WorkflowSession.class);
 		String id = "";
 		String encodedFile = "";
 		String payloadPath = "";
@@ -81,12 +93,12 @@ public class GetSelfEvalSupportingDocs extends SlingSafeMethodsServlet {
 			logger.info("ID="+id);
 		}
 		try {
+			
 			payloadPath = (String) wfSession.getWorkflow(id).getWorkflowData().getPayload();
 			logger.info("payloadPath="+payloadPath);
+			//Resource xmlNode = resolver.getResource(payloadPath);
 			Resource xmlNode = resolver.getResource(payloadPath);
 			Iterator<Resource> xmlFiles = xmlNode.listChildren();
-			
-			//jsonObj = new JSONObject();
 			JSONArray jsonArray = new JSONArray();
 			while (xmlFiles.hasNext()) {
 				Resource attachmentXml = xmlFiles.next();
@@ -109,14 +121,10 @@ public class GetSelfEvalSupportingDocs extends SlingSafeMethodsServlet {
 							if (attachmentSupDoc.getResourceType().equalsIgnoreCase("sling:Folder")) {
 								Iterator<Resource> innerAttachmentFiles = attachmentSupDoc.listChildren();
 								while (innerAttachmentFiles.hasNext()) {
-									logger.info(" inner attachment has next");
 									Resource innerAttachmentSupDoc = innerAttachmentFiles.next();
-									logger.info("name of doc inside="+innerAttachmentSupDoc);
 									Path attachmentSource = Paths.get(innerAttachmentSupDoc.getPath());
 									String attachPath = attachmentSource.toString();
-									logger.info("attachPath="+attachPath);
 									int endIndex = attachPath.lastIndexOf("\\");
-									logger.info("endIndex="+endIndex);
 									String fName = "";
 									if(endIndex != -1){
 										fName = attachPath.substring(endIndex + 1, attachPath.length()); 
@@ -177,6 +185,7 @@ public class GetSelfEvalSupportingDocs extends SlingSafeMethodsServlet {
 										e.printStackTrace();
 									} finally {
 										try {
+											
 											is.close();
 										} catch (IOException e) {
 											e.printStackTrace();
@@ -197,7 +206,15 @@ public class GetSelfEvalSupportingDocs extends SlingSafeMethodsServlet {
 		} catch (WorkflowException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}finally {
+			
+				if (wfSession != null) {
+					wfSession.logout();
+				}
+				if (resolver != null && resolver.isLive()) {
+					resolver.close();
+				}
+			}
 		
 		
 	}
