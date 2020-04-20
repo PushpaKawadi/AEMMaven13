@@ -217,54 +217,56 @@ public class CSUFCataRequestSupDocFilenet implements WorkflowProcess {
 			}
 		}
 
-		JsonObject json = new JsonObject();
-		json.addProperty("FirstName", firstName);
-		json.addProperty("LastName", lastName);
-		json.addProperty("CWID", empId);
-		json.addProperty("SSN", "");
-		json.addProperty("DepartmentID", deptID);
-		json.addProperty("DocType", "CLRSD");
-		json.addProperty("InitiatedDate", "");
-		json.addProperty("EmpUserID", logUserVal);
-		json.addProperty("AttachmentMimeType", mimeType);
-		json.addProperty("Attachment", docEncoded1);
+		if (docEncoded1 != null) {
+			JsonObject json = new JsonObject();
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", empId);
+			json.addProperty("SSN", "");
+			json.addProperty("DepartmentID", deptID);
+			json.addProperty("DocType", "CLRSD");
+			json.addProperty("InitiatedDate", "");
+			json.addProperty("EmpUserID", logUserVal);
+			json.addProperty("AttachmentMimeType", mimeType);
+			json.addProperty("Attachment", docEncoded1);
 
-		URL url = null;
-		try {
+			URL url = null;
+			try {
 
-			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
-			url = new URL(filenetUrl);
+				String filenetUrl = globalConfigService
+						.getHRBenefitsFilenetURL();
+				url = new URL(filenetUrl);
 
-		} catch (MalformedURLException e) {
-			e.printStackTrace();
+			} catch (MalformedURLException e) {
+				e.printStackTrace();
+			}
+			HttpURLConnection con = null;
+			try {
+				con = (HttpURLConnection) url.openConnection();
+				log.info("Connection=" + con);
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			}
+			try {
+				con.setRequestMethod("POST");
+				con.setRequestProperty("Content-Type", "application/json");
+
+			} catch (ProtocolException e) {
+				e.printStackTrace();
+			}
+			con.setDoOutput(true);
+
+			try (OutputStream os = con.getOutputStream()) {
+				os.write(json.toString().getBytes("utf-8"));
+				os.close();
+				con.getResponseCode();
+				log.error("Result=" + con.getResponseCode());
+
+			} catch (IOException e1) {
+				e1.printStackTrace();
+			} finally {
+				con.disconnect();
+			}
 		}
-		HttpURLConnection con = null;
-		try {
-			con = (HttpURLConnection) url.openConnection();
-			log.info("Connection=" + con);
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		}
-		try {
-			con.setRequestMethod("POST");
-			con.setRequestProperty("Content-Type", "application/json");
-
-		} catch (ProtocolException e) {
-			e.printStackTrace();
-		}
-		con.setDoOutput(true);
-
-		try (OutputStream os = con.getOutputStream()) {
-			os.write(json.toString().getBytes("utf-8"));
-			os.close();
-			con.getResponseCode();
-			log.error("Result=" + con.getResponseCode());
-
-		} catch (IOException e1) {
-			e1.printStackTrace();
-		} finally {
-			con.disconnect();
-		}
-
 	}
 }
