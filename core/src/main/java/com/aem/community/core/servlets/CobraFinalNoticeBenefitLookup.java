@@ -51,7 +51,7 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
 		Connection conn = null;
 		//String userID = "";
 		String cwid = "";
-		JSONArray emplEvalDetails = null;
+		JSONArray cobraFinalDetails = null;
 		
 		if (req.getParameter("cwid") != null && req.getParameter("cwid") != "") {
 			//userID = req.getParameter("userID");
@@ -64,8 +64,8 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, "COBRAFINALNOTICE");
-				logger.info("emplEvalDetails ="+emplEvalDetails);
+				cobraFinalDetails = getCobraFinalDetails(cwid, conn, "COBRAFINALNOTICE");
+				logger.info("emplEvalDetails ="+cobraFinalDetails);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -74,7 +74,7 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(emplEvalDetails.toString());
+			response.getWriter().write(cobraFinalDetails.toString());
 		}
 	}
 /**
@@ -85,13 +85,13 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
  * @return
  * @throws Exception
  */
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String docType)
+	public static JSONArray getCobraFinalDetails(String cwid, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
 		//JSONObject employeeEvalDetails = new JSONObject();
 		
-		JSONObject employeeEvalDetails;
+		JSONObject cobraFinalNoticeDetails;
 		JSONArray jArray = new JSONArray();
 	
 		String emplIDSQL = ConfigManager.getValue("CobraFinalNoticeBenefitLookUp");
@@ -107,18 +107,18 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-				employeeEvalDetails = new JSONObject();
+				cobraFinalNoticeDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("employeeEvalDetails ="+employeeEvalDetails);
+					cobraFinalNoticeDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("employeeEvalDetails ="+cobraFinalNoticeDetails);
 				}
-				jArray.put(employeeEvalDetails);
+				jArray.put(cobraFinalNoticeDetails);
 			}
 			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			employeeEvalDetails = null;
+			cobraFinalNoticeDetails = null;
 		} finally {
 			try {
 				if (oConnection != null){

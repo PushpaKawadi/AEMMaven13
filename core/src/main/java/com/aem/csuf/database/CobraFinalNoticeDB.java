@@ -429,8 +429,8 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 									.item(0).getTextContent();
 									log.info("declineChk Value is: "+declineChk);
 
-							decline = eElement.getElementsByTagName("Decline")
-									.item(0).getTextContent();
+//							decline = eElement.getElementsByTagName("Decline")
+//									.item(0).getTextContent();
 						
 							medicarePartAYes = eElement.getElementsByTagName("MedicarePartAEntitledYes")
 									.item(0).getTextContent();
@@ -629,7 +629,7 @@ public class CobraFinalNoticeDB implements WorkflowProcess {
 					dataMap.put("CHK_VISION", VisionChk);
 					dataMap.put("VISION4", vision4);
 					dataMap.put("CHK_DECLINE", declineChk);
-					dataMap.put("DECLINE", decline);
+					//dataMap.put("DECLINE", decline);
 					dataMap.put("CHK_DENTAL", Dentalchk);
 					dataMap.put("DETANL_PLAN4", dentalPlan4);
 					dataMap.put("CHK_HEALTH1", health1chk);

@@ -38,9 +38,9 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Cobra Final Notice Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getCobraEmpLookup" })
-public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CobraFinalNoticeEmpServlet.class);
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getCobraDependentNameLookup" })
+public class CobraFinalNoticeDependentNameLookUp extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CobraFinalNoticeDependentNameLookUp.class);
 	private static final long serialVersionUID = 1L;
 	
 	@Reference
@@ -49,14 +49,15 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-		//String userID = "";
+		String dependentName = "";
 		String cwid = "";
 		JSONArray cobraFinalDetails = null;
 		
-		if (req.getParameter("cwid") != null && req.getParameter("cwid") != "") {
-			//userID = req.getParameter("userID");
+		if ((req.getParameter("cwid") != null && req.getParameter("cwid") != "") 
+			&& (req.getParameter("dependentName") != null && req.getParameter("dependentName") != "")){
+			dependentName = req.getParameter("dependentName");
 			cwid = req.getParameter("cwid");
-			//logger.info("userid =" + userID);
+			logger.info("dependentName =" + dependentName);
 			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
@@ -64,7 +65,7 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				cobraFinalDetails = getCobraFinalDetails(cwid, conn, "SPE2579");
+				cobraFinalDetails = getCobraFinalDetails(cwid, dependentName, conn, "COBRAFINALNOTICE");
 				logger.info("emplEvalDetails ="+cobraFinalDetails);
 				
 			} catch (Exception e) {
@@ -85,7 +86,7 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
  * @return
  * @throws Exception
  */
-	public static JSONArray getCobraFinalDetails(String cwid, Connection oConnection, String docType)
+	public static JSONArray getCobraFinalDetails(String cwid, String dependentName, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
@@ -94,12 +95,12 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		JSONObject cobraFinalNoticeDetails;
 		JSONArray jArray = new JSONArray();
 	
-		String emplIDSQL = ConfigManager.getValue("cobraEmplIDSQL");
-		String lookupFields = ConfigManager.getValue("cobraLookUpFields");
+		String emplIDSQL = ConfigManager.getValue("cobraFinalDependentNameLookUp");
+		String lookupFields = ConfigManager.getValue("cobraFinalDependentNameFields");
 		
 		String[] fields = lookupFields.split(",");
 		
-		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		emplIDSQL = emplIDSQL.replaceAll("<<DependentName>>", dependentName);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 
 		Statement oStatement = null;
