@@ -38,4 +38,21 @@ public class CSUFConstants {
 	//Start of Get MPP Self Eval details
 	public static final String MPPReviewSQL = "SELECT * FROM AEM_MPP_SELF_EVAL EVAL1 WHERE empid = ('<<empid>>') AND review_period_from=('<<review_period_from>>') AND review_period_to=('<<review_period_to>>') AND deptid=('<<deptid>>') AND UPDATED_DT = (SELECT MAX(UPDATED_DT) FROM AEM_MPP_SELF_EVAL EVAL2 WHERE EVAL1.empid = EVAL2.empid AND EVAL1.review_period_from=EVAL2.review_period_from AND EVAL1.review_period_to=EVAL2.review_period_to AND EVAL1.deptid=EVAL2.deptid)";
 	//End of Get Mpp self eval details
+	
+	//Start of Certificate Of Eligibility
+	public static final String certificateEligibility="select a.first_name, a.last_name, b.deptname, b.deptid, b.union_cd, substr(Replace(Replace(a.work_phone, '/', ''),'-', ''),7,4) as Extension, c.userid, (case  when CSU_Prob_CD='I' or CSU_Prob_CD= 'J' then 'Permanent' when CSU_Prob_CD='A' or CSU_Prob_CD='B' or CSU_Prob_CD='C' or CSU_Prob_CD='D' or CSU_Prob_CD='E' then 'Probation'  else 'Other' end ) as Status from ful_ecm_pers_vw a, ful_ecm_job_vw b, ful_emp_cwid_nt_name c where a.emplid = b.emplid and a.emplid = c.cwid and a.emplid = '<<Empl_ID>>'";
+    public static final String certificateFields="FIRST_NAME,LAST_NAME,DEPTNAME,DEPTID,UNION_CD,EXTENSION,USERID,STATUS";
+   //End of Certificate Of Eligibility
+    
+   //Start of Catastrophic Leave Request/Donation
+    public static final String catastrophicLeaveRequest="Select A.FIRST_NAME, A.LAST_NAME,A.EMPLID, B.DEPTNAME, B.DEPTID, B.EMPL_RCD, B.UNION_CD  From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C Where  A.EMPLID = B.EMPLID AND A.emplid = C.cwid AND C.userid = ('<<getUser_ID>>')";
+    public static final String catastrophicFields="FIRST_NAME,LAST_NAME,EMPLID,DEPTNAME,DEPTID,EMPL_RCD,UNION_CD";
+  //End of Catastrophic Leave Request/Donation
+    
+  //Start of Student Performance Evaluation
+    public static final String studentPerformanceEval="Select A.Last_Name, A.First_Name,substr(A.Middle_Name, 1,1) as mid,  B.Descr, B.Hire_dt, B.deptname,  (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select extension from ful_ecm_reports_vw where b.reports_to = position_nbr) as Extension from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B WHERE A.EmplID = B.EmplID AND A.EmplID = Replace('<<Empl_ID>>' , '-', '')";
+    public static final String studentPerformnceLookUP="FIRST_NAME,LAST_NAME,MID,DESCR,HIRE_DT,DEPTNAME,SUPERVISORNAME,EXTENSION";
+  //End of Student Performance Evaluation
+	
+	
 }

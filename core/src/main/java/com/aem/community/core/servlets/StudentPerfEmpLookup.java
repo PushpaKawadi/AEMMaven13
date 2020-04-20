@@ -38,7 +38,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -102,10 +104,12 @@ public class StudentPerfEmpLookup extends SlingSafeMethodsServlet {
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 
-		String lookupFields = "FIRST_NAME,LAST_NAME,MID,DESCR,HIRE_DT,DEPTNAME,SUPERVISORNAME,EXTENSION";
-		String emplIDSQL = "Select A.Last_Name, A.First_Name,substr(A.Middle_Name, 1,1) as mid,  B.Descr, B.Hire_dt, B.deptname,  (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select extension from ful_ecm_reports_vw where b.reports_to = position_nbr) as Extension from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B WHERE A.EmplID = B.EmplID AND A.EmplID = Replace('<<Empl_ID>>' , '-', '')";
+		//String lookupFields = "FIRST_NAME,LAST_NAME,MID,DESCR,HIRE_DT,DEPTNAME,SUPERVISORNAME,EXTENSION";
+		//String emplIDSQL = "Select A.Last_Name, A.First_Name,substr(A.Middle_Name, 1,1) as mid,  B.Descr, B.Hire_dt, B.deptname,  (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select extension from ful_ecm_reports_vw where b.reports_to = position_nbr) as Extension from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B WHERE A.EmplID = B.EmplID AND A.EmplID = Replace('<<Empl_ID>>' , '-', '')";
+		
+		String emplIDSQL= CSUFConstants.studentPerformanceEval;
+		String lookupFields = CSUFConstants.studentPerformnceLookUP;
 		String[] fields = lookupFields.split(",");
-
 		// userIDSQL.replaceAll("<<getUser_ID>>",userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);

@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -97,9 +98,11 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		
-		String sqlQuery = ConfigManager.getValue("catastrophicLeaveRequest");
+		//String sqlQuery = ConfigManager.getValue("catastrophicLeaveRequest");
+		String sqlQuery = CSUFConstants.catastrophicLeaveRequest;
 		logger.info("sqlQuery="+sqlQuery);
-		String lookupFields = ConfigManager.getValue("catastrophicFields");
+		//String lookupFields = ConfigManager.getValue("catastrophicFields");
+		String lookupFields = CSUFConstants.catastrophicFields;
 		logger.info("lookupFields="+lookupFields);
 		String[] fields = lookupFields.split(",");
 		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
@@ -135,35 +138,6 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 			}
 		}
 		return jArray;
-	}
-
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
 	}
 
 }

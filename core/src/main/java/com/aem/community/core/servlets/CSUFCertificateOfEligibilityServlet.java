@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -95,8 +96,10 @@ public class CSUFCertificateOfEligibilityServlet extends SlingSafeMethodsServlet
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = ConfigManager.getValue("certificateEligibility");
-		String lookupFields = ConfigManager.getValue("certificateFields");
+		//String emplIDSQL = ConfigManager.getValue("certificateEligibility");
+		String emplIDSQL = CSUFConstants.certificateEligibility;
+		//String lookupFields = ConfigManager.getValue("certificateFields");
+		String lookupFields = CSUFConstants.certificateFields;
 		String[] fields = lookupFields.split(",");
 		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);

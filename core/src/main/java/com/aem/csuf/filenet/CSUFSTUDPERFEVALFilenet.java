@@ -235,7 +235,7 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService
-						.getHRBenefitsFilenetURL();
+						.getStaffEvalFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
@@ -262,7 +262,8 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			try (OutputStream os = con.getOutputStream()) {
 				os.write(json.toString().getBytes("utf-8"));
 				os.close();
-				con.getResponseCode();
+				con.getResponseMessage();
+				log.error("Filenet======"+con.getResponseMessage());
 
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
