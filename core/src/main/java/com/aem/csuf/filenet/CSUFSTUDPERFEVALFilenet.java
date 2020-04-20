@@ -33,7 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -42,20 +41,24 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=StudentPerfEvalDOR",
-		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=StudentPerfEvalDOR" })
+		Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=StudentPerfEvalDOR" })
 public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CSUFSTUDPERFEVALFilenet.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(CSUFSTUDPERFEVALFilenet.class);
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
@@ -82,10 +85,12 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 				log.info("xmlFiles=" + filePath);
 				// /
 				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -98,7 +103,8 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
@@ -114,21 +120,24 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpId", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//EmpId", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//FirstName", doc,
+										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//Lastname", doc,
-								XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//Lastname", doc,
+										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
-//								XPathConstants.NODE);
-//						rating = ratingNode.getFirstChild().getNodeValue();
+						// org.w3c.dom.Node ratingNode = (org.w3c.dom.Node)
+						// xpath.evaluate("//OverallRating", doc,
+						// XPathConstants.NODE);
+						// rating = ratingNode.getFirstChild().getNodeValue();
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -151,9 +160,11 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			if (filePath.contains("Student_Performance_Evaluation.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
@@ -183,20 +194,48 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			}
 		}
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
-				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"StudentPerfEvalDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-
-		// log.error("Json String:" + jsonString.toString());
-
 		if (encodedPDF != null && lastName != null && firstName != null) {
+			JsonObject json = new JsonObject();
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", empId);
+			json.addProperty("AttachmentType", "StudentPerfEvalDOR");
+			json.addProperty("AttachmentMimeType", "application/pdf");
+			json.addProperty("Attachment", encodedPDF);
+			json.addProperty("CBID", "");
+			json.addProperty("DepartmentID", "");
+			json.addProperty("DocType", "STUEVAL");
+			json.addProperty("EndMonth", "");
+			json.addProperty("EndYear", "");
+			json.addProperty("OverallRating", "");
+			json.addProperty("EvaluationType", "");
+			json.addProperty("StartMonth", "");
+			json.addProperty("StartYear", "");
+			json.addProperty("EmpUserID", "rpurohit");
+			json.addProperty("ManagerUserID", "");
+			json.addProperty("HRCoordUserID", "");
+			json.addProperty("AppropriateAdminUserID", "");
+
+			// Create the JSON with the required parameter from Data.xml,
+			// encoded
+			// Base 64 to
+			// the Filenet rest call to save the document
+			// String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+			// + "\"LastName\": \"" + lastName + "\","
+			// + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " +
+			// "\"StudentPerfEvalDOR\"" + ","
+			// + "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," +
+			// "\"EncodedPDF\":\"" + encodedPDF + "\"}";
+
+			// log.error("Json String:" + jsonString.toString());
+
+			// if (encodedPDF != null && lastName != null && firstName != null)
+			// {
 			log.info("Read SudentPerfEval");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
+				String filenetUrl = globalConfigService
+						.getHRBenefitsFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
@@ -221,13 +260,15 @@ public class CSUFSTUDPERFEVALFilenet implements WorkflowProcess {
 			con.setDoOutput(true);
 
 			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
+				os.write(json.toString().getBytes("utf-8"));
 				os.close();
 				con.getResponseCode();
 
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			} finally {
+				con.disconnect();
 			}
 
 		}

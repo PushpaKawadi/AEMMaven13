@@ -228,8 +228,6 @@ public class CSUFCataRequestSupDocFilenet implements WorkflowProcess {
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", mimeType);
 		json.addProperty("Attachment", docEncoded1);
-		
-		log.error("Pushpa========="+json.toString());
 
 		URL url = null;
 		try {
