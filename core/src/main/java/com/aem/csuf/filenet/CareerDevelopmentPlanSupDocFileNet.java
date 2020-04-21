@@ -76,6 +76,7 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 		InputStream sd1 = null;
 		String initiatedDate = null;
 		String dateComp = null;
+		Resource attachment1 = null;
 		//Date date = null;
 		//SimpleDateFormatter dateFormatter = null;
 
@@ -91,7 +92,7 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 			if (filePath.contains("attachments")) {
 				String attachmentsFilePath = payloadPath + "/"
 						+ attachmentsPath + "/supportDoc1";
-				Resource attachment1 = resolver
+				attachment1 = resolver
 						.getResource(attachmentsFilePath);
 				if (attachment1 != null) {
 					Iterator<Resource> attFiles = attachment1.listChildren();
@@ -225,8 +226,6 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 								e.printStackTrace();
 							}
 						}
-						
-						//log.info("Theeee Dateeeeeee Formatttt issss="+dateComp);
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -243,56 +242,21 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 				}
 
 			}
-			// Payload path contains the PDF, get the inputstream, convert to
-			// Base encoder
-
-//			if (filePath.contains("Career_Development_Plan.pdf")) {
-//				log.info("filePath =" + filePath);
-//				filePath = attachmentXml.getPath().concat("/jcr:content");
-//				Node subNode = resolver.getResource(filePath).adaptTo(
-//						Node.class);
-//				try {
-//					is = subNode.getProperty("jcr:data").getBinary()
-//							.getStream();
-//					try {
-//						byte[] bytes = IOUtils.toByteArray(is);
-//						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-//						// log.info("encodedPDF="+encodedPDF);
-//					} catch (IOException e) {
-//						// TODO Auto-generated catch block
-//						e.printStackTrace();
-//					}
-//				} catch (ValueFormatException e) {
-//					log.error("ValueFormatException=" + e.getMessage());
-//					e.printStackTrace();
-//				} catch (PathNotFoundException e) {
-//					log.error("PathNotFoundException=" + e.getMessage());
-//					e.printStackTrace();
-//				} catch (RepositoryException e) {
-//					log.error("RepositoryException=" + e.getMessage());
-//					e.printStackTrace();
-//				} finally {
-//					try {
-//						is.close();
-//					} catch (IOException e) {
-//						log.error("IOException=" + e.getMessage());
-//						e.printStackTrace();
-//					}
-//
-//				}
-//			}
 		}
 		JsonObject json = new JsonObject();
-		json.addProperty("FirstName", firstName);
-		json.addProperty("LastName", lastName);
-		json.addProperty("CWID", empId);
-		json.addProperty("SSN", "");
-		json.addProperty("DepartmentID", deptID);
-		json.addProperty("DocType", "CDPSD");
-		json.addProperty("InitiatedDate", dateComp);
-		json.addProperty("EmpUserID", logUserVal);
-		json.addProperty("AttachmentMimeType", mimeType);
-		json.addProperty("Attachment", docEncoded1);
+		if(attachment1 != null) {
+			log.info("Inside JsonOBject, attache is==========="+attachment1);
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", empId);
+			json.addProperty("SSN", "");
+			json.addProperty("DepartmentID", deptID);
+			json.addProperty("DocType", "CDPSD");
+			json.addProperty("InitiatedDate", dateComp);
+			json.addProperty("EmpUserID", logUserVal);
+			json.addProperty("AttachmentMimeType", mimeType);
+			json.addProperty("Attachment", docEncoded1);
+		}
 		
 		//log.info("The JSON STRING="+json.toString());
 

@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Iterator;
 
@@ -68,6 +70,8 @@ public class CobraFinalNoticeFilenet implements WorkflowProcess {
 		String empId = null;
 		String deptID = null;
 		String logUserVal = null;
+		String initiatedDate = null;
+		String dateComp= null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -138,6 +142,24 @@ public class CobraFinalNoticeFilenet implements WorkflowProcess {
 						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
 								.evaluate("//LogUser", doc, XPathConstants.NODE);
 						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
+								.evaluate("//Date_Initiated", doc, XPathConstants.NODE);
+						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
+						SimpleDateFormat fromDate = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						SimpleDateFormat toDate = new SimpleDateFormat(
+								"MM/dd/yyyy");
+						
+						if (initiatedDate != null
+								&& !initiatedDate.equals("")) {
+							try {
+								dateComp = toDate.format(fromDate
+										.parse(initiatedDate));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -200,7 +222,7 @@ public class CobraFinalNoticeFilenet implements WorkflowProcess {
 		json.addProperty("SSN", "");
 		json.addProperty("DepartmentID", "");
 		json.addProperty("DocType", "COBRAFN");
-		json.addProperty("InitiatedDate", "");
+		json.addProperty("InitiatedDate", dateComp);
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
