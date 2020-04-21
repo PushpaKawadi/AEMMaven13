@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -94,9 +95,12 @@ public class DependentFeeWaiverEmpServlet extends SlingSafeMethodsServlet {
 		JSONObject dependentWaiverDetails;
 		JSONArray jArray = new JSONArray();
 	
-		String emplIDSQL = ConfigManager.getValue("dependentFeeWaiverEmpLookUp");
-		String lookupFields = ConfigManager.getValue("dependentFeeWaiverEmpLookUpFields");
-		
+		//String emplIDSQL = ConfigManager.getValue("dependentFeeWaiverEmpLookUp");
+		String emplIDSQL = CSUFConstants.dependentFeeWaiverEmpLookUp;
+		logger.info("Dependent Emp Lookup"+emplIDSQL);
+		//String lookupFields = ConfigManager.getValue("dependentFeeWaiverEmpLookUpFields");
+		String lookupFields = CSUFConstants.dependentFeeWaiverEmpLookUpFields;
+		logger.info("Dependent Emp Lookup Fields"+lookupFields);
 		String[] fields = lookupFields.split(",");
 		
 		//emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);

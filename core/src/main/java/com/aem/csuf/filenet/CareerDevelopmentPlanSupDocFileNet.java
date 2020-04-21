@@ -46,13 +46,13 @@ import com.aem.community.core.services.GlobalConfigService;
 import com.google.gson.JsonObject;
 
 @Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=careerDevelopmentPlanFileNet",
+		Constants.SERVICE_DESCRIPTION + "=careerDevelopmentPlanSupDocFileNet",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=careerDevelopmentPlanFileNet" })
-public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
+		"process.label" + "=careerDevelopmentPlanSupDocFileNet" })
+public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(CareerDevelopmentPlanFileNet.class);
+			.getLogger(CareerDevelopmentPlanSupDocFileNet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -71,14 +71,80 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 		String empId = null;
 		String deptID = null;
 		String logUserVal = null;
-		String mimeType = null;		
+		String mimeType = null;
+		String docEncoded1 = null;
+		InputStream sd1 = null;
+		String initiatedDate = null;
+		String dateComp = null;
+		//Date date = null;
+		//SimpleDateFormatter dateFormatter = null;
 
+		String attachmentsPath = "attachments";
 		Resource xmlNode = resolver.getResource(payloadPath);
+
+		// if (xmlNode != null) {
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		
+
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			String filePath = attachmentXml.getPath();
+			if (filePath.contains("attachments")) {
+				String attachmentsFilePath = payloadPath + "/"
+						+ attachmentsPath + "/supportDoc1";
+				Resource attachment1 = resolver
+						.getResource(attachmentsFilePath);
+				if (attachment1 != null) {
+					Iterator<Resource> attFiles = attachment1.listChildren();
+					while (attFiles.hasNext()) {
+						Resource supDoc1 = attFiles.next();
+
+						String attDoc1 = supDoc1.getPath().concat(
+								"/jcr:content");
+
+						String fileMimeType = supDoc1.getName();
+						if (fileMimeType.toLowerCase().endsWith(".jpg")
+								|| fileMimeType.toLowerCase().endsWith(".jpeg")) {
+							mimeType = "image/jpeg";
+						} else if (fileMimeType.toLowerCase().endsWith(".pdf")) {
+							mimeType = "application/pdf";
+						} else if (fileMimeType.toLowerCase().endsWith(".png")) {
+							mimeType = "image/png";
+						} else if (fileMimeType.toLowerCase().endsWith(".tiff")) {
+							mimeType = "image/tiff";
+						} else {
+							mimeType = "application/pdf";
+						}
+
+						Node subNode1 = resolver.getResource(attDoc1).adaptTo(
+								Node.class);
+
+						try {
+							sd1 = subNode1.getProperty("jcr:data").getBinary()
+									.getStream();
+							byte[] bytes = IOUtils.toByteArray(sd1);
+							// log.error("bytes="+bytes);
+							docEncoded1 = Base64.getEncoder().encodeToString(
+									bytes);
+						} catch (ValueFormatException e) {
+							e.printStackTrace();
+						} catch (PathNotFoundException e) {
+							e.printStackTrace();
+						} catch (RepositoryException e) {
+							e.printStackTrace();
+						} catch (IOException e) {
+							e.printStackTrace();
+						} finally {
+							try {
+								sd1.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+
+						}
+					}
+				}
+			}
+
 			// log.error("filePath= "+filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
@@ -141,6 +207,26 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
 								.evaluate("//LogUser", doc, XPathConstants.NODE);
 						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
+								.evaluate("//dateInitiated", doc, XPathConstants.NODE);
+						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
+						SimpleDateFormat fromDate = new SimpleDateFormat(
+								"yyyy-MM-dd");
+						SimpleDateFormat toDate = new SimpleDateFormat(
+								"MM/dd/yyyy");
+
+						if (initiatedDate != null
+								&& !initiatedDate.equals("")) {
+							try {
+								dateComp = toDate.format(fromDate
+										.parse(initiatedDate));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
+						
+						//log.info("Theeee Dateeeeeee Formatttt issss="+dateComp);
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -160,41 +246,41 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Career_Development_Plan.pdf")) {
-				log.info("filePath =" + filePath);
-				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(
-						Node.class);
-				try {
-					is = subNode.getProperty("jcr:data").getBinary()
-							.getStream();
-					try {
-						byte[] bytes = IOUtils.toByteArray(is);
-						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						// log.info("encodedPDF="+encodedPDF);
-					} catch (IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-				} catch (ValueFormatException e) {
-					log.error("ValueFormatException=" + e.getMessage());
-					e.printStackTrace();
-				} catch (PathNotFoundException e) {
-					log.error("PathNotFoundException=" + e.getMessage());
-					e.printStackTrace();
-				} catch (RepositoryException e) {
-					log.error("RepositoryException=" + e.getMessage());
-					e.printStackTrace();
-				} finally {
-					try {
-						is.close();
-					} catch (IOException e) {
-						log.error("IOException=" + e.getMessage());
-						e.printStackTrace();
-					}
-
-				}
-			}
+//			if (filePath.contains("Career_Development_Plan.pdf")) {
+//				log.info("filePath =" + filePath);
+//				filePath = attachmentXml.getPath().concat("/jcr:content");
+//				Node subNode = resolver.getResource(filePath).adaptTo(
+//						Node.class);
+//				try {
+//					is = subNode.getProperty("jcr:data").getBinary()
+//							.getStream();
+//					try {
+//						byte[] bytes = IOUtils.toByteArray(is);
+//						encodedPDF = Base64.getEncoder().encodeToString(bytes);
+//						// log.info("encodedPDF="+encodedPDF);
+//					} catch (IOException e) {
+//						// TODO Auto-generated catch block
+//						e.printStackTrace();
+//					}
+//				} catch (ValueFormatException e) {
+//					log.error("ValueFormatException=" + e.getMessage());
+//					e.printStackTrace();
+//				} catch (PathNotFoundException e) {
+//					log.error("PathNotFoundException=" + e.getMessage());
+//					e.printStackTrace();
+//				} catch (RepositoryException e) {
+//					log.error("RepositoryException=" + e.getMessage());
+//					e.printStackTrace();
+//				} finally {
+//					try {
+//						is.close();
+//					} catch (IOException e) {
+//						log.error("IOException=" + e.getMessage());
+//						e.printStackTrace();
+//					}
+//
+//				}
+//			}
 		}
 		JsonObject json = new JsonObject();
 		json.addProperty("FirstName", firstName);
@@ -202,11 +288,13 @@ public class CareerDevelopmentPlanFileNet implements WorkflowProcess {
 		json.addProperty("CWID", empId);
 		json.addProperty("SSN", "");
 		json.addProperty("DepartmentID", deptID);
-		json.addProperty("DocType", "CDP");
-		json.addProperty("InitiatedDate", "");
+		json.addProperty("DocType", "CDPSD");
+		json.addProperty("InitiatedDate", dateComp);
 		json.addProperty("EmpUserID", logUserVal);
-		json.addProperty("AttachmentMimeType", "application/pdf");
-		json.addProperty("Attachment", encodedPDF);
+		json.addProperty("AttachmentMimeType", mimeType);
+		json.addProperty("Attachment", docEncoded1);
+		
+		//log.info("The JSON STRING="+json.toString());
 
 		log.info("Read Career Development Plan");
 		URL url = null;

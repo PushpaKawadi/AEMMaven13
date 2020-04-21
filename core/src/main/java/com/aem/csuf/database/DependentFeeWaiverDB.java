@@ -70,7 +70,7 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 		String probationary = "";
 		String others = "";
 		String termStatus = "";
-		String leavesYes = "";
+		String leaveStatus = "";
 		String leavesNo = "";
 		String applicantFirstName = "";
 		String applicantLastName = "";
@@ -184,32 +184,20 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 							jobCode = eElement.getElementsByTagName("jobCode").item(0).getTextContent();
 							log.info("jobCode Value is: " + jobCode);
 
-							fullTime = eElement.getElementsByTagName("fullTime").item(0).getTextContent();
+							leaveStatus = eElement.getElementsByTagName("AreYouOnLeave").item(0).getTextContent();
 							log.info("fullTime Value is: " + fullTime);
 
-							partTime = eElement.getElementsByTagName("partTime").item(0).getTextContent();
+							partTime = eElement.getElementsByTagName("FullTimePartTime").item(0).getTextContent();
 							log.info("partTime Value is: " + partTime);
 
-							tenure = eElement.getElementsByTagName("tenure").item(0).getTextContent();
+							tenure = eElement.getElementsByTagName("ProbationStatus").item(0).getTextContent();
 							log.info("tenure Value is: " + tenure);
-
-							perm = eElement.getElementsByTagName("perm").item(0).getTextContent();
-							log.info("perm Value is: " + perm);
-
-							probationary = eElement.getElementsByTagName("probationary").item(0).getTextContent();
-							log.info("probationary Value is: " + probationary);
-
-							others = eElement.getElementsByTagName("others").item(0).getTextContent();
-							log.info("others Value is: " + others);
 
 							termStatus = eElement.getElementsByTagName("temStatus").item(0).getTextContent();
 							log.info("termStatus Value is: " + termStatus);
 
-							leavesYes = eElement.getElementsByTagName("leavesYes").item(0).getTextContent();
-							log.info("leavesYes Value is: " + leavesYes);
-
-							leavesNo = eElement.getElementsByTagName("leavesNo").item(0).getTextContent();
-							log.info("leavesNo Value is: " + leavesNo);
+							leaveStatus = eElement.getElementsByTagName("AreYouOnLeave").item(0).getTextContent();
+							log.info("leavesYes Value is: " + leaveStatus);							
 
 							applicantFirstName = eElement.getElementsByTagName("applicantFirstName")
 									.item(0).getTextContent();
@@ -347,16 +335,10 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("EXTENSION", extension);
 					dataMap.put("BARGAINING_UNIT", bargainingUnit);
 					dataMap.put("JOB_CODE", jobCode);
-					dataMap.put("FULL_TIME", fullTime);
-					dataMap.put("PART_TIME", partTime);
-					dataMap.put("TENURE", tenure);
-					dataMap.put("PERM", perm);
-					dataMap.put("PROBATIONARY", probationary);
-					dataMap.put("OTHER", others);
+					dataMap.put("TIME_STATUS", partTime);					
+					dataMap.put("TENURE", tenure);					
 					dataMap.put("TERM_STATUS", termStatus);
-					dataMap.put("LEAVES_YES", leavesYes);
-					dataMap.put("LEAVES_NO", leavesNo);
-					
+					dataMap.put("LEAVES_STATUS", leaveStatus);								
 					dataMap.put("APPLICANT_FIRST_NAME", applicantFirstName);
 					dataMap.put("APPLICANT_LAST_NAME", applicantLastName);
 					dataMap.put("APPLICANT_STUDENT_ID", applicantStudentID);

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -76,11 +77,13 @@ public class DentalPlanSSNServlet extends SlingSafeMethodsServlet {
 		JSONObject newDentalPlanDetails;
 		JSONArray jArray = new JSONArray();
 
-        String userIDSQL = ConfigManager.getValue("DentalPlanEnrollmentSSNLookUp");
-        logger.info("The userID SQL is=" + userIDSQL);
+        //String userIDSQL = ConfigManager.getValue("DentalPlanEnrollmentSSNLookUp");
+        String userIDSQL = CSUFConstants.DentalPlanEnrollmentSSNLookUp;
+        logger.info("The Dental Plan userID SQL is=" + userIDSQL);
 
-        String lookupFields = ConfigManager.getValue("DentalPlanEnrollmentFields");
-        logger.info("The user LookUp Fields are=" + lookupFields);
+       // String lookupFields = ConfigManager.getValue("DentalPlanEnrollmentFields");
+        String lookupFields = CSUFConstants.DentalPlanEnrollmentFields;
+        logger.info("The Dental Plan user LookUp Fields are=" + lookupFields);
 
 		String[] fields = lookupFields.split(",");
 

@@ -26,6 +26,7 @@ import org.slf4j.LoggerFactory;
 
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -94,8 +95,12 @@ public class CobraFinalNoticeBenefitLookup extends SlingSafeMethodsServlet {
 		JSONObject cobraFinalNoticeDetails;
 		JSONArray jArray = new JSONArray();
 	
-		String emplIDSQL = ConfigManager.getValue("CobraFinalNoticeBenefitLookUp");
-		String lookupFields = ConfigManager.getValue("CobraFinalNoticeBenefitFields");
+		//String emplIDSQL = ConfigManager.getValue("CobraFinalNoticeBenefitLookUp");
+		String emplIDSQL = CSUFConstants.CobraFinalNoticeBenefitLookUp;
+		logger.info("CobraNotice Benefit Lookup="+emplIDSQL);
+		//String lookupFields = ConfigManager.getValue("CobraFinalNoticeBenefitFields");
+		String lookupFields = CSUFConstants.CobraFinalNoticeBenefitFields;
+		logger.info("CobraNotice Benefit Lookup Fields="+lookupFields);
 		
 		String[] fields = lookupFields.split(",");
 		
