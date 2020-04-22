@@ -58,12 +58,14 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 		String userId = "";
 		String typeOfWithdrawal = "";
 		String term = "";
+		String sysDate = "";
 		JSONObject courseDetails = null;
 		if (req.getParameter("userId") != null && !req.getParameter("userId").trim().equals("") && req.getParameter("typeOfWithdrawal") != null && !req.getParameter("typeOfWithdrawal").trim().equals("")) {
 			
 			userId = req.getParameter("userId");
 			typeOfWithdrawal = req.getParameter("typeOfWithdrawal");
 			term = req.getParameter("term");
+			sysDate = req.getParameter("sysDate");
 			logger.info("userId =" + userId);
 			logger.info("typeOfWithdrawal =" + typeOfWithdrawal);
 			logger.info("term =" + term);
@@ -74,7 +76,7 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 			try {
 				logger.info("Connection Success=" + conn);
 				
-					courseDetails = getStudentCourseWithdrawalInfo(userId, conn,typeOfWithdrawal,term );
+					courseDetails = getStudentCourseWithdrawalInfo(userId, conn,typeOfWithdrawal,term ,sysDate);
 					
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -131,7 +133,7 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONObject getStudentCourseWithdrawalInfo(String userId, Connection oConnection,String typeOfWithdrawal, String term)
+	public static JSONObject getStudentCourseWithdrawalInfo(String userId, Connection oConnection,String typeOfWithdrawal, String term,String sysDate)
 			throws Exception {
 
 		logger.error("Inside getStudentCourseWithdrawalInfo");
@@ -146,9 +148,11 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 			String studentCourseInfoSQL = "";
 			
 			if(typeOfWithdrawal.equals("1")) {			
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <=  NON_MED_WD_END_DT";	
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <=  NON_MED_WD_END_DT";	
+				//studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <=  NON_MED_WD_END_DT";	
 			}else {				
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <= MED_WD_END_DT";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= MED_WD_END_DT";
+				//studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <= MED_WD_END_DT";
 			}
 			
 
@@ -157,6 +161,7 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<userId>>", userId);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", term);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<SYSDATE>>", sysDate);
 			logger.info("studentCourseInfoSQL1="+studentCourseInfoSQL);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);

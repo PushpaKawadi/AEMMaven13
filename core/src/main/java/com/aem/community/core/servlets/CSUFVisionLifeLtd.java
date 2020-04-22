@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -93,9 +94,9 @@ public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 		ResultSet oRresultSet = null;
 		JSONObject visionLifeDetails;
 		JSONArray jArray = new JSONArray();
-		String visionLifeSQL = ConfigManager.getValue("visionLifeSQL");
+		String visionLifeSQL = CSUFConstants.visionLifeSQL;
 		
-		String lookupFields = ConfigManager.getValue("lookupFieldsVisionLife");
+		String lookupFields = CSUFConstants.lookupFieldsVisionLife;
 		
 		String[] fields = lookupFields.split(",");
 		visionLifeSQL = visionLifeSQL.replaceAll("<<SSN>>", ssn);

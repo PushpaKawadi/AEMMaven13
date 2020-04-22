@@ -153,7 +153,7 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						//log.info("encodedPDF="+encodedPDF);
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -185,21 +185,16 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
 				+ "\"SSN\": \"" + ssn + "\"," + "\"AttachmentType\": "
 				+ "\"VisionLifeLtdDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		// log.error("firstName="+firstName);
-		// log.error("empId="+empId);
-		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+				+ "\"Attachment\":\"" + encodedPDF + "\"}";
+	
 
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read VisionLifeLtdDOR");
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService.getFilenetURL();
-				url = new URL(filenetUrl);
-				// url = new URL("");
-
+				
+				url = new URL(filenetUrl);				
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}

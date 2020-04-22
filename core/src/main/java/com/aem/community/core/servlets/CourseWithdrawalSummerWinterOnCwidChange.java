@@ -58,6 +58,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 		String cwid = "";
 		String typeOfWithdrawal = "";
 		String term = "";
+		String sysDate = "";
 		JSONObject courseDetails = null;
 		if (req.getParameter("cwid") != null && !req.getParameter("cwid").trim().equals("")
 				&& req.getParameter("typeOfWithdrawal") != null
@@ -65,6 +66,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 
 			cwid = req.getParameter("cwid");
 			term = req.getParameter("term");
+			sysDate = req.getParameter("sysDate");
 			typeOfWithdrawal = req.getParameter("typeOfWithdrawal");
 
 			logger.info("cwid =" + cwid);
@@ -77,7 +79,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 			try {
 				logger.info("Connection Success=" + conn);
 
-				courseDetails = getStudentCourseWithdrawalInfo(cwid, conn, typeOfWithdrawal, term);
+				courseDetails = getStudentCourseWithdrawalInfo(cwid, conn, typeOfWithdrawal, term,sysDate);
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -135,7 +137,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 	 * @throws Exception
 	 */
 	public static JSONObject getStudentCourseWithdrawalInfo(String cwid, Connection oConnection,
-			String typeOfWithdrawal, String term) throws Exception {
+			String typeOfWithdrawal, String term, String sysDate) throws Exception {
 
 		logger.error("Inside getStudentCourseWithdrawalInfo");
 
@@ -149,9 +151,9 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 			String studentCourseInfoSQL = "";
 
 			if (typeOfWithdrawal.equals("1")) {
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid = '<<CWID>>' and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <=  NON_MED_WD_END_DT";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid = '<<CWID>>' and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <=  NON_MED_WD_END_DT";
 			} else {
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid='<<CWID>>' and STRM = '<<TERM>>' and SYSDATE > WD_START_DT and SYSDATE <= MED_WD_END_DT";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid='<<CWID>>' and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= MED_WD_END_DT";
 			}
 
 			// Get current typeOfWithdrawal details
@@ -159,6 +161,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<CWID>>", cwid);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", term);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<SYSDATE>>", sysDate);
 			logger.info("studentCourseInfoSQL1=" + studentCourseInfoSQL);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);

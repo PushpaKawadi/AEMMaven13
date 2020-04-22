@@ -85,4 +85,8 @@ public class CSUFConstants {
     public static final String DentalPlanEnrollmentSSNLookUp="Select A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, A.ADDRESS1, A.CITY, A.STATE, A.POSTAL, (case A.SEX when 'M' then '1' else '0' end) as Male, (case A.SEX when 'F' then '1' else '0' end) as Female, (case A.MAR_STATUS when 'M' then '1' else '0' end) as Married, (case A.MAR_STATUS when 'U' then '1' else '0' end) as Single, B.DEPTNAME as DeptName, B.JOBCODE as JobCode From FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>', '-','') AND A.EMPLID = B.EMPLID";
     public static final String DentalPlanEnrollmentFields="FIRST_NAME,LAST_NAME,MIDDLE_NAME,ADDRESS1,CITY,STATE,POSTAL,Male,Female,Married,Single,DeptName,JobCode";
   //Start of Dental Plan Enrollment  
+  //Start of Vision LIFE_LTD Lookup
+  	public static final String visionLifeSQL = "Select  A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.UNION_CD, B.CSU_UNIT, B.JOBCODE, B.EMPL_RCD+1 AS Serial, B.CSU_SCO_AGENCY, B.DEPTNAME From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where A.NATIONAL_ID = Replace('<<SSN>>','-','') AND B.EMPLID = A.EMPLID";
+  	public static final String lookupFieldsVisionLife = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,UNION_CD,CSU_UNIT,JOBCODE,Serial,CSU_SCO_AGENCY,DEPTNAME";
+  	//End of Vision LIFE_LTD Lookup
 }
