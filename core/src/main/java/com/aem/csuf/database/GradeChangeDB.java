@@ -457,8 +457,9 @@ public class GradeChangeDB implements WorkflowProcess {
 											dataMapStudentInfo.put(
 													"WORKFLOW_INSTANCE_ID",
 													workflowInstanceID);
-											
+											log.error("parentTable==="+parentTable);
 											if (parentTable == 0) {
+												log.error("After==="+parentTable);
 												insertGCFormData(conn, dataMapFormInfo);
 											}
 
@@ -482,6 +483,8 @@ public class GradeChangeDB implements WorkflowProcess {
 
 					finally {
 						try {
+							log.error("Finally====="+parentTable);
+							parentTable = 0;
 							is.close();
 							conn.close();
 						} catch (IOException e) {
