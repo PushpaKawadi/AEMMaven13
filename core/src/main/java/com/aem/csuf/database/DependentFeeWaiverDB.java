@@ -316,7 +316,7 @@ public class DependentFeeWaiverDB implements WorkflowProcess {
 							initials = eElement.getElementsByTagName("initials").item(0).getTextContent();
 							log.info("initials Value is: " + initials);
 
-							employeeSignature = eElement.getElementsByTagName("employeeSignature").item(0)
+							employeeSignature = eElement.getElementsByTagName("EmployeeSignature").item(0)
 									.getTextContent();
 							log.info("employeeSignature Value is: " + employeeSignature);
 
