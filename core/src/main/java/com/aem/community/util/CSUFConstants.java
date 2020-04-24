@@ -96,4 +96,16 @@ public class CSUFConstants {
 	public static final String lookupFieldsVisionLife = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,UNION_CD,CSU_UNIT,JOBCODE,Serial,CSU_SCO_AGENCY,DEPTNAME";
 	// End of Vision LIFE_LTD Lookup
 
+	//Start of Grade Change
+	public static final String gradeChangeSingleStudent="Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>' and cwid ='<<cwid>>'";
+	public static final String gradeChangeBulk="Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>'";
+	public static final String gradeChangeFields="CWID,FNAME,LNAME,MNAME,STDNT_CAR_NBR,EFFDT,EFFSEQ,ACAD_PROG,INSTITUTION,TERM_DESCR,STRM,STDNT_ENRL_STATUS,CLASS_NBR,CRSE_ID,CRSE_NAME,CLASS_SECTION,SCHEDULE_NBR,COURSE_LEVEL,UNT_TAKEN,CURRENT_GRADE,DEPT_CD,COLLEGE,MAJOR_CODE,MAJOR_DESCR,MAJOR_TYPE,DEGREE_TYPE,INSTR_NAME,INSTR_EMAIL,INSTR_USERID,INSTR_CWID,CHAIR_USERID,CHAIR_NAME,CHAIR_CWID,CHAIR_EMAIL,DEAN_USERID,DEAN_NAME,DEAN_CWID,DEAN_EMAIL,ASS_DEAN_USERID,ASS_DEAN_NAME,ASS_DEAN_CWID,ASS_DEAN_EMAIL,STUDENT_EMAIL,STUDENT_USERID";
+	public static final String gradeChangeUserDetails="Select distinct CRSE_NAME, INSTR_CWID, INSTR_NAME, CLASS_NBR,INSTR_USERID from AR_GRADE_FORM where LOWER(instr_userid) = LOWER('<<instr_userid>>') and STRM = '<<STRM>>'";
+	public static final String gradeChangeClassDetails ="select distinct * from AR_GRADE_FORM where CRSE_NAME = '<<CRSE_NAME>>' and LOWER(instr_userid) = LOWER('<<instr_userid>>') and TERM_DESCR = '<<TERM_DESCR>>'";
+	public static final String gradeChangeSchemeDetails = "select distinct CRSE_ID,GRADING_BASIS,GRADING_SCHEME from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_ID='<<CRSE_ID>>'";
+	public static final String gradeChangeToDetails = "select distinct CRSE_GRADE_INPUT,DESCR from AR_GRADE_ROSTER where CRSE_ID='<<CRSE_ID>>' and GRADING_BASIS='<<GRADING_BASIS>>' and GRADING_SCHEME='<<GRADING_SCHEME>>'";
+	public static final String gradeChangeCwidDetails ="Select distinct INSTR_USERID, INSTR_NAME from AR_GRADE_FORM where INSTR_CWID= '<<INSTR_CWID>>' and TERM_DESCR='<<TERM_DESCR>>'";
+	public static final String gradeChangeLoggedIn= "SELECT DISTINCT INSTR_CWID, INSTR_NAME FROM AR_GRADE_FORM where LOWER(instr_userid) = LOWER('<<instr_userid>>') and TERM_DESCR='<<TERM_DESCR>>'";
+	public static final String gradeChangeTerm = "SELECT DISTINCT CRSE_NAME, CLASS_NBR, INSTR_CWID,INSTR_USERID,CLASS_SECTION, COURSE_LEVEL, INSTR_NAME, DEPT_CD FROM AR_GRADE_FORM where INSTR_CWID='<<INSTR_CWID>>' AND TERM_DESCR='<<TERM_DESCR>>'";
+	public static final String gradeChangeClassSection="SELECT DISTINCT CLASS_SECTION FROM AR_GRADE_FORM where TERM_DESCR='<<TERM_DESCR>>' and INSTR_CWID='<<INSTR_CWID>>' and CRSE_NAME='<<CRSE_NAME>>' and CLASS_NBR='<<CLASS_NBR>>'";
 }

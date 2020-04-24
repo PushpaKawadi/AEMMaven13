@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
+
 import org.apache.sling.api.SlingHttpServletRequest;
 import org.apache.sling.api.SlingHttpServletResponse;
 import org.apache.sling.api.servlets.HttpConstants;
@@ -20,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 
 /**
@@ -101,8 +104,10 @@ public class CSUFGradeChangeCWIDServlet extends SlingSafeMethodsServlet {
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-			studentCourseInfoSQL = ConfigManager
-					.getValue("gradeChangeCwidDetails");
+//			studentCourseInfoSQL = ConfigManager
+//					.getValue("gradeChangeCwidDetails");
+			
+			studentCourseInfoSQL = CSUFConstants.gradeChangeCwidDetails;
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<INSTR_CWID>>", instCwid);

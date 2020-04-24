@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 
 /**
@@ -102,15 +103,18 @@ public class CSUFGradeChangeSchemeServlet extends SlingSafeMethodsServlet {
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-			studentCourseInfoSQL = ConfigManager
-					.getValue("gradeChangeSchemeDetails");
+//			studentCourseInfoSQL = ConfigManager
+//					.getValue("gradeChangeSchemeDetails");
+			
+			studentCourseInfoSQL = CSUFConstants.gradeChangeSchemeDetails;
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<CRSE_ID>>", courseId);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
 					termDesc);
 			
-			String lookupFields = ConfigManager.getValue("gradeChangeFields");
+			//String lookupFields = ConfigManager.getValue("gradeChangeFields");
+			String lookupFields = CSUFConstants.gradeChangeFields;
 			String[] fields = lookupFields.split(",");
 			
 			logger.info("Grade change sql=" + studentCourseInfoSQL);

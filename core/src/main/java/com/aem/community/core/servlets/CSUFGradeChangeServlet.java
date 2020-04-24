@@ -22,6 +22,7 @@ import org.slf4j.LoggerFactory;
 import org.json.JSONArray;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 
 /**
@@ -124,13 +125,15 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 		Statement oStatement = null;
 		try {
 			if (!cwid.equals("null") && !cwid.equals("")) {
-				studentCourseInfoSQL = ConfigManager
-						.getValue("gradeChangeSingleStudent");
+//				studentCourseInfoSQL = ConfigManager
+//						.getValue("gradeChangeSingleStudent");
+				studentCourseInfoSQL = CSUFConstants.gradeChangeSingleStudent;
 				studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 						"<<cwid>>", cwid);
 			} else {
-				studentCourseInfoSQL = ConfigManager
-						.getValue("gradeChangeBulk");
+//				studentCourseInfoSQL = ConfigManager
+//						.getValue("gradeChangeBulk");
+				studentCourseInfoSQL =CSUFConstants.gradeChangeBulk;
 			}
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
@@ -153,7 +156,8 @@ public class CSUFGradeChangeServlet extends SlingSafeMethodsServlet {
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
 					"<<instCwid>>", instCwid);
 
-			String lookupFields = ConfigManager.getValue("gradeChangeFields");
+			//String lookupFields = ConfigManager.getValue("gradeChangeFields");
+			String lookupFields = CSUFConstants.gradeChangeFields;
 			String[] fields = lookupFields.split(",");
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();

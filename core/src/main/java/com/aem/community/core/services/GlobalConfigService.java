@@ -14,5 +14,5 @@ public interface GlobalConfigService {
 	String getMppFilenetURL();
 	String getStaffEvalFilenetURL();
 	String getHRBenefitsFilenetURL();
-	String getGradeChangeFilenetURL();
+	//String getGradeChangeFilenetURL();
 }

@@ -92,6 +92,7 @@ public class GradeChangeDB implements WorkflowProcess {
 		String comments = "";
 		String rpWorkCompleted = "";
 		String gradeCheck = "";
+		String deptID = "";
 
 		LinkedHashMap<String, Object> dataMapFormInfo = null;
 		LinkedHashMap<String, Object> dataMapStudentInfo = null;
@@ -115,7 +116,7 @@ public class GradeChangeDB implements WorkflowProcess {
 						is = subNode.getProperty("jcr:data").getBinary()
 								.getStream();
 					} catch (ValueFormatException e2) {
-						log.error("Exception1 Pushpa=" + e2.getMessage());
+						log.error("Exception1=" + e2.getMessage());
 						e2.printStackTrace();
 					} catch (PathNotFoundException e2) {
 						log.error("Exception2=" + e2.getMessage());
@@ -229,7 +230,13 @@ public class GradeChangeDB implements WorkflowProcess {
 										.getElementsByTagName(
 												"RecordersComments").item(0)
 										.getTextContent();
-
+								deptID = eElement
+											.getElementsByTagName("HiddenDepartmentCode").item(0)
+											.getTextContent();
+								massGradeChange = eElement
+										.getElementsByTagName(
+												"massGradeChange").item(0)
+										.getTextContent();
 								
 								dataMapFormInfo = new LinkedHashMap<String, Object>();
 								dataMapFormInfo.put("TERM", term);
@@ -308,9 +315,10 @@ public class GradeChangeDB implements WorkflowProcess {
 									recordDateObj = recordSignNew;
 								}
 
-								
-								dataMapFormInfo.put("RECORDS_SIGN_DATE",
-										recordDateObj);
+								dataMapFormInfo.put("DEPT_CODE",
+										deptID);
+								/*dataMapFormInfo.put("RECORDS_SIGN_DATE",
+										recordDateObj);*/
 								dataMapFormInfo.put("RECORDS_COMMENT",
 										recordsComments);
 
@@ -510,7 +518,7 @@ public class GradeChangeDB implements WorkflowProcess {
 	public void insertGCStudentData(Connection conn,
 			LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
-		log.error("Pushpa=" + dataMap);
+		log.info("insertGCStudentData=" + dataMap);
 		if (conn != null) {
 			try {
 				conn.setAutoCommit(false);

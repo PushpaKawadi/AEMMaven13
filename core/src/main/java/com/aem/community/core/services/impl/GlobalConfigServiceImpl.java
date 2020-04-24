@@ -108,9 +108,9 @@ public class GlobalConfigServiceImpl implements GlobalConfigService {
 		return config.hr_Benefits_Filenet_URL();
 	}
 	
-	@Override
-	public String getGradeChangeFilenetURL() {	
-		log.debug("Grade Change Filenet Value="+config.grade_Change_Filenet_URL());
-		return config.grade_Change_Filenet_URL();
-	}
+//	@Override
+//	public String getGradeChangeFilenetURL() {	
+//		log.debug("Grade Change Filenet Value="+config.grade_Change_Filenet_URL());
+//		return config.grade_Change_Filenet_URL();
+//	}
 }
