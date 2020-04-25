@@ -491,8 +491,8 @@ public class GradeChangeDB implements WorkflowProcess {
 
 					finally {
 						try {
-							log.error("Finally====="+parentTable);
 							parentTable = 0;
+							log.info("Finally====="+parentTable);
 							is.close();
 							conn.close();
 						} catch (IOException e) {
