@@ -85,6 +85,11 @@ public class CSUFConstants {
 	public static final String DentalPlanEnrollmentSSNLookUp = "Select A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, A.ADDRESS1, A.CITY, A.STATE, A.POSTAL, (case A.SEX when 'M' then '1' else '0' end) as Male, (case A.SEX when 'F' then '1' else '0' end) as Female, (case A.MAR_STATUS when 'M' then '1' else '0' end) as Married, (case A.MAR_STATUS when 'U' then '1' else '0' end) as Single, B.DEPTNAME as DeptName, B.JOBCODE as JobCode From FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>', '-','') AND A.EMPLID = B.EMPLID";
 	public static final String DentalPlanEnrollmentFields = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,ADDRESS1,CITY,STATE,POSTAL,Male,Female,Married,Single,DeptName,JobCode";
 	// Start of Dental Plan Enrollment
+	
+	// Start of Initial Cobra Lookup
+	public static final String initialCobraEmpLookUp="Select A.FIRST_NAME, A.LAST_NAME, B.EMPL_RCD, (SELECT (C.FIRST_NAME || '   ' || C.LAST_NAME) FROM FUL_ECM_BEN_VW C WHERE C.EMPLID = '<<Empl_ID>>' AND C.RELATIONSHIP = 'SP') as PartnerName From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.EMPLID = '<<Empl_ID>>'  AND A.EMPLID = B.EMPLID";
+	public static final String initialCobraEmpLookUpfields="FIRST_NAME,LAST_NAME,EMPL_RCD,PartnerName";
+	// End of Initial Cobra Lookup
 
 	// Start of Short App Emp Fee Waiver
 	public static final String shortAppEmpFeeWaiver = "SELECT A.FIRST_NAME, A.MIDDLE_NAME, A.LAST_NAME, A.NATIONAL_ID, A.ADDRESS1, A.ADDRESS2, A.CITY, A.STATE, A.POSTAL, (case SEX when 'M' then '1' else '0' end) as Male, (case SEX when 'F' then '1' else '0' end) as Female, A.EMPLID, A.BIRTHDATE, A.HOME_PHONE, C.USERID FROM FUL_ECM_PERS_VW A, FUL_EMP_CWID_NT_NAME C WHERE C.USERID = '<<getUser_ID>>' and A.EMPLID = C.CWID";
