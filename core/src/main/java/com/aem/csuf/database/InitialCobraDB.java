@@ -56,14 +56,14 @@ public class InitialCobraDB implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
-        String empID = "";
-        String emplRCD = "";
-        String dateInitiated = "";
-		String firstName = "";
-        String lastName = "";       
-        String partnerName = "";		
-	
+		
+		String emplID = null;
+		String empRCD = null;
+		String dateInitiated = null;
+		String firstName = null;
+		String lastName = null;
+		String partnerName = null;
+		
 
 		LinkedHashMap<String, Object> dataMap = null;
 
@@ -113,7 +113,7 @@ public class InitialCobraDB implements WorkflowProcess {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
 						log.info("IOException=" + e1);
-						e1.printStackTrace(); 
+						e1.printStackTrace();
 					}
 					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
 					for (int temp = 0; temp < nList.getLength(); temp++) {
@@ -124,48 +124,50 @@ public class InitialCobraDB implements WorkflowProcess {
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                             log.info("Inside IF"); 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-                            log.info("Before Fields"); 							
+                            log.info("Before Fields"); 	                    		
 
-                            empID = eElement.getElementsByTagName("firstName")
+                            emplID = eElement.getElementsByTagName("Empl_ID")
                                     .item(0).getTextContent();
-                                    log.info("firstName Value is: " + empID);
+                                    log.info("emplID Value is: " + emplID);
 
-                            emplRCD = eElement.getElementsByTagName("lastName")
+                            empRCD = eElement.getElementsByTagName("Empl_RCD")
                                     .item(0).getTextContent();
-                                    log.info("lastName Value is: " + emplRCD);
+                                    log.info("empRCD Value is: " + empRCD);
 
-                            dateInitiated = eElement.getElementsByTagName("emplID")
+                            dateInitiated = eElement.getElementsByTagName("DateInitiated")
                                     .item(0).getTextContent();
-                                    log.info("empID Value is: " + empID);
+                                    log.info("dateInitiated Value is: " + dateInitiated);
 
-                            firstName = eElement.getElementsByTagName("departmentName")
+                            firstName = eElement.getElementsByTagName("First_Name")
                                     .item(0).getTextContent();
-                            log.info("departmentName Value is: " + firstName);
+                            log.info("firstName Value is: " + firstName);
 
-                            lastName = eElement.getElementsByTagName("departmentID")
+                            lastName = eElement.getElementsByTagName("Last_Name")
                                     .item(0).getTextContent();
-                            log.info("departmentID Value is: " + lastName);
-                            
-                            partnerName = eElement.getElementsByTagName("departmentID")
+                            log.info("lastName Value is: " + lastName);
+
+                            partnerName = eElement.getElementsByTagName("Partner_Name")
                                     .item(0).getTextContent();
-                            log.info("departmentID Value is: " + partnerName);                          					
+                            log.info("partnerName Value is: " + partnerName);                  		
+                           													
 						}
 					}
 
-					dataMap = new LinkedHashMap<String, Object>();
-					
-					dataMap.put("EMPL_ID", empID);
-                    dataMap.put("EMP_RCD", emplRCD);
+					dataMap = new LinkedHashMap<String, Object>();	
+			        
+					dataMap.put("EMPL_ID", emplID);
+                    dataMap.put("EMP_RCD", empRCD);
                     
                     Object dateInitiatedObj= null;
                     if(dateInitiated != null && dateInitiated != "") {
 						Date dateInitiatedNew = Date.valueOf(dateInitiated);
 						dateInitiatedObj = dateInitiatedNew;
 					}	
-                    dataMap.put("DATE_INITIATED", dateInitiatedObj);                    
-                    dataMap.put("FIRST_NAME", firstName);	
-                    dataMap.put("LAST_NAME", lastName);
+                    dataMap.put("DATE_INITIATED", dateInitiatedObj);										
+					dataMap.put("FIRST_NAME", firstName);
+					dataMap.put("LAST_NAME", lastName);
 					dataMap.put("PARTNER_NAME", partnerName);
+                  
 
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
@@ -189,7 +191,7 @@ public class InitialCobraDB implements WorkflowProcess {
 		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
-			insertCareerDevelopmentData(conn, dataMap);
+			insertInitialCobraData(conn, dataMap);
 		}
 	}
 
@@ -217,7 +219,7 @@ public class InitialCobraDB implements WorkflowProcess {
 		return null;
 	}
 
-	public void insertCareerDevelopmentData(Connection conn, LinkedHashMap<String, Object> dataMap) {
+	public void insertInitialCobraData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {

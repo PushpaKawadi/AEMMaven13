@@ -38,10 +38,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Dependent Fee Waiver User Request Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getDependentFeeWaiverUserLookUp" })
-public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
-    private final static Logger logger = LoggerFactory.getLogger(DependentFeeWaiverUserIdLookUp.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Employee Fee Waiver User Request Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getEmployeeFeeWaiverUserLookUp" })
+public class EmployeeFeeWaiverUserLookup extends SlingSafeMethodsServlet {
+    private final static Logger logger = LoggerFactory.getLogger(EmployeeFeeWaiverUserLookup.class);
 	private static final long serialVersionUID = 1L;
 	
 	@Reference
@@ -52,7 +52,7 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
 		Connection conn = null;
 		String userID = "";
 		//String cwid = "";
-		JSONArray dependentFeeWaiverDetails = null;
+		JSONArray employeeFeeWaiverDetails = null;
 		
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
@@ -65,8 +65,8 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				dependentFeeWaiverDetails = getDependentFeeWaiverDetails(userID, conn, "dependentFeeWaiver");
-				logger.info("emplEvalDetails ="+dependentFeeWaiverDetails);
+				employeeFeeWaiverDetails = getEmployeeFeeWaiverDetails(userID, conn, "employeeFeeWaiver");
+				logger.info("emplFeeWaiverDetails ="+employeeFeeWaiverDetails);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -75,7 +75,7 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(dependentFeeWaiverDetails.toString());
+			response.getWriter().write(employeeFeeWaiverDetails.toString());
 		}
 	}
 /**
@@ -86,21 +86,21 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
  * @return
  * @throws Exception
  */
-	public static JSONArray getDependentFeeWaiverDetails(String userID, Connection oConnection, String docType)
+	public static JSONArray getEmployeeFeeWaiverDetails(String userID, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
 		//JSONObject employeeEvalDetails = new JSONObject();
 		
-		JSONObject dependentWaiverDetails;
+		JSONObject employeeWaiverDetails;
 		JSONArray jArray = new JSONArray();
 	
 		//String emplIDSQL = ConfigManager.getValue("DependentFeeWaiverUserLookUp");		
-		String emplIDSQL = CSUFConstants.employeeFeeWaiverUserLookUp;
+		String emplIDSQL = CSUFConstants.DependentFeeWaiverUserLookUp;
 		logger.info("Dependent User Lookup"+emplIDSQL);
 		
 		//String lookupFields = ConfigManager.getValue("DependentFeeWaiverUserLookUpFields");
-		String lookupFields = CSUFConstants.employeeFeeWaiverUserLookUpFields;
+		String lookupFields = CSUFConstants.DependentFeeWaiverUserLookUpFields;
 		logger.info("Dependent User Lookup Fields"+lookupFields); 
 		
 		String[] fields = lookupFields.split(",");
@@ -114,18 +114,18 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-				dependentWaiverDetails = new JSONObject();
+				employeeWaiverDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					dependentWaiverDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("dependentWaiverDetails ="+dependentWaiverDetails);
+					employeeWaiverDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("employeeWaiverDetails ="+employeeWaiverDetails);
 				}
-				jArray.put(dependentWaiverDetails);
+				jArray.put(employeeWaiverDetails);
 			}
 			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			dependentWaiverDetails = null;
+			employeeWaiverDetails = null;
 		} finally {
 			try {
 				if (oConnection != null){

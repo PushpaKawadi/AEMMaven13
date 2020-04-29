@@ -208,7 +208,7 @@ public class Fullerton650MasterDB implements WorkflowProcess {
 
 					dataMap = new LinkedHashMap<String, Object>();	
 			        
-					dataMap.put("EMPLOYEE_ADDRESS_LIST", emailAddressList);
+					dataMap.put("EMAIL_ADDRESS_LIST", emailAddressList);
                     dataMap.put("BATCH_NUMBER", batchNumber);
                     
                     Object payPeriodObj= null;
@@ -216,9 +216,9 @@ public class Fullerton650MasterDB implements WorkflowProcess {
 						Date payPeriodNew = Date.valueOf(payPeriod);
 						payPeriodObj = payPeriodNew;
 					}	
-                    dataMap.put("PAYPERIOD", payPeriodObj);										
-					dataMap.put("RECORD_DB", recordB);
-					dataMap.put("RECORD_DBR", recordBR);
+                    dataMap.put("PAY_PERIOD", payPeriodObj);										
+					dataMap.put("RECORD_B", recordB);
+					dataMap.put("RECORD_BR", recordBR);
 					dataMap.put("RECORD_L", recordL);
 					dataMap.put("RECORD_LR", recordLR);
                     dataMap.put("RECORD_V", recordV);
@@ -260,7 +260,7 @@ public class Fullerton650MasterDB implements WorkflowProcess {
 		conn = jdbcConnectionService.getAemDEVDBConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
-			insertCareerDevelopmentData(conn, dataMap);
+			insertFullertonMasterData(conn, dataMap);
 		}
 	}
 
@@ -288,7 +288,7 @@ public class Fullerton650MasterDB implements WorkflowProcess {
 		return null;
 	}
 
-	public void insertCareerDevelopmentData(Connection conn, LinkedHashMap<String, Object> dataMap) {
+	public void insertFullertonMasterData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {

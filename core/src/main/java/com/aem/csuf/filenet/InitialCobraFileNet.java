@@ -149,7 +149,7 @@ public class InitialCobraFileNet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Initial_Cobra.pdf")) {
+			if (filePath.contains("Initial_Cobra.pdf")) { 
 				log.info("filePath ======" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
