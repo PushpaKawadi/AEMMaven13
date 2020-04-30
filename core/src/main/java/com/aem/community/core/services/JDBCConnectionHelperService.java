@@ -10,4 +10,5 @@ public interface JDBCConnectionHelperService {
 	Connection getFrmDBConnection();
 	Connection getDocDBConnection();
 	Connection getAemDEVDBConnection();
+	Connection getAemProdDBConnection();
 }

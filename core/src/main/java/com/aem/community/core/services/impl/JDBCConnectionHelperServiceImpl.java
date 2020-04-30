@@ -9,9 +9,9 @@ import org.slf4j.LoggerFactory;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-
 @Component(service = JDBCConnectionHelperService.class)
-public class JDBCConnectionHelperServiceImpl implements JDBCConnectionHelperService {
+public class JDBCConnectionHelperServiceImpl implements
+		JDBCConnectionHelperService {
 
 	/** Default log. */
 	protected final Logger log = LoggerFactory.getLogger(this.getClass());
@@ -51,7 +51,7 @@ public class JDBCConnectionHelperServiceImpl implements JDBCConnectionHelperServ
 		}
 		return null;
 	}
-	
+
 	@Override
 	public Connection getAemDEVDBConnection() {
 		DataSource dataSource = null;
@@ -64,6 +64,22 @@ public class JDBCConnectionHelperServiceImpl implements JDBCConnectionHelperServ
 
 		} catch (Exception e) {
 			log.error(e.getMessage() + " Exception ");
+		}
+		return null;
+	}
+
+	@Override
+	public Connection getAemProdDBConnection() {
+		log.info("Inside Get Connection");
+		DataSource dataSource = null;
+		Connection con = null;
+		try {
+			dataSource = (DataSource) source.getDataSource("AEMDBPRD");
+			con = dataSource.getConnection();
+			return con;
+		} catch (Exception e) {
+			log.error("Conn Exception=" + e.getMessage());
+			e.printStackTrace();
 		}
 		return null;
 	}
