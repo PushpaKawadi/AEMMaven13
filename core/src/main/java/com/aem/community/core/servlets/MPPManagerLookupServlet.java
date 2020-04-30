@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -94,9 +95,9 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 		ResultSet oRresultSet = null;
 		JSONObject mppEvalManagerDetails;
 		JSONArray jArray = new JSONArray();
-		String mppManagerIDSQL = ConfigManager.getValue("mppManagerSQL");
+		String mppManagerIDSQL = CSUFConstants.mppManagerSQL;
 		// String lookupFields = ConfigManager.getValue("lookupFields");
-		String lookupFields = ConfigManager.getValue("mppManagerLookupFields");
+		String lookupFields = CSUFConstants.mppManagerLookupFields;
 		String[] fields = lookupFields.split(",");
 
 		mppManagerIDSQL = mppManagerIDSQL.replaceAll("<<EMPL_ID>>", emplId);

@@ -182,7 +182,7 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 					
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
-				//	studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
+					studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM", oRresultSet.getString("STRM"));
