@@ -38,6 +38,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -49,26 +50,21 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=HR Coordinator Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
-		"sling.servlet.paths=" + "/bin/getHRCooLookup" })
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=HR Coordinator Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getHRCooLookup" })
 public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFHRCoordiantorServlet.class);
+	private final static Logger logger = LoggerFactory.getLogger(CSUFHRCoordiantorServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	public void doGet(SlingHttpServletRequest req,
-			SlingHttpServletResponse response) throws ServletException,
-			IOException {
+	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
+			throws ServletException, IOException {
 		Connection conn = null;
 		String division = "";
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("division") != null
-				&& req.getParameter("division") != "") {
+		if (req.getParameter("division") != null && req.getParameter("division") != "") {
 			division = req.getParameter("division");
 			conn = jdbcConnectionService.getAemDEVDBConnection();
 		}
@@ -88,12 +84,11 @@ public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 		}
 	}
 
-	public static JSONArray getHRCooDetails(Connection oConnection,
-			String division) throws Exception {
+	public static JSONArray getHRCooDetails(Connection oConnection, String division) throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = ConfigManager.getValue("mppHRCooSQL"); // "select * from FUL_EMP_CWID_NT_NAME where LNAME = 'Nelson'";
+		String emplIDSQL = CSUFConstants.mppHRCooSQL;
 		emplIDSQL = emplIDSQL.replaceAll("<<division>>", division);
 		Statement oStatement = null;
 
@@ -102,22 +97,15 @@ public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
 				employeeEvalDetails = new JSONObject();
-				employeeEvalDetails.put("HREmpID",
-						oRresultSet.getString("EMPLOYEEID"));
-				employeeEvalDetails.put("HRUserID",
-						oRresultSet.getString("USERID"));
-				employeeEvalDetails.put("HRFName",
-						oRresultSet.getString("FIRSTNAME"));
-				employeeEvalDetails.put("HRLName",
-						oRresultSet.getString("LASTNAME"));
-				employeeEvalDetails.put("HREmail",
-						oRresultSet.getString("EMAIL"));
-				employeeEvalDetails.put("HRDivision",
-						oRresultSet.getString("DIVISION"));
-				employeeEvalDetails.put("HRDivName",
-						oRresultSet.getString("DIVISIONNAME"));
+				employeeEvalDetails.put("HREmpID", oRresultSet.getString("EMPLOYEEID"));
+				employeeEvalDetails.put("HRUserID", oRresultSet.getString("USERID"));
+				employeeEvalDetails.put("HRFName", oRresultSet.getString("FIRSTNAME"));
+				employeeEvalDetails.put("HRLName", oRresultSet.getString("LASTNAME"));
+				employeeEvalDetails.put("HREmail", oRresultSet.getString("EMAIL"));
+				employeeEvalDetails.put("HRDivision", oRresultSet.getString("DIVISION"));
+				employeeEvalDetails.put("HRDivName", oRresultSet.getString("DIVISIONNAME"));
 				jArray.put(employeeEvalDetails);
-				logger.info("Array="+jArray);
+				logger.info("Array=" + jArray);
 			}
 
 		} catch (Exception oEx) {
@@ -132,8 +120,7 @@ public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 
 				}
 			} catch (Exception e) {
-				logger.error("Exception in CSUFEmployeeLookUpServlet="
-						+ e.getMessage());
+				logger.error("Exception in CSUFEmployeeLookUpServlet=" + e.getMessage());
 				e.getStackTrace();
 			}
 		}
