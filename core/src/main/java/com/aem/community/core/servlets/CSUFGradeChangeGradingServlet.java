@@ -81,25 +81,26 @@ public class CSUFGradeChangeGradingServlet extends SlingSafeMethodsServlet {
 				JSONArray gradingArray = new JSONArray();
 				if (gradChangeDetails.length() == 0) {
 					try {
-						gradingArray.put("WU");
-						gradingArray.put("D+");
+						gradingArray.put("A");
 						gradingArray.put("A+");
+						gradingArray.put("A-");
+						gradingArray.put("B");
+						gradingArray.put("B+");
+						gradingArray.put("B-");
+						gradingArray.put("C");
+						gradingArray.put("C+");
+						gradingArray.put("C-");
+						gradingArray.put("D");
+						gradingArray.put("D+");
 						gradingArray.put("D-");
 						gradingArray.put("F");
-						gradingArray.put("A");
-						gradingArray.put("WE");
-						gradingArray.put("RD");
-						gradingArray.put("A-");
-						gradingArray.put("C");
-						gradingArray.put("C-");
-						gradingArray.put("B+");
-						gradingArray.put("B");
-						gradingArray.put("IC");
-						gradingArray.put("RP");
-						gradingArray.put("D");
-						gradingArray.put("W");
-						gradingArray.put("B-");
 						gradingArray.put("I");
+						gradingArray.put("IC");
+						gradingArray.put("RD");
+						gradingArray.put("RP");
+						gradingArray.put("W");
+						gradingArray.put("WE");
+						gradingArray.put("WU");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

@@ -1,18 +1,4 @@
-/*
- *  Copyright 2015 Adobe Systems Incorporated
- *
- *  Licensed under the Apache License, Version 2.0 (the "License");
- *  you may not use this file except in compliance with the License.
- *  You may obtain a copy of the License at
- *
- *      http://www.apache.org/licenses/LICENSE-2.0
- *
- *  Unless required by applicable law or agreed to in writing, software
- *  distributed under the License is distributed on an "AS IS" BASIS,
- *  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- *  See the License for the specific language governing permissions and
- *  limitations under the License.
- */
+
 package com.aem.community.core.servlets;
 
 import java.io.IOException;
@@ -37,6 +23,8 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
@@ -50,12 +38,12 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getUserDetails" })
-public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFUserLookUpServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Employee Fee Waiver User Request Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getEmployeeFeeWaiverUserLookUp" })
+public class EmployeeFeeWaiverUserLookup extends SlingSafeMethodsServlet {
+    private final static Logger logger = LoggerFactory.getLogger(EmployeeFeeWaiverUserLookup.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -63,16 +51,23 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 			throws ServletException, IOException {
 		Connection conn = null;
 		String userID = "";
-		JSONArray emplEvalDetails = null;
+		//String cwid = "";
+		JSONArray employeeFeeWaiverDetails = null;
+		
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
 			userID = req.getParameter("userID");
+			//cwid = req.getParameter("cwid");
+			//logger.info("userid =" + userID);
+			logger.info("userID =" + userID);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getUserIDDetailsNew(userID, conn, "SPE2579");
+				employeeFeeWaiverDetails = getEmployeeFeeWaiverDetails(userID, conn, "employeeFeeWaiver");
+				logger.info("emplFeeWaiverDetails ="+employeeFeeWaiverDetails);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -80,58 +75,71 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(emplEvalDetails.toString());
+			response.getWriter().write(employeeFeeWaiverDetails.toString());
 		}
 	}
-
-	public static JSONArray getUserIDDetailsNew(String userID, Connection oConnection, String docType)
+/**
+ * 
+ * @param cwid
+ * @param oConnection
+ * @param docType
+ * @return
+ * @throws Exception
+ */
+	public static JSONArray getEmployeeFeeWaiverDetails(String userID, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
-		JSONObject employeeEvalDetails;
+		//JSONObject employeeEvalDetails = new JSONObject();
+		
+		JSONObject employeeWaiverDetails;
 		JSONArray jArray = new JSONArray();
-
-		String userIDSQL = CSUFConstants.userIDSQL;
-
-		String lookupFields = CSUFConstants.lookupFieldsUserIdLookup;
-
+	
+		//String emplIDSQL = ConfigManager.getValue("DependentFeeWaiverUserLookUp");		
+		String emplIDSQL = CSUFConstants.DependentFeeWaiverUserLookUp;
+		logger.info("Dependent User Lookup"+emplIDSQL);
+		
+		//String lookupFields = ConfigManager.getValue("DependentFeeWaiverUserLookUpFields");
+		String lookupFields = CSUFConstants.DependentFeeWaiverUserLookUpFields;
+		logger.info("Dependent User Lookup Fields"+lookupFields); 
+		
 		String[] fields = lookupFields.split(",");
+		
+		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		logger.info("SQL Comman is= "+emplIDSQL);
+		//emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 
-		userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
 		Statement oStatement = null;
 		try {
-
-			logger.info("inside try4");
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(userIDSQL);
-
+			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-
-				employeeEvalDetails = new JSONObject();
+				employeeWaiverDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-
+					employeeWaiverDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("employeeWaiverDetails ="+employeeWaiverDetails);
 				}
-				jArray.put(employeeEvalDetails);
-				logger.info("jArray=" + jArray);
+				jArray.put(employeeWaiverDetails);
 			}
-
+			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-
+			employeeWaiverDetails = null;
 		} finally {
 			try {
-				if (oConnection != null) {
+				if (oConnection != null){
 					oConnection.close();
-
+					
 				}
-
+				// oStatement.close();
+				// oRresultSet.close();
 			} catch (Exception exp) {
-				exp.printStackTrace();
+
 			}
 		}
 
+		//return employeeEvalDetails;
 		return jArray;
 	}
 
@@ -149,12 +157,12 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 			return con;
 
 		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
+			logger.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				if (con != null) {
-					logger.info("Conn Exec=");
+					logger.info("Conn available=");
 				}
 			} catch (Exception exp) {
 				logger.info("Finally Exec=" + exp);

@@ -108,9 +108,35 @@ public class CSUFConstants {
 	public static final String gradeChangeUserDetails="Select distinct CRSE_NAME, INSTR_CWID, INSTR_NAME, CLASS_NBR,INSTR_USERID from AR_GRADE_FORM where LOWER(instr_userid) = LOWER('<<instr_userid>>') and STRM = '<<STRM>>'";
 	public static final String gradeChangeClassDetails ="select distinct * from AR_GRADE_FORM where CRSE_NAME = '<<CRSE_NAME>>' and LOWER(instr_userid) = LOWER('<<instr_userid>>') and TERM_DESCR = '<<TERM_DESCR>>'";
 	public static final String gradeChangeSchemeDetails = "select distinct CRSE_ID,GRADING_BASIS,GRADING_SCHEME from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_ID='<<CRSE_ID>>'";
-	public static final String gradeChangeToDetails = "select distinct CRSE_GRADE_INPUT,DESCR from AR_GRADE_ROSTER where CRSE_ID='<<CRSE_ID>>' and GRADING_BASIS='<<GRADING_BASIS>>' and GRADING_SCHEME='<<GRADING_SCHEME>>'";
+	public static final String gradeChangeToDetails = "select distinct CRSE_GRADE_INPUT,DESCR from AR_GRADE_ROSTER where CRSE_ID='<<CRSE_ID>>' and GRADING_BASIS='<<GRADING_BASIS>>' and GRADING_SCHEME='<<GRADING_SCHEME>>' order by CRSE_GRADE_INPUT";
 	public static final String gradeChangeCwidDetails ="Select distinct INSTR_USERID, INSTR_NAME from AR_GRADE_FORM where INSTR_CWID= '<<INSTR_CWID>>' and TERM_DESCR='<<TERM_DESCR>>'";
 	public static final String gradeChangeLoggedIn= "SELECT DISTINCT INSTR_CWID, INSTR_NAME FROM AR_GRADE_FORM where LOWER(instr_userid) = LOWER('<<instr_userid>>') and TERM_DESCR='<<TERM_DESCR>>'";
 	public static final String gradeChangeTerm = "SELECT DISTINCT CRSE_NAME, CLASS_NBR, INSTR_CWID,INSTR_USERID,CLASS_SECTION, COURSE_LEVEL, INSTR_NAME, DEPT_CD FROM AR_GRADE_FORM where INSTR_CWID='<<INSTR_CWID>>' AND TERM_DESCR='<<TERM_DESCR>>'";
 	public static final String gradeChangeClassSection="SELECT DISTINCT CLASS_SECTION FROM AR_GRADE_FORM where TERM_DESCR='<<TERM_DESCR>>' and INSTR_CWID='<<INSTR_CWID>>' and CRSE_NAME='<<CRSE_NAME>>' and CLASS_NBR='<<CLASS_NBR>>'";
+	//End of Grade Change
+	
+	//Start of Employee Fee Waiver User Lookup
+	public static final String  employeeFeeWaiverUserLookUp="Select A.FIRST_NAME, A.LAST_NAME,A.EMPLID, B.DEPTNAME,  B.DEPTID, B.UNION_CD, substr(A.WORK_PHONE,7,10) as Extension, B.JOBCODE, (case FULL_PART_TIME when 'F' then '1' else '0' end) as FullTime,  (case FULL_PART_TIME when 'P' then '1' else '0' end) as PartTime, (case when (CSU_PROB_CD = 'I' or CSU_PROB_CD = 'J') and UNION_CD = 'R03'  then '1' else '0' end) as Tenure, (case when (CSU_PROB_CD = 'I' or CSU_PROB_CD = 'J') and UNION_CD <> 'R03' then '1' else '0' end) as Perm, (case when CSU_PROB_CD ='A' or CSU_PROB_CD = 'B' or  CSU_PROB_CD = 'C' or CSU_PROB_CD = 'D' or CSU_PROB_CD = 'E' then '1' else '0' end) as Prob, (case when CSU_PROB_CD =  'N' or CSU_PROB_CD = 'P' or CSU_PROB_CD = 'Q' or CSU_PROB_CD = 'T'  then '1' else '0' end) as Other, (case Reg_Temp when 'T' then '1' else '0' end) as Temp, (case Reg_Temp when 'T' then replace(expected_end_date, '/','') end ) as EndDate, (case when Empl_Status = 'L' or Empl_Status = 'P' then '1' else '0' end) as LeaveYes, (case when Empl_Status = 'L' or Empl_Status = 'P' then '0' else '1' end) as LeaveNo From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C Where  A.EMPLID = B.EMPLID AND A.emplid = C.cwid AND C.userid = '<<getUser_ID>>'";
+	public static final String  employeeFeeWaiverUserLookUpFields="FIRST_NAME,LAST_NAME,EMPLID,DEPTNAME,DEPTID,UNION_CD,JOBCODE,Extension,FullTime,PartTime,Tenure,Perm,Prob,Temp,EndDate,LeaveYes,OtherLeaveYes,LeaveNo";
+	//End of Employee Fee Waiver User Lookup
+
+	// Start of Start of Get Pre Perf Eval Data
+		public static final String PrePerfReviewSQL = "select * from aem_pre_perf_eval eval1 where emplid = ('<<empid>>') and review_from_dt=('<<review_period_from>>') and review_to_dt=('<<review_period_to>>') and deptid=('<<deptid>>') and UPDATED_DT = (SELECT MAX(UPDATED_DT) FROM aem_pre_perf_eval eval2 WHERE eval1.emplid = eval2.emplid AND eval1.review_from_dt=eval2.review_from_dt AND eval1.review_to_dt=eval2.review_to_dt and eval1.deptid=eval2.deptid)";
+   // End of Start of Get Pre Perf Eval Data
+		// Start of User-id lookup
+		public static final String lookupFieldsUserIdLookup = "FIRST_NAME,LAST_NAME,DEPTID,DEPTNAME,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,UNION_CD,EMPLID";
+		public static final String userIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE , B.UNION_CD, D.SUPERVISOR_NAME AS SupervisorName, A.EMPLID, D.WORKING_TITLE AS SupervisorTitle FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_EMP_CWID_NT_NAME C ON C.CWID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO WHERE C.USERID = '<<getUser_ID>>'";
+		// End of User-id lookup
+
+
+
+
+
+
+
+
+
+
+
+
 }

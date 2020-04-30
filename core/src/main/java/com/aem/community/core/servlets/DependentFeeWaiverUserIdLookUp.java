@@ -96,11 +96,11 @@ public class DependentFeeWaiverUserIdLookUp extends SlingSafeMethodsServlet {
 		JSONArray jArray = new JSONArray();
 	
 		//String emplIDSQL = ConfigManager.getValue("DependentFeeWaiverUserLookUp");		
-		String emplIDSQL = CSUFConstants.DependentFeeWaiverUserLookUp;
+		String emplIDSQL = CSUFConstants.employeeFeeWaiverUserLookUp;
 		logger.info("Dependent User Lookup"+emplIDSQL);
 		
 		//String lookupFields = ConfigManager.getValue("DependentFeeWaiverUserLookUpFields");
-		String lookupFields = CSUFConstants.DependentFeeWaiverUserLookUpFields;
+		String lookupFields = CSUFConstants.employeeFeeWaiverUserLookUpFields;
 		logger.info("Dependent User Lookup Fields"+lookupFields); 
 		
 		String[] fields = lookupFields.split(",");
