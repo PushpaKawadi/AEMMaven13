@@ -59,8 +59,8 @@ public class CSUFEmployeeFeeWaiver implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-		//String firstName = null;
-		//String lastName = null;
+		String firstName = null;
+		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
 		// String rating = null;
@@ -118,17 +118,14 @@ public class CSUFEmployeeFeeWaiver implements WorkflowProcess {
 								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//FirstName", doc,
-//								XPathConstants.NODE);
-//						firstName = fnNode.getFirstChild().getNodeValue();
-//
-//						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//LastName", doc,
-//								XPathConstants.NODE);
-//						lastName = lnNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//firstName", doc,
+								XPathConstants.NODE);
+						firstName = fnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node ratingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
-//								XPathConstants.NODE);
-//						rating = ratingNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//lastName", doc,
+								XPathConstants.NODE);
+						lastName = lnNode.getFirstChild().getNodeValue();
+
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
