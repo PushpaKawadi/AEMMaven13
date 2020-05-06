@@ -132,4 +132,10 @@ public class CSUFConstants {
 	//Start of MPP Get HR COO Details
 	public static final String mppHRCooSQL = "select * from AEM_EVAL_HR_COORDINATORS where division=('<<division>>')";
 	//End of MPP Get HR COO Details
+	
+	//Start of Personal File Access Request Form
+	public static final String personalFileAccessRequestUserLookUp="select a.first_name, a.last_name, substr(a.middle_name,1,1) as Middle_Initial, a.emplid, a.work_phone, b.deptid, b.deptname from ful_ecm_pers_vw a, ful_ecm_job_vw b, ful_emp_cwid_nt_name c where a.emplid = b.emplid  and a.emplid = c.cwid and c.userid = '<<getUser_ID>>'";
+	public static final String personalFileAccessRequestUserLookUpFields="first_name,last_name,Middle_Initial,emplid,work_phone,deptid,deptname";
+	//Start of Personal File Access Request Form
+
 }
