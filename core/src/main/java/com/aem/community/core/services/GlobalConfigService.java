@@ -15,4 +15,5 @@ public interface GlobalConfigService {
 	String getStaffEvalFilenetURL();
 	String getHRBenefitsFilenetURL();
 	//String getGradeChangeFilenetURL();
+	String getAEMDataSource();
 }

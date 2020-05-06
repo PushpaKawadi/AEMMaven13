@@ -83,4 +83,18 @@ public class JDBCConnectionHelperServiceImpl implements
 		}
 		return null;
 	}
+	
+	public Connection getDBConnection(String datasourceName) {
+		DataSource dataSource = null;
+		Connection con = null;
+		try {
+			dataSource = (DataSource) source.getDataSource(datasourceName);
+			con = dataSource.getConnection();
+			return con;
+
+		} catch (Exception e) {
+			log.error(e.getMessage() + " Exception ");
+		}
+		return null;
+	}
 }

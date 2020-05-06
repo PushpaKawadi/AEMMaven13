@@ -27,9 +27,9 @@ public @interface GlobalConfig {
 	@AttributeDefinition(name = "HR Benefits Filenet URL", description = "HR Benefits Filenet URL", type = AttributeType.STRING, defaultValue = "http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addHRIntExtFeeWaiverBenefitsDocuments")
 	String hr_Benefits_Filenet_URL();
 	
-//	@AttributeDefinition(name = "Grade Change Filenet URL", description = "Grade ChangeFilenet URL", type = AttributeType.STRING, defaultValue = "http://erpicn521tst.fullerton.edu:9080/CSUFAEMServices/rest/AEMService/addGradeChangeDocuments")
-//	String grade_Change_Filenet_URL();
-	
 	@AttributeDefinition(name = "dbAemProd", description = "AEM Dev Prod", type = AttributeType.STRING, defaultValue = "AEMDBPRD")
 	String db_Aem_Prod_DB();
+	
+	@AttributeDefinition(name = "AEM Datasource", description = "AEM Datasource", type = AttributeType.STRING, defaultValue = "AEMDBDEV")
+	String datasource_AEM();
 }
