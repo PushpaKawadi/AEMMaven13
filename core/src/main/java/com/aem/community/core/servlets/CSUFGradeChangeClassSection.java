@@ -35,10 +35,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getGCClassLookUp" })
-public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getGCClassSection" })
+public class CSUFGradeChangeClassSection extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFGradeChangeClassServlet.class);
+			.getLogger(CSUFGradeChangeClassSection.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -48,24 +48,24 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String courseName = "";
-		String instUserId ="";
-		String termDesc ="";
-
+		String classNBR = "";
+		String instCwid = "";
+		String termDesc = "";
+		
 		JSONArray gradChangeDetails = null;
-		if (req.getParameter("courseName") != null
-				&& !req.getParameter("courseName").trim().equals("")) {
-			//classNo = req.getParameter("classNbr");
-			courseName = req.getParameter("courseName");
-			instUserId = req.getParameter("instUserID");
+		if (req.getParameter("instCwid") != null && !req.getParameter("instCwid").trim().equals("") && req.getParameter("termDesc") != null 
+				&& req.getParameter("classNumber") != null) {
+			instCwid = req.getParameter("instCwid");
 			termDesc = req.getParameter("termDesc");
+			classNBR = req.getParameter("classNumber");
+
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeClsDetails(courseName,instUserId,termDesc, conn);
+				gradChangeDetails = getGradeChangeClassNumber(instCwid, termDesc, classNBR, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -94,10 +94,9 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeClsDetails(String courseName,String instUserId,String termDesc,
-			Connection conn) throws Exception {
+	public static JSONArray getGradeChangeClassNumber(String instCwid, String termDesc, String classNBR, Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails=" + courseName);
+		logger.info("Inside getGradeChangeDetails & Class NBR value is=" + classNBR);
 
 		ResultSet oRresultSet = null;
 		JSONObject instInfo = new JSONObject();
@@ -105,35 +104,27 @@ public class CSUFGradeChangeClassServlet extends SlingSafeMethodsServlet {
 		String studentCourseInfoSQL = "";
 		Statement oStatement = null;
 		try {
-//			studentCourseInfoSQL = ConfigManager
-//					.getValue("gradeChangeClassDetails");
-			studentCourseInfoSQL = CSUFConstants.gradeChangeClassDetails;
 
-//			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-//					"<<class_nbr>>", classNo);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<CRSE_NAME>>", courseName);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<instr_userid>>", instUserId);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM_DESCR>>",
-					termDesc);
+			studentCourseInfoSQL = CSUFConstants.gradeChangeClassSection;
 			
-			//String lookupFields = ConfigManager.getValue("gradeChangeFields");
-			String lookupFields = CSUFConstants.gradeChangeFields;
-			String[] fields = lookupFields.split(",");
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+					"<<INSTR_CWID>>", instCwid);
+			
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+					"<<TERM_DESCR>>", termDesc);
+
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
+					"<<CLASS_NBR>>", classNBR);
+
 			
 			logger.info("Grade change sql=" + studentCourseInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();
-//				instInfo.put("courseName", oRresultSet.getString("CRSE_NAME"));
-//				instInfo.put("classSection",
-//						oRresultSet.getString("CLASS_SECTION"));
-				for (int i = 0; i < fields.length; i++) {
-					instInfo
-							.put(fields[i], oRresultSet.getString(fields[i]));
-				}
+				instInfo = new JSONObject();		
+				
+				instInfo.put("classSection", oRresultSet.getString("CLASS_SECTION"));
+				instInfo.put("className", oRresultSet.getString("CRSE_NAME"));
 				
 				jArray.put(instInfo);
 			}
