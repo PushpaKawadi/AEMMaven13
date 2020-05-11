@@ -21,7 +21,8 @@ public class CSUFConstants {
 	// End of MPP Emp Lookup
 
 	// Start of Get Manager/Admin details lookup
-	//public static final String managerAdminDetailsSQL = "SELECT DISTINCT (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) AS MANAGERUSERID, (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINUSERID, (SELECT (FNAME || ' ' || LNAME) FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN ful_emp_cwid_nt_name E ON E.CWID = A.EMPLID WHERE B.EMPLID = '<<EMP_ID>>'";
+	// public static final String managerAdminDetailsSQL =
+	// "SELECT DISTINCT (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) AS MANAGERUSERID, (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINUSERID, (SELECT (FNAME || ' ' || LNAME) FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN ful_emp_cwid_nt_name E ON E.CWID = A.EMPLID WHERE B.EMPLID = '<<EMP_ID>>'";
 	public static final String managerAdminDetailsSQL = "SELECT DISTINCT (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) AS MANAGERUSERID, (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINUSERID, (SELECT (FNAME || ' ' || LNAME) FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>'))))) AS ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN ful_emp_cwid_nt_name E ON E.CWID = A.EMPLID WHERE B.EMPLID = '<<EMP_ID>>'";
 	public static final String managerAdminDetailsLookUpFields = "MANAGERUSERID,ADMINUSERID,ADMINFULLNAME";
 	// End of MPP Get Manager/Admin details lookup
@@ -124,17 +125,22 @@ public class CSUFConstants {
 	// Start of Start of Get Pre Perf Eval Data
 	public static final String PrePerfReviewSQL = "select * from aem_pre_perf_eval eval1 where emplid = ('<<empid>>') and review_from_dt=('<<review_period_from>>') and review_to_dt=('<<review_period_to>>') and deptid=('<<deptid>>') and UPDATED_DT = (SELECT MAX(UPDATED_DT) FROM aem_pre_perf_eval eval2 WHERE eval1.emplid = eval2.emplid AND eval1.review_from_dt=eval2.review_from_dt AND eval1.review_to_dt=eval2.review_to_dt and eval1.deptid=eval2.deptid)";
 	// End of Start of Get Pre Perf Eval Data
-	
+
 	// Start of User-id lookup
 	public static final String lookupFieldsUserIdLookup = "FIRST_NAME,LAST_NAME,DEPTID,DEPTNAME,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,UNION_CD,EMPLID";
 	public static final String userIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE , B.UNION_CD, D.SUPERVISOR_NAME AS SupervisorName, A.EMPLID, D.WORKING_TITLE AS SupervisorTitle FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_EMP_CWID_NT_NAME C ON C.CWID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO WHERE C.USERID = '<<getUser_ID>>'";
 	// End of User-id lookup
-    
-	//Start of MPP Get HR COO Details
+
+	// Start of MPP Get HR COO Details
 	public static final String mppHRCooSQL = "select * from AEM_EVAL_HR_COORDINATORS where division=('<<division>>')";
-	//End of MPP Get HR COO Details
-	
-	//Public 
+	// End of MPP Get HR COO Details
+
+	// Public
 	public static final String personnelActionPlan = "Select A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.CSU_SCO_AGENCY, B.CSU_UNIT, B.JOBCODE, B.EMPL_RCD+1, B.DEPTNAME, B.DEPTID,  B.EMPL_RCD, B.POSITION_NBR, B.DESCR, B.UNION_CD, B.FUL_DIVISION_NAME,  B.FUL_COLLEGE_NAME,  B.STD_HOURS, (CASE B.UNION_CD when 'M80' then B.DESCR1 else '' end) as DESCR1, B.CSU_ANNI_MONTH, B.CSU_ANNI_YEAR,(case B.FLSA_STATUS when 'X' then '1' else '0' end) as FLSAExmp, (case B.FLSA_STATUS when 'N' then '1' else '0' end) as FLSANon, B.GRADE, B.MONTHLY_RT, C.SUPERVISOR_NAME, (SELECT(b1.CSU_MPP_JOB_FAMILY  ||  b1.CSU_MPP_JOB_FUNC || b1.CSU_MPP_RPT_CAT) FROM ful_ecm_job_vw a1, ful_ecm_post_data_vw b1 WHERE a1.position_nbr = b1.position_nbr and a1.emplid = a.emplid) As MppJobcode,b.Expected_End_Date, b.fte from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_ECM_REPORTS_VW C where A.EMPLID = '<<Empl_ID>>' and A.EMPLID = B.EMPLID  and B.REPORTS_TO = C.POSITION_NBR";
-	public static final String personnelActionPlanFields  = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,CSU_SCO_AGENCY,CSU_UNIT,JOBCODE,B.EMPL_RCD+1,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,FUL_DIVISION_NAME,FUL_COLLEGE_NAME,STD_HOURS,DESCR1,CSU_ANNI_MONTH,CSU_ANNI_YEAR,FLSAEXMP,FLSANON,GRADE,MONTHLY_RT,SUPERVISOR_NAME,MPPJOBCODE,EXPECTED_END_DATE,FTE";
+	public static final String personnelActionPlanFields = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,CSU_SCO_AGENCY,CSU_UNIT,JOBCODE,B.EMPL_RCD+1,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,FUL_DIVISION_NAME,FUL_COLLEGE_NAME,STD_HOURS,DESCR1,CSU_ANNI_MONTH,CSU_ANNI_YEAR,FLSAEXMP,FLSANON,GRADE,MONTHLY_RT,SUPERVISOR_NAME,MPPJOBCODE,EXPECTED_END_DATE,FTE";
+
+	// Start of Personal File Access Request Form
+	public static final String personalFileAccessRequestUserLookUp = "select a.first_name, a.last_name, substr(a.middle_name,1,1) as Middle_Initial, a.emplid, a.work_phone, b.deptid, b.deptname from ful_ecm_pers_vw a, ful_ecm_job_vw b, ful_emp_cwid_nt_name c where a.emplid = b.emplid  and a.emplid = c.cwid and c.userid = '<<getUser_ID>>'";
+	public static final String personalFileAccessRequestUserLookUpFields = "first_name,last_name,Middle_Initial,emplid,work_phone,deptid,deptname";
+	// Start of Personal File Access Request Form
 }
