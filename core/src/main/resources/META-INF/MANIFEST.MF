@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1588700428954
+Bnd-LastModified: 1589039209586
 Build-Jdk: 1.8.0_221
 Built-By: 105683
 Bundle-Description: Core bundle for AEMMaven13
@@ -117,7 +117,7 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  SUFEmployeeLookUpServlet.xml,OSGI-INF/com.aem.community.core.servlets.C
  SUFGetManagerAdminDetails.xml,OSGI-INF/com.aem.community.core.servlets.
  CSUFGradeChangeCWIDServlet.xml,OSGI-INF/com.aem.community.core.servlets
- .CSUFGradeChangeClassServlet.xml,OSGI-INF/com.aem.community.core.servle
+ .CSUFGradeChangeClassSection.xml,OSGI-INF/com.aem.community.core.servle
  ts.CSUFGradeChangeClassServletNew.xml,OSGI-INF/com.aem.community.core.s
  ervlets.CSUFGradeChangeGradingServlet.xml,OSGI-INF/com.aem.community.co
  re.servlets.CSUFGradeChangeLoggedInUser.xml,OSGI-INF/com.aem.community.
