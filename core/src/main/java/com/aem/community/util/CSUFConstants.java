@@ -114,7 +114,7 @@ public class CSUFConstants {
 	public static final String gradeChangeCwidDetails = "Select distinct INSTR_USERID, INSTR_NAME from AR_GRADE_FORM where INSTR_CWID= '<<INSTR_CWID>>' and TERM_DESCR='<<TERM_DESCR>>'";
 	public static final String gradeChangeLoggedIn = "SELECT DISTINCT INSTR_CWID, INSTR_NAME FROM AR_GRADE_FORM where LOWER(instr_userid) = LOWER('<<instr_userid>>') and TERM_DESCR='<<TERM_DESCR>>'";
 	public static final String gradeChangeTerm = "SELECT DISTINCT CRSE_NAME, CLASS_NBR, INSTR_CWID,INSTR_USERID,CLASS_SECTION, COURSE_LEVEL, INSTR_NAME, DEPT_CD FROM AR_GRADE_FORM where INSTR_CWID='<<INSTR_CWID>>' AND TERM_DESCR='<<TERM_DESCR>>'";
-	public static final String gradeChangeClassSection = "SELECT DISTINCT CLASS_SECTION FROM AR_GRADE_FORM where TERM_DESCR='<<TERM_DESCR>>' and INSTR_CWID='<<INSTR_CWID>>' and CRSE_NAME='<<CRSE_NAME>>' and CLASS_NBR='<<CLASS_NBR>>'";
+	public static final String gradeChangeClassSection = "SELECT DISTINCT CLASS_SECTION, CRSE_NAME FROM AR_GRADE_FORM where INSTR_CWID='<<INSTR_CWID>>' AND TERM_DESCR='<<TERM_DESCR>>' AND CLASS_NBR='<<CLASS_NBR>>'";
 	// End of Grade Change
 
 	// Start of Employee Fee Waiver User Lookup

@@ -156,7 +156,7 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						log.info("encodedPDF===="+encodedPDF);
+						
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -190,12 +190,11 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 				+ "\"FinalCobraFinalNoticeDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
 		
-		log.error("First_Name="+firstName);
-		log.error("Empl_ID="+empId);
-		log.error("Department="+deptName);
-		log.error("Json String:" + jsonString.toString());
-
-		log.error("personnelFileAccessRequest encodedPDF===="+encodedPDF);
+//		log.error("First_Name="+firstName);
+//		log.error("Empl_ID="+empId);
+//		log.error("Department="+deptName);
+//		log.error("Json String:" + jsonString.toString());
+		
 		if (encodedPDF != null && lastName != null && firstName != null) {
 			log.info("Read personnelFileAccessRequest");
 			URL url = null;

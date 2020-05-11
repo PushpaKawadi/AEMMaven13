@@ -87,15 +87,15 @@ public class PersonalFileAccessRequestUserLookUp extends SlingSafeMethodsServlet
 		JSONArray jArray = new JSONArray();
 		
 		String userIDSQL = CSUFConstants.personalFileAccessRequestUserLookUp;
-		log.info("User Lookup SQL=="+userIDSQL);
+		//log.info("User Lookup SQL=="+userIDSQL);
 		
 		String lookupFields = CSUFConstants.personalFileAccessRequestUserLookUpFields;
-		log.info("Personal File Access Request Lookup Fields=="+lookupFields);
+		//log.info("Personal File Access Request Lookup Fields=="+lookupFields);
 		
 		String[] fields = lookupFields.split(",");
 		
 		userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
-		log.info("SQL Comman is= "+userIDSQL);
+		//log.info("SQL Comman is= "+userIDSQL);
 		
 		Statement oStatement = null;
 		try {
@@ -105,7 +105,7 @@ public class PersonalFileAccessRequestUserLookUp extends SlingSafeMethodsServlet
 				fileAccessRequestDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					fileAccessRequestDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					log.info("employeeWaiverDetails ="+fileAccessRequestDetails);
+					//log.info("employeeWaiverDetails ="+fileAccessRequestDetails);
 				}
 				jArray.put(fileAccessRequestDetails);
 			}

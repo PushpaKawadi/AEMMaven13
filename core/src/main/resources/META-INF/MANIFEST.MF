@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Bnd-LastModified: 1588608142881
+Bnd-LastModified: 1589210153234
 Build-Jdk: 1.8.0_221
 Built-By: 105683
 Bundle-Description: Core bundle for AEMMaven13
@@ -117,7 +117,7 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  SUFEmployeeLookUpServlet.xml,OSGI-INF/com.aem.community.core.servlets.C
  SUFGetManagerAdminDetails.xml,OSGI-INF/com.aem.community.core.servlets.
  CSUFGradeChangeCWIDServlet.xml,OSGI-INF/com.aem.community.core.servlets
- .CSUFGradeChangeClassServlet.xml,OSGI-INF/com.aem.community.core.servle
+ .CSUFGradeChangeClassSection.xml,OSGI-INF/com.aem.community.core.servle
  ts.CSUFGradeChangeClassServletNew.xml,OSGI-INF/com.aem.community.core.s
  ervlets.CSUFGradeChangeGradingServlet.xml,OSGI-INF/com.aem.community.co
  re.servlets.CSUFGradeChangeLoggedInUser.xml,OSGI-INF/com.aem.community.
@@ -131,6 +131,7 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  nity.core.servlets.CSUFMPPPerfEvalEmpLookup.xml,OSGI-INF/com.aem.commun
  ity.core.servlets.CSUFMPPSelfEvalDBServlet.xml,OSGI-INF/com.aem.communi
  ty.core.servlets.CSUFMPPSelfEvaluationServlet.xml,OSGI-INF/com.aem.comm
+ unity.core.servlets.CSUFPersonnelActiveNotice.xml,OSGI-INF/com.aem.comm
  unity.core.servlets.CSUFPrePerfDBServlet.xml,OSGI-INF/com.aem.community
  .core.servlets.CSUFReviewerServlet.xml,OSGI-INF/com.aem.community.core.
  servlets.CSUFReviewerUserId.xml,OSGI-INF/com.aem.community.core.servlet
@@ -166,68 +167,71 @@ Service-Component: OSGI-INF/com.aem.community.core.CSUFSPE2579Filenet.xm
  ervlets.NewPositionManagerEmpLookUpServlet.xml,OSGI-INF/com.aem.communi
  ty.core.servlets.NewPositionManagerUserLookUpServlet.xml,OSGI-INF/com.a
  em.community.core.servlets.PayPlanUserLookupServlet.xml,OSGI-INF/com.ae
- m.community.core.servlets.SCPRStaffOrMPPEmpServlet.xml,OSGI-INF/com.aem
- .community.core.servlets.SCPRStaffOrMPPUserServlet.xml,OSGI-INF/com.aem
- .community.core.servlets.STDSSNServlet.xml,OSGI-INF/com.aem.community.c
- ore.servlets.SimpleServlet.xml,OSGI-INF/com.aem.community.core.servlets
- .StaffServletSample.xml,OSGI-INF/com.aem.community.core.servlets.Studen
- tPerfEmpLookup.xml,OSGI-INF/com.aem.community.core.servlets.TestEmailSe
- rvlet1.xml,OSGI-INF/com.aem.community.core.servlets.TestEmailServlet2.x
- ml,OSGI-INF/com.aem.community.core.servlets.TestEmailWithEmbeddedImageS
- ervlet.xml,OSGI-INF/com.aem.community.core.servlets.UserManager.xml,OSG
- I-INF/com.aem.community.util.DBDetails.xml,OSGI-INF/com.aem.csuf.databa
- se.CSUFCataLeaveDonationDB.xml,OSGI-INF/com.aem.csuf.database.CSUFCataL
- eaveRequestDB.xml,OSGI-INF/com.aem.csuf.database.CSUFCertificateOfEligi
- bilityDB.xml,OSGI-INF/com.aem.csuf.database.CSUFPrePerfEvalDB.xml,OSGI-
- INF/com.aem.csuf.database.CSUFSPE2579DB.xml,OSGI-INF/com.aem.csuf.datab
- ase.CSUFSPEConfidentialDB.xml,OSGI-INF/com.aem.csuf.database.CSUFSPEUni
- t1DB.xml,OSGI-INF/com.aem.csuf.database.CSUFSPEUnit4DB.xml,OSGI-INF/com
- .aem.csuf.database.CSUFSPEUnit6DB.xml,OSGI-INF/com.aem.csuf.database.CS
- UFSPEUnit8DB.xml,OSGI-INF/com.aem.csuf.database.CSUFShortAppEmpFeeWaive
- rDB.xml,OSGI-INF/com.aem.csuf.database.CSUFStudentPerfEvalDB.xml,OSGI-I
- NF/com.aem.csuf.database.CSUFVisionLifeLtdEnrollmentDB.xml,OSGI-INF/com
- .aem.csuf.database.CSUSPEUnitCustodialDistDB.xml,OSGI-INF/com.aem.csuf.
- database.CareerDevelopmentPlanDB.xml,OSGI-INF/com.aem.csuf.database.Cla
- ssificationDecisionApealDB.xml,OSGI-INF/com.aem.csuf.database.CobraFina
- lNoticeDB.xml,OSGI-INF/com.aem.csuf.database.DentalPlanEnrollmentDB.xml
- ,OSGI-INF/com.aem.csuf.database.DependentFeeWaiverDB.xml,OSGI-INF/com.a
- em.csuf.database.DockNoticeDB.xml,OSGI-INF/com.aem.csuf.database.Employ
- eeFeeWaiverDB.xml,OSGI-INF/com.aem.csuf.database.Fullerton650MasterDB.x
- ml,OSGI-INF/com.aem.csuf.database.GradeChangeDB.xml,OSGI-INF/com.aem.cs
- uf.database.InitialCobraDB.xml,OSGI-INF/com.aem.csuf.database.MppAdminD
- istributedDB.xml,OSGI-INF/com.aem.csuf.database.MppAdminPerfEvalDB.xml,
- OSGI-INF/com.aem.csuf.database.MppPerfEvalDB.xml,OSGI-INF/com.aem.csuf.
- database.MppSelfEvalDB.xml,OSGI-INF/com.aem.csuf.database.NewPositionMa
- nagerDB.xml,OSGI-INF/com.aem.csuf.database.SCPRFacultyDB.xml,OSGI-INF/c
- om.aem.csuf.database.SCPRStaffOrMPPDB.xml,OSGI-INF/com.aem.csuf.databas
- e.SaveCourseWithdrawal.xml,OSGI-INF/com.aem.csuf.database.SaveFormWFHis
- tory.xml,OSGI-INF/com.aem.csuf.database.SaveInstanceHistory.xml,OSGI-IN
- F/com.aem.csuf.database.SaveMedicalWFHistory.xml,OSGI-INF/com.aem.csuf.
- database.SaveWFHistory.xml,OSGI-INF/com.aem.csuf.database.SaveWorkflowH
- istory.xml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveDonationFilenet.x
- ml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveRequestFilenet.xml,OSGI-I
- NF/com.aem.csuf.filenet.CSUFCataRequestSupDocFilenet.xml,OSGI-INF/com.a
- em.csuf.filenet.CSUFCertificateOfEligibilityFilenet.xml,OSGI-INF/com.ae
- m.csuf.filenet.CSUFEmployeeFeeWaiver.xml,OSGI-INF/com.aem.csuf.filenet.
- CSUFPrePerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPE2579Fil
- enet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPECONFIDFilenet.xml,OSGI-IN
- F/com.aem.csuf.filenet.CSUFSPECUSTODIANFilenet.xml,OSGI-INF/com.aem.csu
- f.filenet.CSUFSPEUNIT4Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPE
- UNIT8Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPEUnit1Filenet.xml,
- OSGI-INF/com.aem.csuf.filenet.CSUFSPEUnit6Filenet.xml,OSGI-INF/com.aem.
- csuf.filenet.CSUFSTUDPERFEVALFilenet.xml,OSGI-INF/com.aem.csuf.filenet.
- CSUFVisionLifeLtdFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CareerDevelo
- pmentPlanFileNet.xml,OSGI-INF/com.aem.csuf.filenet.CareerDevelopmentPla
- nSupDocFileNet.xml,OSGI-INF/com.aem.csuf.filenet.CobraFinalNoticeFilene
- t.xml,OSGI-INF/com.aem.csuf.filenet.DentalPlanEnrollmentFilenet.xml,OSG
- I-INF/com.aem.csuf.filenet.DependentFeeWaiverFileNet.xml,OSGI-INF/com.a
- em.csuf.filenet.GradeChangeFileNet.xml,OSGI-INF/com.aem.csuf.filenet.In
- itialCobraFileNet.xml,OSGI-INF/com.aem.csuf.filenet.MppAdminDistributed
- Filenet.xml,OSGI-INF/com.aem.csuf.filenet.MppAdminEvalFilenet.xml,OSGI-
- INF/com.aem.csuf.filenet.MppEmpSelfEvalFilenet.xml,OSGI-INF/com.aem.csu
- f.filenet.MppPerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.NewPosit
- ionManagerFilenet.xml,OSGI-INF/com.aem.csuf.filenet.PayPlan10_12_11_12F
- ilenet.xml,OSGI-INF/com.aem.csuf.filenet.ReadMPPEmpSelfEvalSupDoc.xml,O
+ m.community.core.servlets.PersonalFileAccessRequestUserLookUp.xml,OSGI-
+ INF/com.aem.community.core.servlets.SCPRStaffOrMPPEmpServlet.xml,OSGI-I
+ NF/com.aem.community.core.servlets.SCPRStaffOrMPPUserServlet.xml,OSGI-I
+ NF/com.aem.community.core.servlets.STDSSNServlet.xml,OSGI-INF/com.aem.c
+ ommunity.core.servlets.SimpleServlet.xml,OSGI-INF/com.aem.community.cor
+ e.servlets.StaffServletSample.xml,OSGI-INF/com.aem.community.core.servl
+ ets.StudentPerfEmpLookup.xml,OSGI-INF/com.aem.community.core.servlets.T
+ estEmailServlet1.xml,OSGI-INF/com.aem.community.core.servlets.TestEmail
+ Servlet2.xml,OSGI-INF/com.aem.community.core.servlets.TestEmailWithEmbe
+ ddedImageServlet.xml,OSGI-INF/com.aem.community.core.servlets.UserManag
+ er.xml,OSGI-INF/com.aem.community.util.DBDetails.xml,OSGI-INF/com.aem.c
+ suf.database.CSUFCataLeaveDonationDB.xml,OSGI-INF/com.aem.csuf.database
+ .CSUFCataLeaveRequestDB.xml,OSGI-INF/com.aem.csuf.database.CSUFCertific
+ ateOfEligibilityDB.xml,OSGI-INF/com.aem.csuf.database.CSUFPrePerfEvalDB
+ .xml,OSGI-INF/com.aem.csuf.database.CSUFSPE2579DB.xml,OSGI-INF/com.aem.
+ csuf.database.CSUFSPEConfidentialDB.xml,OSGI-INF/com.aem.csuf.database.
+ CSUFSPEUnit1DB.xml,OSGI-INF/com.aem.csuf.database.CSUFSPEUnit4DB.xml,OS
+ GI-INF/com.aem.csuf.database.CSUFSPEUnit6DB.xml,OSGI-INF/com.aem.csuf.d
+ atabase.CSUFSPEUnit8DB.xml,OSGI-INF/com.aem.csuf.database.CSUFShortAppE
+ mpFeeWaiverDB.xml,OSGI-INF/com.aem.csuf.database.CSUFStudentPerfEvalDB.
+ xml,OSGI-INF/com.aem.csuf.database.CSUFVisionLifeLtdEnrollmentDB.xml,OS
+ GI-INF/com.aem.csuf.database.CSUSPEUnitCustodialDistDB.xml,OSGI-INF/com
+ .aem.csuf.database.CareerDevelopmentPlanDB.xml,OSGI-INF/com.aem.csuf.da
+ tabase.ClassificationDecisionApealDB.xml,OSGI-INF/com.aem.csuf.database
+ .CobraFinalNoticeDB.xml,OSGI-INF/com.aem.csuf.database.DentalPlanEnroll
+ mentDB.xml,OSGI-INF/com.aem.csuf.database.DependentFeeWaiverDB.xml,OSGI
+ -INF/com.aem.csuf.database.DockNoticeDB.xml,OSGI-INF/com.aem.csuf.datab
+ ase.EmployeeFeeWaiverDB.xml,OSGI-INF/com.aem.csuf.database.Fullerton650
+ MasterDB.xml,OSGI-INF/com.aem.csuf.database.GradeChangeDB.xml,OSGI-INF/
+ com.aem.csuf.database.InitialCobraDB.xml,OSGI-INF/com.aem.csuf.database
+ .MppAdminDistributedDB.xml,OSGI-INF/com.aem.csuf.database.MppAdminPerfE
+ valDB.xml,OSGI-INF/com.aem.csuf.database.MppPerfEvalDB.xml,OSGI-INF/com
+ .aem.csuf.database.MppSelfEvalDB.xml,OSGI-INF/com.aem.csuf.database.New
+ PositionManagerDB.xml,OSGI-INF/com.aem.csuf.database.PersonnelFileAcces
+ sRequestDB.xml,OSGI-INF/com.aem.csuf.database.SCPRFacultyDB.xml,OSGI-IN
+ F/com.aem.csuf.database.SCPRStaffOrMPPDB.xml,OSGI-INF/com.aem.csuf.data
+ base.SaveCourseWithdrawal.xml,OSGI-INF/com.aem.csuf.database.SaveFormWF
+ History.xml,OSGI-INF/com.aem.csuf.database.SaveInstanceHistory.xml,OSGI
+ -INF/com.aem.csuf.database.SaveMedicalWFHistory.xml,OSGI-INF/com.aem.cs
+ uf.database.SaveWFHistory.xml,OSGI-INF/com.aem.csuf.database.SaveWorkfl
+ owHistory.xml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveDonationFilene
+ t.xml,OSGI-INF/com.aem.csuf.filenet.CSUFCataLeaveRequestFilenet.xml,OSG
+ I-INF/com.aem.csuf.filenet.CSUFCataRequestSupDocFilenet.xml,OSGI-INF/co
+ m.aem.csuf.filenet.CSUFCertificateOfEligibilityFilenet.xml,OSGI-INF/com
+ .aem.csuf.filenet.CSUFEmployeeFeeWaiver.xml,OSGI-INF/com.aem.csuf.filen
+ et.CSUFPrePerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPE2579
+ Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPECONFIDFilenet.xml,OSGI
+ -INF/com.aem.csuf.filenet.CSUFSPECUSTODIANFilenet.xml,OSGI-INF/com.aem.
+ csuf.filenet.CSUFSPEUNIT4Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUF
+ SPEUNIT8Filenet.xml,OSGI-INF/com.aem.csuf.filenet.CSUFSPEUnit1Filenet.x
+ ml,OSGI-INF/com.aem.csuf.filenet.CSUFSPEUnit6Filenet.xml,OSGI-INF/com.a
+ em.csuf.filenet.CSUFSTUDPERFEVALFilenet.xml,OSGI-INF/com.aem.csuf.filen
+ et.CSUFVisionLifeLtdFilenet.xml,OSGI-INF/com.aem.csuf.filenet.CareerDev
+ elopmentPlanFileNet.xml,OSGI-INF/com.aem.csuf.filenet.CareerDevelopment
+ PlanSupDocFileNet.xml,OSGI-INF/com.aem.csuf.filenet.CobraFinalNoticeFil
+ enet.xml,OSGI-INF/com.aem.csuf.filenet.DentalPlanEnrollmentFilenet.xml,
+ OSGI-INF/com.aem.csuf.filenet.DependentFeeWaiverFileNet.xml,OSGI-INF/co
+ m.aem.csuf.filenet.GradeChangeFileNet.xml,OSGI-INF/com.aem.csuf.filenet
+ .InitialCobraFileNet.xml,OSGI-INF/com.aem.csuf.filenet.MppAdminDistribu
+ tedFilenet.xml,OSGI-INF/com.aem.csuf.filenet.MppAdminEvalFilenet.xml,OS
+ GI-INF/com.aem.csuf.filenet.MppEmpSelfEvalFilenet.xml,OSGI-INF/com.aem.
+ csuf.filenet.MppPerfEvalFilenet.xml,OSGI-INF/com.aem.csuf.filenet.NewPo
+ sitionManagerFilenet.xml,OSGI-INF/com.aem.csuf.filenet.PayPlan10_12_11_
+ 12Filenet.xml,OSGI-INF/com.aem.csuf.filenet.PersonnelFileAccessRequestF
+ ileNet.xml,OSGI-INF/com.aem.csuf.filenet.ReadMPPEmpSelfEvalSupDoc.xml,O
  SGI-INF/com.aem.csuf.filenet.ReadMPPSupportDoc.xml,OSGI-INF/com.aem.csu
  f.filenet.ReadPrePerfEvalSupDocs.xml,OSGI-INF/com.aem.csuf.filenet.Read
  SPE2579SupDocs.xml,OSGI-INF/com.aem.csuf.filenet.ReadSPEConfidentialSup
