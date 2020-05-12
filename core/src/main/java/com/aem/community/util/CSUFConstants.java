@@ -146,4 +146,9 @@ public class CSUFConstants {
 	public static final String personalFileAccessRequestUserLookUp = "select a.first_name, a.last_name, substr(a.middle_name,1,1) as Middle_Initial, a.emplid, a.work_phone, b.deptid, b.deptname from ful_ecm_pers_vw a, ful_ecm_job_vw b, ful_emp_cwid_nt_name c where a.emplid = b.emplid  and a.emplid = c.cwid and c.userid = '<<getUser_ID>>'";
 	public static final String personalFileAccessRequestUserLookUpFields = "first_name,last_name,Middle_Initial,emplid,work_phone,deptid,deptname";
 	// Start of Personal File Access Request Form
+	
+	//Start of Cobra Enroll Delta
+	public static final String CobraEnrollDeltaSSNLookUp = "Select A.FIRST_NAME, A.LAST_NAME, A.BIRTHDATE, A.ADDRESS1, A.CITY, A.STATE, A.POSTAL, A.HOME_PHONE, B.DEPTNAME, B.JOBCODE From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>', '-', '') and A.EMPLID = B.EMPLID";
+	public static final String CobraEnrollDeltaSSNLookUpFields = "FIRST_NAME,LAST_NAME,BIRTHDATE,ADDRESS1,CITY,STATE,POSTAL,HOME_PHONE,DEPTNAME,JOBCODE";
+	//End of Cobra Enroll Delta
 }

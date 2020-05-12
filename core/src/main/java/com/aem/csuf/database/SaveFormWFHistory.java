@@ -221,7 +221,7 @@ public class SaveFormWFHistory implements WorkflowProcess {
 							}
 							
 							if (stage.equals("ToRecords")) {
-								assignee = "ARSC-Reviewers";
+								assignee = "Records-Office-Review";
 								stepName = "Records Review";
 								comments = eElement.getElementsByTagName("RecordersComments").item(0).getTextContent();
 							}

@@ -24,6 +24,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -35,10 +36,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Dental Plan Enrollment",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/dentalPlanEnrollmentSSNLookUp" })
-public class DentalPlanEnrollmentSSNLookUp extends SlingSafeMethodsServlet {
-    private final static Logger logger = LoggerFactory.getLogger(DentalPlanEnrollmentSSNLookUp.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Cobra Enroll Delta",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/cobraEnrollDeltaSSNLookUpServlet" })
+public class CobraEnrollDeltaSSNLookUp extends SlingSafeMethodsServlet {
+    private final static Logger logger = LoggerFactory.getLogger(CobraEnrollDeltaSSNLookUp.class);
 	private static final long serialVersionUID = 1L;
 	
 	@Reference
@@ -48,16 +49,16 @@ public class DentalPlanEnrollmentSSNLookUp extends SlingSafeMethodsServlet {
 			throws ServletException, IOException {
 		Connection conn = null;
 		String ssn = "";
-		JSONArray newDentalPlanEnrollmentDetails = null;
-		if (req.getParameter("SSN") != null && req.getParameter("SSN") != "") {
-			ssn = req.getParameter("SSN");
+		JSONArray newCobraEnrollDeltaDetails = null;
+		if (req.getParameter("ssn") != null && req.getParameter("ssn") != "") {
+			ssn = req.getParameter("ssn");
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				newDentalPlanEnrollmentDetails = getDentalPlanEnrollmentDetails(ssn, conn, "detalPlanEnrollment");
+				newCobraEnrollDeltaDetails = getCobraEnrollDeltaDetails(ssn, conn, "cobraEnrollDelta");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -65,21 +66,21 @@ public class DentalPlanEnrollmentSSNLookUp extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(newDentalPlanEnrollmentDetails.toString());
+			response.getWriter().write(newCobraEnrollDeltaDetails.toString());
 		}
 	}
 
-	public static JSONArray getDentalPlanEnrollmentDetails(String ssn, Connection oConnection, String docType)
+	public static JSONArray getCobraEnrollDeltaDetails(String ssn, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
-		JSONObject newDeltaEnrollmentDetails;
+		JSONObject newCobraEnrollDetails;
 		JSONArray jArray = new JSONArray();
 
-        String userIDSQL = ConfigManager.getValue("DentalPlanEnrollmentSSNLookUp");
+        String userIDSQL = CSUFConstants.CobraEnrollDeltaSSNLookUp;
         logger.info("The userID SQL is=" + userIDSQL);
 
-        String lookupFields = ConfigManager.getValue("DentalPlanEnrollmentFields");
+        String lookupFields = CSUFConstants.CobraEnrollDeltaSSNLookUpFields;
         logger.info("The user LookUp Fields are=" + lookupFields);
 
 		String[] fields = lookupFields.split(",");
@@ -95,12 +96,12 @@ public class DentalPlanEnrollmentSSNLookUp extends SlingSafeMethodsServlet {
 
 			while (oRresultSet.next()) {
 
-				newDeltaEnrollmentDetails = new JSONObject();
+				newCobraEnrollDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					newDeltaEnrollmentDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					newCobraEnrollDetails.put(fields[i], oRresultSet.getString(fields[i]));
 
 				}
-				jArray.put(newDeltaEnrollmentDetails);
+				jArray.put(newCobraEnrollDetails);
 				logger.info("jArray=" + jArray);
 			}
 
