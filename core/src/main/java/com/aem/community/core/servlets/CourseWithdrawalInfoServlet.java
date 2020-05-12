@@ -123,8 +123,10 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 	 * Executes SQL based on the user id and retrieves lookup information. Used in
 	 * Self lookup FEB forms
 	 * 
-	 * @param cwid        - CWID of employee
-	 * @param oConnection - Database connection
+	 * @param cwid
+	 *            - CWID of employee
+	 * @param oConnection
+	 *            - Database connection
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
@@ -140,8 +142,6 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 		Statement oStatement = null;
 		try {
-			// String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID
-			// = '<<CWID>>' and STRM = '2203'";
 			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
 
 			// Get current term details
@@ -165,19 +165,32 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 					studentInfo.put("MAJOR_DESCR", oRresultSet.getString("MAJOR_DESCR"));
 					studentInfo.put("DEGREE_TYPE", oRresultSet.getString("DEGREE_TYPE"));
 
-					
+					// Hardcoding below values for testing purpose.
+					// When SQL integration is complete, please remove hard
+					// coded values
+					// studentInfo.put("STUDENT_EMAIL", "mshaner@fullerton.edu");
+					// studentInfo.put("STUDENT_PHONE", "7457891080");
 					studentInfo.put("STUDENT_EMAIL", oRresultSet.getString("STUDENT_EMAIL"));
-					// studentInfo.put("STUDENT_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
-
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
-					studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM", oRresultSet.getString("STRM"));
 					// studentInfo.put("DESCR TERM_DESCR",oRresultSet.getString("DESCR
 					// TERM_DESCR"));
 					studentInfo.put("DESCR TERM_DESCR", oRresultSet.getString("TERM_DESCR"));
+					studentInfo.put("NURSING_FLAG", oRresultSet.getString("NURSING_FLAG"));
+					// studentInfo.put("EXPECTED_GRD_DATE",
+					// oRresultSet.getString("EXPECTED_GRAD_DATE"));
+
+					try {
+						if (oRresultSet.getString("EIP_FLAG") != null) {
+							studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
+						}
+					} catch (Exception e1) {
+						logger.error("Failed to get EIP flag." + e1.getMessage());
+						e1.getStackTrace();
+					}
 
 					isStudentInfoSet = true;
 
@@ -195,20 +208,27 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 				courseInfo.put("INSTR_USERID", oRresultSet.getString("INSTR_USERID"));
 				courseInfo.put("INSTR_EMAIL", oRresultSet.getString("INSTR_EMAIL"));
 				courseInfo.put("CLASS_SECTION", oRresultSet.getString("CLASS_SECTION"));
-				// courseInfo.put("INSTR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
-				// courseInfo.put("INSTR_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
 
 				String courseID = oRresultSet.getString("CRSE_ID");
 				String courseName = oRresultSet.getString("CRSE_NAME");
+
 				logger.info("courseID=" + courseID);
-				// String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
-				String[] chairInfo = getChairInfo(oConnection, courseID);
+				logger.info("courseName=" + courseName);
+
+				String[] chairInfo = getChairInfo(oConnection, courseID, courseName);
+				// String[] chairInfo = getChairInfo(oConnection, courseID);
 
 				courseInfo.put("CHAIR_NAME", chairInfo[1]);
 				// courseInfo.put("CHAIR_CWID", "806225686");
 				courseInfo.put("CHAIR_USERID", chairInfo[2]);
 				courseInfo.put("CHAIR_EMAIL", chairInfo[3]);
-				
+
+				// Hard coding below values for testing purpose.
+				// When SQL integration is complete, please remove hard coded
+				// values
+
+				// courseInfo.put("INSTR_USERID", "nvadlakunta");
+				// courseInfo.put("INSTR_EMAIL", "nvadlakunta@fullerton.edu");
 
 				courseInfoArray.put(i, courseInfo);
 				i++;
@@ -260,7 +280,8 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 	/**
 	 * Gets the term details from the database
 	 * 
-	 * @param oConnection - Database connection
+	 * @param oConnection
+	 *            - Database connection
 	 * @return - term details as String array. term[0] = term code ex:2185 term[1] =
 	 *         term description ex: Summer 2018
 	 * @throws Exception
@@ -303,14 +324,15 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 	/**
 	 * Gets the Unique case ID from Database sequence
 	 * 
-	 * @param oConnection - Database connection
+	 * @param oConnection
+	 *            - Database connection
 	 * @return - Case ID as string
 	 * @throws Exception
 	 */
 	public static String getCaseID(Connection oConnection) throws Exception {
 
-//		String sClassName = "DBManager";
-//		String methodName = "getCaseID";
+		// String sClassName = "DBManager";
+		// String methodName = "getCaseID";
 		// LogManager.traceInfoMsg(sClassName, methodName, "Inside getCaseID");
 
 		ResultSet oRresultSet = null;
@@ -350,7 +372,7 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 	}
 
-	private static String[] getChairInfo(Connection oConnection, String courseId) throws Exception {
+	private static String[] getChairInfo(Connection oConnection, String courseId, String courseName) throws Exception {
 
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
@@ -361,13 +383,13 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			// String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWL
 			// where CWID = '<<CWID>>' and STRM = '2185'";
 
-			// String sql = "Select * from AR_Course_Chair_Info where CRSE_ID =
-			// '<<CRSE_ID>>' and CRSE_NAME='<<courseName>>'";
+			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>' and LOWER(TRIM(CRSE_NAME))=LOWER(TRIM('<<courseName>>'))";
 
-			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>'";
+			// String sql = "Select * from AR_Course_Chair_Info where CRSE_ID =
+			// '<<CRSE_ID>>'";
 
 			sql = sql.replaceAll("<<CRSE_ID>>", courseId);
-			// sql = sql.replaceAll("<<courseName>>", courseName);
+			sql = sql.replaceAll("<<courseName>>", courseName);
 
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);

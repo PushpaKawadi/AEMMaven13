@@ -42,7 +42,6 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 //import com.aem.community.util.ConfigManager;
 import com.aem.community.core.services.GlobalConfigService;
 
-
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read MPP Support Doc",
 		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read MPP Support Doc" })
 public class ReadMPPSupportDoc implements WorkflowProcess {
@@ -50,6 +49,7 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 	private static final Logger log = LoggerFactory.getLogger(ReadMPPSupportDoc.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
+
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -71,6 +71,8 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 		String hrCoordId = null;
 		String administratorId = null;
 		String attachmentMimeType = "";
+		String reviewPeriodFrom = null;
+		String reviewPeriodTo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 
 		// if (xmlNode != null) {
@@ -83,7 +85,7 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 			if (filePath.contains("Data.xml")) {
 
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				
+
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
@@ -121,57 +123,56 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
 						log.info("Xpath");
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpID", doc, XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
+								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpFirstName", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpFirstName", doc,
+								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpLastName", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpLastName", doc,
+								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
-											
-						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath
-								.evaluate("//CBID", doc, XPathConstants.NODE);
+
+						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath.evaluate("//CBID", doc,
+								XPathConstants.NODE);
 						cbid = cbidNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//DeptID", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath.evaluate("//DeptID", doc,
+								XPathConstants.NODE);
 						deptId = deptIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//OverallRating", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath.evaluate("//OverallRating", doc,
+								XPathConstants.NODE);
 						overallRating = overallRatingNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EvaluationType", doc, XPathConstants.NODE);
+
+						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath.evaluate("//EvaluationType", doc,
+								XPathConstants.NODE);
 						evaluationType = evaluationTypeNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpUserID", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpUserID", doc,
+								XPathConstants.NODE);
 						empUserId = empUserIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//ManagerUserID", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath.evaluate("//ManagerUserID", doc,
+								XPathConstants.NODE);
 						managerUserId = managerUserIdNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node hrCoordIdNode = (org.w3c.dom.Node) xpath
-						.evaluate("//HrCoordId", doc,
+
+						org.w3c.dom.Node hrCoordIdNode = (org.w3c.dom.Node) xpath.evaluate("//HrCoordId", doc,
 								XPathConstants.NODE);
 						hrCoordId = hrCoordIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node administratorIdNode = (org.w3c.dom.Node) xpath
-						.evaluate("//AdminUserID", doc,
+						org.w3c.dom.Node administratorIdNode = (org.w3c.dom.Node) xpath.evaluate("//AdminUserID", doc,
 								XPathConstants.NODE);
 						administratorId = administratorIdNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodFrom",
+								doc, XPathConstants.NODE);
+						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodTo", doc,
+								XPathConstants.NODE);
+						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -190,21 +191,115 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 				// String attachmentsFilePath = payloadPath + "/" +
 				// attachmentsPath + "/supportDoc1";
 				String AttachmentsFilePath = payloadPath + "/" + attachmentsPath;
-				 
+
 				Resource attachments = resolver.getResource(AttachmentsFilePath);
-				
+
 				if (attachments != null) {
 					Iterator<Resource> attachmentFiles = attachments.listChildren();
-					
+
 					while (attachmentFiles.hasNext()) {
 						Resource attachmentSupDoc = attachmentFiles.next();
-						if(attachmentSupDoc.getResourceType().equalsIgnoreCase("sling:Folder")) {
+						if (attachmentSupDoc.getResourceType().equalsIgnoreCase("sling:Folder")) {
 							Iterator<Resource> innerAttachmentFiles = attachmentSupDoc.listChildren();
 							while (innerAttachmentFiles.hasNext()) {
-							Resource innerAttachmentSupDoc = innerAttachmentFiles.next();
-							//log.info("name of doc inside="+innerAttachmentSupDoc);
-							Path attachmentSource = Paths.get(innerAttachmentSupDoc.getPath());
-							String attachmentDoc = innerAttachmentSupDoc.getPath().concat("/jcr:content");
+								Resource innerAttachmentSupDoc = innerAttachmentFiles.next();
+								// log.info("name of doc inside="+innerAttachmentSupDoc);
+								Path attachmentSource = Paths.get(innerAttachmentSupDoc.getPath());
+								String attachmentDoc = innerAttachmentSupDoc.getPath().concat("/jcr:content");
+								Node attachmentSubNode = resolver.getResource(attachmentDoc).adaptTo(Node.class);
+								try {
+									attachmentMimeType = Files.probeContentType(attachmentSource);
+								} catch (IOException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
+								}
+								try {
+									is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
+									byte[] bytes = IOUtils.toByteArray(is);
+									// log.error("bytes="+bytes);
+									encodedPDF = Base64.getEncoder().encodeToString(bytes);
+									String fromYear = reviewPeriodFrom.substring(0, 4);
+									String fromMonth = reviewPeriodFrom.substring(5, 7);
+									String endYear = reviewPeriodTo.substring(0, 4);
+									String endMonth = reviewPeriodTo.substring(5, 7);
+									String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+											+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+											+ "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + ","
+											+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+											+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+											+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPESD\""
+											+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear
+											+ "\"," + "\"OverallRating\":\"" + overallRating + "\","
+											+ "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":\""
+											+ fromMonth + "\"," + "\"StartYear\":\"" + fromYear + "\","
+											+ "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\""
+											+ managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
+											+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+
+									if (encodedPDF != null && lastName != null && firstName != null) {
+										log.error("Read inner suppoting doc");
+										URL url = null;
+										try {
+											String filenetUrl = globalConfigService.getMppFilenetURL();
+											url = new URL(filenetUrl);
+											// log.info("jsonString=" + jsonString);
+										} catch (MalformedURLException e) {
+											e.printStackTrace();
+										}
+										HttpURLConnection con = null;
+										try {
+											con = (HttpURLConnection) url.openConnection();
+										} catch (IOException e1) {
+											e1.printStackTrace();
+										}
+										try {
+											con.setRequestMethod("POST");
+											con.setRequestProperty("Content-Type", "application/json");
+
+										} catch (ProtocolException e) {
+											e.printStackTrace();
+										}
+										con.setDoOutput(true);
+
+										try (OutputStream os = con.getOutputStream()) {
+											// byte[] input = jsonInputString.getBytes("utf-8");
+											os.write(jsonString.getBytes("utf-8"));
+											os.close();
+											con.getResponseCode();
+											log.error("Res=" + con.getResponseCode());
+										} catch (IOException e1) {
+											// TODO Auto-generated catch block
+											e1.printStackTrace();
+										}
+
+										try {
+											con.getInputStream();
+											log.error("is=" + con.getInputStream());
+										} catch (IOException e) {
+											e.printStackTrace();
+										}
+
+									}
+								} catch (ValueFormatException e) {
+									e.printStackTrace();
+								} catch (PathNotFoundException e) {
+									e.printStackTrace();
+								} catch (RepositoryException e) {
+									e.printStackTrace();
+								} catch (IOException e) {
+									e.printStackTrace();
+								} finally {
+									try {
+										is.close();
+									} catch (IOException e) {
+										e.printStackTrace();
+									}
+
+								}
+							}
+						} else {
+							Path attachmentSource = Paths.get(attachmentSupDoc.getPath());
+							String attachmentDoc = attachmentSupDoc.getPath().concat("/jcr:content");
 							Node attachmentSubNode = resolver.getResource(attachmentDoc).adaptTo(Node.class);
 							try {
 								attachmentMimeType = Files.probeContentType(attachmentSource);
@@ -218,15 +313,27 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 								// log.error("bytes="+bytes);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPESD\"" + ","  + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \""
+										+ lastName + "\"," + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": "
+										+ "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": \""
+										+ attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\","
+										+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\","
+										+ "\"DocType\":" + "\"MPPPESD\"" + "," + "\"EndMonth\":" + "\"05\"" + ","
+										+ "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating
+										+ "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
+										+ "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\""
+										+ empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
+										+ "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\""
+										+ administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
-									log.error("Read inner suppoting doc");
+									log.error("Read outer suppoting doc");
 									URL url = null;
 									try {
 										String filenetUrl = globalConfigService.getMppFilenetURL();
 										url = new URL(filenetUrl);
-										//	log.info("jsonString=" + jsonString);
+
+										// log.info("jsonString=" + jsonString);
 									} catch (MalformedURLException e) {
 										e.printStackTrace();
 									}
@@ -255,7 +362,7 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 										// TODO Auto-generated catch block
 										e1.printStackTrace();
 									}
-									
+
 									try {
 										con.getInputStream();
 										log.error("is=" + con.getInputStream());
@@ -280,92 +387,11 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 								}
 
 							}
-							}
-						}else {
-						Path attachmentSource = Paths.get(attachmentSupDoc.getPath());
-						String attachmentDoc = attachmentSupDoc.getPath().concat("/jcr:content");
-						Node attachmentSubNode = resolver.getResource(attachmentDoc).adaptTo(Node.class);
-						try {
-							attachmentMimeType = Files.probeContentType(attachmentSource);
-						} catch (IOException e1) {
-							// TODO Auto-generated catch block
-							e1.printStackTrace();
 						}
-						try {
-							is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
-							byte[] bytes = IOUtils.toByteArray(is);
-							// log.error("bytes="+bytes);
-							encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPESD\"" + ","  + "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
-
-							if (encodedPDF != null && lastName != null && firstName != null) {
-								log.error("Read outer suppoting doc");
-								URL url = null;
-								try {
-									String filenetUrl = globalConfigService.getMppFilenetURL();
-									url = new URL(filenetUrl);
-									
-								//	log.info("jsonString=" + jsonString);
-								} catch (MalformedURLException e) {
-									e.printStackTrace();
-								}
-								HttpURLConnection con = null;
-								try {
-									con = (HttpURLConnection) url.openConnection();
-								} catch (IOException e1) {
-									e1.printStackTrace();
-								}
-								try {
-									con.setRequestMethod("POST");
-									con.setRequestProperty("Content-Type", "application/json");
-
-								} catch (ProtocolException e) {
-									e.printStackTrace();
-								}
-								con.setDoOutput(true);
-
-								try (OutputStream os = con.getOutputStream()) {
-									// byte[] input = jsonInputString.getBytes("utf-8");
-									os.write(jsonString.getBytes("utf-8"));
-									os.close();
-									con.getResponseCode();
-									log.error("Res=" + con.getResponseCode());
-								} catch (IOException e1) {
-									// TODO Auto-generated catch block
-									e1.printStackTrace();
-								}
-								
-								try {
-									con.getInputStream();
-									log.error("is=" + con.getInputStream());
-								} catch (IOException e) {
-									e.printStackTrace();
-								}
-
-							}
-						} catch (ValueFormatException e) {
-							e.printStackTrace();
-						} catch (PathNotFoundException e) {
-							e.printStackTrace();
-						} catch (RepositoryException e) {
-							e.printStackTrace();
-						} catch (IOException e) {
-							e.printStackTrace();
-						} finally {
-							try {
-								is.close();
-							} catch (IOException e) {
-								e.printStackTrace();
-							}
-
-						}
-						}
-							
 					}
 				}
 			}
-
 
 		}
 

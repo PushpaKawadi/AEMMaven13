@@ -37,7 +37,6 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
@@ -51,71 +50,77 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=HR Coordinator Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getHRCooLookup" })
-public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFHRCoordiantorServlet.class);
+@Component(service = Servlet.class, property = {
+		Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
+		"sling.servlet.paths=" + "/bin/getStaffManagerAdminDetailsLookup" })
+public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory
+			.getLogger(CSUFGetStaffManagerAdminDetails.class);
 	private static final long serialVersionUID = 1L;
-
-	@Reference
-	private JDBCConnectionHelperService jdbcConnectionService;
 	
 	@Reference
-	private GlobalConfigService globalConfigService;
+	private JDBCConnectionHelperService jdbcConnectionService;
 
-	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
-			throws ServletException, IOException {
+	public void doGet(SlingHttpServletRequest req,
+			SlingHttpServletResponse response) throws ServletException,
+			IOException {
 		Connection conn = null;
-		String division = "";
+
+		String deptid = "";
+		String cwid = "";
+		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("division") != null && req.getParameter("division") != "") {
-			division = req.getParameter("division");
-			//conn = jdbcConnectionService.getAemProdDBConnection();
-			
-			String dataSourceVal = globalConfigService.getAEMDataSource();
-			logger.info("DataSourceVal==========" + dataSourceVal);
-			conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+		if (req.getParameter("deptid") != null
+				&& req.getParameter("deptid") != ""
+				&& req.getParameter("cwid") != null
+				&& req.getParameter("cwid") != "") {
+			deptid = req.getParameter("deptid");
+			cwid = req.getParameter("cwid");
+			logger.info("deptid =" + deptid);
+			logger.info("EmpID =" + cwid);
+			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getHRCooDetails(conn, division);
+				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, deptid,
+						"SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getHRCooDetails(Connection oConnection, String division) throws Exception {
+	public static JSONArray getEmployeeEvalDetails(String cwid,
+			Connection oConnection, String deptid, String docType)
+			throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = CSUFConstants.mppHRCooSQL;
-		emplIDSQL = emplIDSQL.replaceAll("<<division>>", division);
+		String emplIDSQL = CSUFConstants.staffManagerAdminDetailsSQL;
+		//String lookupFields = ConfigManager.getValue("lookupFields");
+		String lookupFields = CSUFConstants.staffManagerAdminDetailsLookUpFields;
+		String[] fields = lookupFields.split(",");
+		emplIDSQL = emplIDSQL.replaceAll("<<DEPT_ID>>", deptid);
+		emplIDSQL = emplIDSQL.replaceAll("<<EMP_ID>>", cwid);
 		Statement oStatement = null;
-
 		try {
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
 				employeeEvalDetails = new JSONObject();
-				employeeEvalDetails.put("HREmpID", oRresultSet.getString("EMPLOYEEID"));
-				employeeEvalDetails.put("HRUserID", oRresultSet.getString("USERID"));
-				employeeEvalDetails.put("HRFName", oRresultSet.getString("FIRSTNAME"));
-				employeeEvalDetails.put("HRLName", oRresultSet.getString("LASTNAME"));
-				employeeEvalDetails.put("HREmail", oRresultSet.getString("EMAIL"));
-				employeeEvalDetails.put("HRDivision", oRresultSet.getString("DIVISION"));
-				employeeEvalDetails.put("HRDivName", oRresultSet.getString("DIVISIONNAME"));
+				for (int i = 0; i < fields.length; i++) {
+					employeeEvalDetails.put(fields[i],
+							oRresultSet.getString(fields[i]));
+				}
 				jArray.put(employeeEvalDetails);
-				logger.info("Array=" + jArray);
 			}
-
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
@@ -128,7 +133,8 @@ public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 
 				}
 			} catch (Exception e) {
-				logger.error("Exception in CSUFEmployeeLookUpServlet=" + e.getMessage());
+				logger.error("Exception in CSUFEmployeeLookUpServlet="
+						+ e.getMessage());
 				e.getStackTrace();
 			}
 		}

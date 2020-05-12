@@ -35,7 +35,9 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+//import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Course1",
@@ -48,6 +50,9 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -346,8 +351,14 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				// dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
 
-				// conn = jdbcConnectionService.getAemDEVDBConnection();
-				conn = getConnection();
+				//conn = jdbcConnectionService.getAemProdDBConnection();
+				//conn = jdbcConnectionService.getAemDEVDBConnection();
+				
+				
+				String dataSourceVal = globalConfigService.getAEMDataSource();
+				log.info("DataSourceVal==========" + dataSourceVal);
+				conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+				//conn = getConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
 					insertWFHistory(conn, dataMap);
@@ -409,6 +420,9 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				} catch (SQLException e) {
 					log.error("SQLException=" + e.getMessage());
 					e.printStackTrace();
+				}catch (Exception ex1) {
+					log.error("Exception=" + ex1.getMessage());
+					ex1.printStackTrace();
 				}
 			}
 			try {
@@ -416,11 +430,15 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 				log.info("Before insert workflow history");
 				preparedStmt.execute();
 				conn.commit();
+				log.info("After insert workflow history");
 				log.info("End insert workflow history");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
-			} finally {
+			} catch (Exception ex1) {
+				log.error("Exception=" + ex1.getMessage());
+				ex1.printStackTrace();
+			}finally {
 				if (preparedStmt != null) {
 					try {
 						preparedStmt.close();
@@ -444,7 +462,7 @@ public class SaveMedicalWFHistory implements WorkflowProcess {
 		Connection con = null;
 		try {
 			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
+			dataSource = (DataSource) source.getDataSource("AEMDBPRD");
 			con = dataSource.getConnection();
 			return con;
 

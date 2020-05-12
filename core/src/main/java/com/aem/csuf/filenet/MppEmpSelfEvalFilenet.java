@@ -69,6 +69,9 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 		String cbid = null;
 		String depId = null;
 		String empUserID = null;
+		String managerUserId = null;
+		String reviewPeriodFrom = null;
+		String reviewPeriodTo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -138,9 +141,15 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 								.evaluate("//DeptID", doc, XPathConstants.NODE);
 						depId = depVal.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node logVal = (org.w3c.dom.Node) xpath
-								.evaluate("//logUser", doc, XPathConstants.NODE);
-						empUserID = logVal.getFirstChild().getNodeValue();
+						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath
+								.evaluate("//ReviewPeriodFrom", doc, XPathConstants.NODE);
+						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath
+								.evaluate("//ReviewPeriodTo", doc,
+										XPathConstants.NODE);
+						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
+						
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -200,6 +209,11 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
+		
+        String fromYear  = reviewPeriodFrom.substring( 0 , 4 );        
+        String fromMonth  = reviewPeriodFrom.substring(5,7);  
+        String endYear  = reviewPeriodTo.substring( 0 , 4 );        
+        String endMonth  = reviewPeriodTo.substring(5,7); 
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
 				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
 				+ empId + "\"," + "\"OverallRating\": \"" + "" + "\","
@@ -208,10 +222,10 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \""
 				+ depId + "\"," + "\"DocType\":" + "\"MPPSE\"" + ","
-				+ "\"EndMonth\":" + "\"05\"" + "," + "\"EndYear\":"
-				+ "\"2020\"" + "," + "\"StartMonth\":" + "\"05\"" + ","
-				+ "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\""
-				+ empUserID + "\"," + "\"ManagerUserID\":\"" + "" + "\","
+				+ "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":"
+				+ endYear + "," + "\"StartMonth\":\"" + fromMonth + "\","
+				+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\""
+				+ empUserID + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
 				+ "\"HRCoordUserID\":\"" + "" + "\","
 				+ "\"AppropriateAdminUserID\":\"" + "" + "\","
 				+ "\"Attachment\":\"" + encodedPDF + "\"}";
@@ -258,6 +272,8 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			}finally{
+				con.disconnect();
 			}
 
 		}

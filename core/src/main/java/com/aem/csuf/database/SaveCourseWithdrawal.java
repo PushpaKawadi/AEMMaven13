@@ -33,7 +33,9 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+//import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Course1",
@@ -46,6 +48,10 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
+	
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -867,8 +873,12 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 					}
 
 				}
+				//conn = jdbcConnectionService.getAemProdDBConnection();
 				//conn = jdbcConnectionService.getAemDEVDBConnection();
-				conn = getConnection();
+				String dataSourceVal = globalConfigService.getAEMDataSource();
+				log.info("DataSourceVal==========" + dataSourceVal);
+				conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+				//conn = getConnection();
 				if (conn != null) {
 					log.error("Connection Successfull");
 					insertStudentData(conn, dataMap);
@@ -928,11 +938,16 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 				} catch (SQLException e) {
 					log.error("SQLException=" + e.getMessage());
 					e.printStackTrace();
+				} catch (Exception ex1) {
+					log.error("Exception=" + ex1.getMessage());
+					ex1.printStackTrace();
 				}
 			}
 			try {
+				log.error("Before Save CoureWithdrawal");
 				preparedStmt.execute();
 				conn.commit();
+				log.error("After Save CoureWithdrawal");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
@@ -960,7 +975,7 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 		Connection con = null;
 		try {
 			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
+			dataSource = (DataSource) source.getDataSource("AEMDBPRD");
 			con = dataSource.getConnection();
 			return con;
 

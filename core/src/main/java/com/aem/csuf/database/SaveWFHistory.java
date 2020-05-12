@@ -36,7 +36,9 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowModel;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+//import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 /**
  * 
@@ -53,6 +55,9 @@ public class SaveWFHistory implements WorkflowProcess {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
@@ -416,8 +421,14 @@ public class SaveWFHistory implements WorkflowProcess {
 				dataMap.put("COMMENTS", comments);
 				dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				//dataMap.put("WORKFLOW_COMPLETE_TIME", wfCompleteTime);
+				//conn = jdbcConnectionService.getAemProdDBConnection();
+				
 				//conn = jdbcConnectionService.getAemDEVDBConnection();
-				conn = getConnection();
+				
+				String dataSourceVal = globalConfigService.getAEMDataSource();
+				log.info("DataSourceVal==========" + dataSourceVal);
+				conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+				//conn = getConnection();
 				if (conn != null) {
 					log.info("Connection Successfull");
 					insertWFHistory(conn, dataMap);
@@ -479,6 +490,9 @@ public class SaveWFHistory implements WorkflowProcess {
 				} catch (SQLException e) {
 					log.error("SQLException=" + e.getMessage());
 					e.printStackTrace();
+				} catch (Exception ex1) {
+					log.error("Exception=" + ex1.getMessage());
+					ex1.printStackTrace();
 				}
 			}
 			try {
@@ -490,7 +504,11 @@ public class SaveWFHistory implements WorkflowProcess {
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
-			} finally {
+			} catch (Exception ex1) {
+				log.error("Exception=" + ex1.getMessage());
+				ex1.printStackTrace();
+			} 
+			finally {
 				if (preparedStmt != null) {
 					try {
 						preparedStmt.close();
@@ -513,7 +531,7 @@ public class SaveWFHistory implements WorkflowProcess {
 		DataSource dataSource = null;
 		Connection con = null;
 		try {
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
+			dataSource = (DataSource) source.getDataSource("AEMDBPRD");
 			con = dataSource.getConnection();
 			return con;
 

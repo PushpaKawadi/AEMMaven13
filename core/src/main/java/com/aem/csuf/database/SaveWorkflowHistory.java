@@ -36,6 +36,7 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.adobe.granite.workflow.model.WorkflowModel;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -47,6 +48,9 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -354,11 +358,14 @@ public class SaveWorkflowHistory implements WorkflowProcess {
 				dataMap.put("STEP_RESPONSE", stepResponse);
 				dataMap.put("STEP_NAME", stepName);
 				dataMap.put("COMMENTS", comments);
-				conn = jdbcConnectionService.getAemDEVDBConnection();
+				//conn = jdbcConnectionService.getAemProdDBConnection();
+				String dataSourceVal = globalConfigService.getAEMDataSource();
+				log.info("DataSourceVal==========" + dataSourceVal);
+				Connection dbConn = jdbcConnectionService.getDBConnection(dataSourceVal);
 				// conn = getConnection();
-				if (conn != null) {
+				if (dbConn != null) {
 					log.info("Connection Successfull");
-					insertWFHistory(conn, dataMap);
+					insertWFHistory(dbConn, dataMap);
 				}
 			}
 

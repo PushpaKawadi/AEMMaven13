@@ -37,6 +37,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
@@ -57,6 +59,9 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
@@ -66,8 +71,12 @@ public class CSUFMPPSelfEvalDBServlet extends SlingSafeMethodsServlet {
 		String deptID ="";
 		JSONArray emplEvalDetails = null;
 		
-		Connection dbConn = jdbcConnectionService.getAemDEVDBConnection();
-		logger.info("dbConn==========="+dbConn);
+		//Connection dbConn = jdbcConnectionService.getAemProdDBConnection();
+		//logger.info("dbConn==========="+dbConn);
+		
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		logger.info("DataSourceVal==========" + dataSourceVal);
+		Connection dbConn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		
 		if (req.getParameter("empID") != null && req.getParameter("empID") != "" ) {
 			empID = req.getParameter("empID");

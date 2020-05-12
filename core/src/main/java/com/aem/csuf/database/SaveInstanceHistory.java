@@ -35,17 +35,27 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+//import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
+/**
+ * 
+ * @author 103499
+ *
+ */
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Save Workflow Instance History",
 		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=Save Workflow Instance History" })
 public class SaveInstanceHistory implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(SaveInstanceHistory.class);
 
-//	@Reference
-//	private JDBCConnectionHelperService jdbcConnectionService;
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -97,8 +107,14 @@ public class SaveInstanceHistory implements WorkflowProcess {
 			dataMap.put("WORKFLOW_COMPLETE_TIME", workflowCompleteTime);
 			dataMap.put("WORKFLOW_STATUS", workflowStatus);
 			dataMap.put("WORKFLOW_VERSION", Float.parseFloat(workflowVersion));
-			// conn = jdbcConnectionService.getAemDEVDBConnection();
-			conn = getConnection();
+			//conn = jdbcConnectionService.getAemProdDBConnection();
+			
+			//conn = jdbcConnectionService.getAemDEVDBConnection();
+			
+			String dataSourceVal = globalConfigService.getAEMDataSource();
+			log.info("DataSourceVal==========" + dataSourceVal);
+			conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+			//conn = getConnection();
 			if (conn != null) {
 				log.info("Connection Successfull");
 				insertWFInstanceHistory(conn, dataMap);
@@ -109,9 +125,12 @@ public class SaveInstanceHistory implements WorkflowProcess {
 			workflowCompleteTime = new java.sql.Timestamp(System.currentTimeMillis());
 			workflowStatus = "COMPLETED";
 			workflowInstance = workItem.getWorkflow().getId();
-			log.info("	" + workflowCompleteTime);
+			log.info("workflow complete time" + workflowCompleteTime);
 			log.info("workflow complete status" + workflowStatus);
-			conn = getConnection();
+			//conn = getConnection();
+			String dataSourceVal = globalConfigService.getAEMDataSource();
+			log.info("DataSourceVal==========" + dataSourceVal);
+			conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 			if (conn != null) {
 				log.info("Connection Successfull");
 				updateWFInstanceHistory(conn, workflowInstance, workflowCompleteTime, workflowStatus);
@@ -171,6 +190,9 @@ public class SaveInstanceHistory implements WorkflowProcess {
 				} catch (SQLException e) {
 					log.error("SQLException=" + e.getMessage());
 					e.printStackTrace();
+				} catch (Exception ex1) {
+					log.error("Exception=" + ex1.getMessage());
+					ex1.printStackTrace();
 				}
 			}
 			try {
@@ -178,11 +200,14 @@ public class SaveInstanceHistory implements WorkflowProcess {
 				log.info("Before insert instance history");
 				preparedStmt.execute();
 				conn.commit();
-
+				log.info("After insert instance history");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
-			} finally {
+			} catch (Exception ex1) {
+				log.error("Exception=" + ex1.getMessage());
+				ex1.printStackTrace();
+			}finally {
 				if (preparedStmt != null) {
 					try {
 						preparedStmt.close();
@@ -219,7 +244,11 @@ public class SaveInstanceHistory implements WorkflowProcess {
 			} catch (SQLException e) {
 
 				e.printStackTrace();
-			} finally {
+				
+			} catch (Exception ex1) {
+				log.error("Exception=" + ex1.getMessage());
+				ex1.printStackTrace();
+			}finally {
 				if (preparedStmt != null) {
 					try {
 						preparedStmt.close();
@@ -243,7 +272,7 @@ public class SaveInstanceHistory implements WorkflowProcess {
 		DataSource dataSource = null;
 		Connection con = null;
 		try {
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
+			dataSource = (DataSource) source.getDataSource("AEMDBPRD");
 			con = dataSource.getConnection();
 			return con;
 

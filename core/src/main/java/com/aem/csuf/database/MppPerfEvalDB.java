@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -44,6 +45,9 @@ public class MppPerfEvalDB implements WorkflowProcess {
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	
+	@Reference
+	private GlobalConfigService globalConfigService;
 	
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -345,7 +349,11 @@ public class MppPerfEvalDB implements WorkflowProcess {
 
 			}
 		}
-		conn = jdbcConnectionService.getAemDEVDBConnection();
+		
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+		//conn = jdbcConnectionService.getAemProdDBConnection();
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertSPEData(conn, dataMap);
