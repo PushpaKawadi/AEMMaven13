@@ -209,9 +209,9 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 			}
 		}
 		String dataSourceVal = globalConfigService.getAEMDataSource();
-		log.error("DataSourceVal==========" + dataSourceVal);
+		log.info("DataSourceVal==========" + dataSourceVal);
 		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
-		log.error("Connection==========" + conn);
+		log.info("Connection==========" + conn);
 		// conn = jdbcConnectionService.getDBConnection(datasourceName)
 		if (conn != null) {
 			insertCataLeaveDonationData(conn, dataMap);

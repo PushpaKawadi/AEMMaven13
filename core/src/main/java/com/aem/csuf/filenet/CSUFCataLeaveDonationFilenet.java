@@ -1,7 +1,9 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -32,6 +34,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+
 
 
 
@@ -237,8 +241,19 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 			try (OutputStream os = con.getOutputStream()) {
 				os.write(json.toString().getBytes("utf-8"));
 				os.close();
-				con.getResponseCode();
-
+				int responseCode = con.getResponseCode();
+				log.info("POST Response Code to Filenet :: " + responseCode);
+				if (responseCode == HttpURLConnection.HTTP_OK) { 
+					BufferedReader in = new BufferedReader(new InputStreamReader(
+							con.getInputStream()));
+					String inputLine;
+					StringBuffer response = new StringBuffer();
+					while ((inputLine = in.readLine()) != null) {
+						response.append(inputLine);
+					}
+					in.close();
+					log.info("Response from Filenet============="+response.toString()); //{5E77A58F-EA81-4A33-8C35-B2DA3FD55AA4}
+				}
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();

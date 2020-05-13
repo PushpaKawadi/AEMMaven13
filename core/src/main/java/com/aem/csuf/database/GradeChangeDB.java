@@ -32,6 +32,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Grade Change DB",
@@ -44,6 +45,10 @@ public class GradeChangeDB implements WorkflowProcess {
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+
+	@Reference
+	private GlobalConfigService globalConfigService;
+
 	int parentTable = 0;
 
 	@Override
@@ -98,7 +103,13 @@ public class GradeChangeDB implements WorkflowProcess {
 		LinkedHashMap<String, Object> dataMapStudentInfo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		conn = jdbcConnectionService.getAemDEVDBConnection();
+		//conn = jdbcConnectionService.getAemDEVDBConnection();
+		
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+		log.info("Connection==========" + conn);
+		
 		if (conn != null) {
 			while (xmlFiles.hasNext()) {
 				workflowInstanceID = workItem.getWorkflow().getId();
@@ -178,8 +189,6 @@ public class GradeChangeDB implements WorkflowProcess {
 								todayDate = eElement
 										.getElementsByTagName("TodayDate")
 										.item(0).getTextContent();
-								
-								
 
 								instSign = eElement
 										.getElementsByTagName("InstructorSign")
@@ -201,8 +210,6 @@ public class GradeChangeDB implements WorkflowProcess {
 								chairComments = eElement
 										.getElementsByTagName("ChairComment")
 										.item(0).getTextContent();
-								
-								
 
 								deanSign = eElement
 										.getElementsByTagName("DeanSign")
@@ -224,20 +231,21 @@ public class GradeChangeDB implements WorkflowProcess {
 										.getElementsByTagName("RecordersName")
 										.item(0).getTextContent();
 								recordsSign = eElement
-										.getElementsByTagName("RecordersSignature")
-										.item(0).getTextContent();
+										.getElementsByTagName(
+												"RecordersSignature").item(0)
+										.getTextContent();
 								recordsComments = eElement
 										.getElementsByTagName(
 												"RecordersComments").item(0)
 										.getTextContent();
 								deptID = eElement
-											.getElementsByTagName("HiddenDepartmentCode").item(0)
-											.getTextContent();
-								massGradeChange = eElement
 										.getElementsByTagName(
-												"massGradeChange").item(0)
+												"HiddenDepartmentCode").item(0)
 										.getTextContent();
-								
+								massGradeChange = eElement
+										.getElementsByTagName("massGradeChange")
+										.item(0).getTextContent();
+
 								dataMapFormInfo = new LinkedHashMap<String, Object>();
 								dataMapFormInfo.put("TERM", term);
 								dataMapFormInfo
@@ -257,7 +265,7 @@ public class GradeChangeDB implements WorkflowProcess {
 									Date todayDateNew = Date.valueOf(todayDate);
 									todayDtObj = todayDateNew;
 								}
-								
+
 								dataMapFormInfo.put("TODAYS_DATE", todayDtObj);
 								dataMapFormInfo.put("MASS_GRADE_CHANGE",
 										massGradeChange);
@@ -270,7 +278,7 @@ public class GradeChangeDB implements WorkflowProcess {
 											.valueOf(instSignDate);
 									instDateObj = instSignNew;
 								}
-								
+
 								dataMapFormInfo.put("INSTRUCTOR_SIGN_DATE",
 										instDateObj);
 								dataMapFormInfo.put("INSTRUCTOR_COMMENT",
@@ -284,7 +292,6 @@ public class GradeChangeDB implements WorkflowProcess {
 									chairDateObj = chairSignNew;
 								}
 
-								
 								dataMapFormInfo.put("CHAIR_SIGNATURE",
 										chairSign);
 								dataMapFormInfo.put("CHAIR_SIGN_DATE",
@@ -315,10 +322,11 @@ public class GradeChangeDB implements WorkflowProcess {
 									recordDateObj = recordSignNew;
 								}
 
-								dataMapFormInfo.put("DEPT_CODE",
-										deptID);
-								/*dataMapFormInfo.put("RECORDS_SIGN_DATE",
-										recordDateObj);*/
+								dataMapFormInfo.put("DEPT_CODE", deptID);
+								/*
+								 * dataMapFormInfo.put("RECORDS_SIGN_DATE",
+								 * recordDateObj);
+								 */
 								dataMapFormInfo.put("RECORDS_COMMENT",
 										recordsComments);
 
@@ -331,7 +339,6 @@ public class GradeChangeDB implements WorkflowProcess {
 								dataMapFormInfo.put("WORKFLOW_INSTANCE_ID",
 										workflowInstanceID);
 
-								
 								for (int i = 0; i < eElement
 										.getElementsByTagName("Row1")
 										.getLength(); i++) {
@@ -409,7 +416,8 @@ public class GradeChangeDB implements WorkflowProcess {
 											dataMapStudentInfo
 													.put("INSTRUCTOR_CWID",
 															instCwid);
-											dataMapStudentInfo.put("COURSE_NAME", courseName);
+											dataMapStudentInfo.put(
+													"COURSE_NAME", courseName);
 											dataMapStudentInfo
 													.put("CLASS_NUMBER",
 															classNumber);
@@ -437,8 +445,8 @@ public class GradeChangeDB implements WorkflowProcess {
 													studentFirstName);
 											dataMapStudentInfo.put("LAST_NAME",
 													studentLastName);
-											dataMapStudentInfo.put("UNIT_VALUE",
-													unitValue);
+											dataMapStudentInfo.put(
+													"UNIT_VALUE", unitValue);
 											dataMapStudentInfo.put(
 													"GRADE_CHANGE_FROM",
 													gradeChangeFrom);
@@ -465,12 +473,13 @@ public class GradeChangeDB implements WorkflowProcess {
 											dataMapStudentInfo.put(
 													"WORKFLOW_INSTANCE_ID",
 													workflowInstanceID);
-											log.error("parentTable==="+parentTable);
-											if (parentTable == 0) {
-												log.error("After==="+parentTable);
-												insertGCFormData(conn, dataMapFormInfo);
-											}
 
+											if (parentTable == 0) {
+												log.error("After==="
+														+ parentTable);
+												insertGCFormData(conn,
+														dataMapFormInfo);
+											}
 
 											insertGCStudentData(conn,
 													dataMapStudentInfo);
@@ -492,7 +501,8 @@ public class GradeChangeDB implements WorkflowProcess {
 					finally {
 						try {
 							parentTable = 0;
-							log.info("Finally====="+parentTable);
+							log.info("Resetting parentTable in finally block=="
+									+ parentTable);
 							is.close();
 							conn.close();
 						} catch (IOException e) {
@@ -659,12 +669,12 @@ public class GradeChangeDB implements WorkflowProcess {
 				}
 			}
 			try {
-				log.error("Before GC");
+				log.error("Before GC AEM_AR_GRADE_CHANGE_FORM");
 				preparedStmt.execute();
 				conn.commit();
 				parentTable = 1;
 				log.error("parentTable=" + parentTable);
-				log.error("After GC");
+				log.error("After GC AEM_AR_GRADE_CHANGE_FORM");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
