@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.sql.Timestamp;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -35,6 +36,7 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.DBUtil;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = {
@@ -77,6 +79,7 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 		String signature = "";
 
 		LinkedHashMap<String, Object> dataMap = null;
+		LinkedHashMap<String, Object> dataMapAuditTrail = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -293,7 +296,22 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 				log.info("After Prepared Stmt Catastrophic Leave Donation");
 			} catch (SQLException e1) {
 				log.error("SQLException=" + e1.getMessage());
+				String errMessage = e1.getMessage();
 				e1.printStackTrace();
+				DBUtil dbUtil = new DBUtil();
+				String tableNameAudit = "AEM_AUDIT_TRACE";
+				LinkedHashMap<String, Object> dataMapAuditTrail = new LinkedHashMap<String, Object>();
+				Timestamp auditStTime = new java.sql.Timestamp(System.currentTimeMillis());
+				dataMapAuditTrail.put("EVENT_TYPE", "Database");
+				dataMapAuditTrail.put("AUDIT_TIME", auditStTime);
+				dataMapAuditTrail.put("FILENET_URL", "");
+				dataMapAuditTrail.put("DATA_PROCESSED", "0");
+				dataMapAuditTrail.put("FILENET_JSON", "");
+				dataMapAuditTrail.put("FORM_NAME", "Catastrophic Leave Donation");
+				dataMapAuditTrail.put("TABLE_NAME", "catastrophic_leave_donation");
+				dataMapAuditTrail.put("SQL_ERROR_DESC", errMessage);
+				dbUtil.insertAutitTrace(conn, dataMapAuditTrail, tableNameAudit);
+				
 			} catch (Exception e) {
 				log.error("Exception=" + e.getMessage());
 				e.printStackTrace();

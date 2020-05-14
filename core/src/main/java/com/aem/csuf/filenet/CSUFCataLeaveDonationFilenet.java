@@ -9,8 +9,11 @@ import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -39,6 +42,13 @@ import org.xml.sax.SAXException;
 
 
 
+
+
+
+
+
+
+
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -46,7 +56,9 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
+import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.ConfigManager;
+import com.aem.community.util.DBUtil;
 import com.google.gson.JsonObject;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=DonationDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
@@ -56,6 +68,9 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 	@Reference
 	private GlobalConfigService globalConfigService;
 
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+	
 	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalFilenet.class);
 
 	@Override
@@ -73,12 +88,20 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 		String logUserVal = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
+		Connection conn = null;
+		LinkedHashMap<String, Object> dataMap = null;
 
 		// Get the payload path and iterate the path to find Data.xml, Use
 		// Document
 		// factory to parse the xml and fetch the required values for the
 		// filenet
 		// attachment
+		
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
+		log.info("Connection==========" + conn);
+		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			// log.info("xmlFiles inside ");
@@ -210,11 +233,11 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 			json.addProperty("EmpUserID", logUserVal);
 			json.addProperty("AttachmentMimeType", "application/pdf");
 			json.addProperty("Attachment", encodedPDF);
-			
+			String filenetUrl ="";
 			log.info("Read Catastrophic Donation ");
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+				filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
 				url = new URL(filenetUrl);
 				// url = new URL("");
 
@@ -253,6 +276,21 @@ public class CSUFCataLeaveDonationFilenet implements WorkflowProcess {
 					}
 					in.close();
 					log.info("Response from Filenet============="+response.toString()); //{5E77A58F-EA81-4A33-8C35-B2DA3FD55AA4}
+					DBUtil dbUtil = new DBUtil();
+					String tableName = "AEM_AUDIT_TRACE";
+					
+					dataMap = new LinkedHashMap<String, Object>();
+					
+					Timestamp auditStTime = new java.sql.Timestamp(System.currentTimeMillis());
+					
+					dataMap.put("EVENT_TYPE", "Filenet");
+					dataMap.put("AUDIT_TIME", auditStTime);
+					dataMap.put("FILENET_URL", filenetUrl);
+					dataMap.put("DATA_PROCESSED", "0");
+					dataMap.put("FILENET_JSON", json.toString());
+					dataMap.put("FORM_NAME", "Catastrophic Leave Donation");
+					
+					dbUtil.insertAutitTrace(conn, dataMap, tableName);
 				}
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
