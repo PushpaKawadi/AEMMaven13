@@ -309,7 +309,7 @@ public class CSUFCataLeaveDonationDB implements WorkflowProcess {
 				dataMapAuditTrail.put("FILENET_JSON", "");
 				dataMapAuditTrail.put("FORM_NAME", "Catastrophic Leave Donation");
 				dataMapAuditTrail.put("TABLE_NAME", "catastrophic_leave_donation");
-				dataMapAuditTrail.put("SQL_ERROR_DESC", errMessage);
+				dataMapAuditTrail.put("ERROR_DESC", errMessage);
 				dbUtil.insertAutitTrace(conn, dataMapAuditTrail, tableNameAudit);
 				
 			} catch (Exception e) {
