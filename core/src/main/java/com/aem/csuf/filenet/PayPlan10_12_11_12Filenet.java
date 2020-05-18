@@ -8,6 +8,9 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 import java.util.Base64;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;  
+import java.util.Date; 
 import java.util.Iterator;
 
 import javax.jcr.Node;
@@ -33,7 +36,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -41,52 +43,56 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
-import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=payPlan10_12_11_12Filenet", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=payPlan10_12_11_12FileNet" })
+@Component(property = {
+		Constants.SERVICE_DESCRIPTION + "=payPlan10_12_11_12_FileNet",
+		Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=payPlan10_12_11_12_FileNet" })
 public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(PayPlan10_12_11_12Filenet.class);
-	
+	private static final Logger log = LoggerFactory
+			.getLogger(PayPlan10_12_11_12Filenet.class);
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
 	@Override
-	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
-			throws WorkflowException {
-
-		ResourceResolver resolver = workflowSession.adaptTo(ResourceResolver.class);
+	public void execute(WorkItem workItem, WorkflowSession workflowSession,
+			MetaDataMap processArguments) throws WorkflowException {
+		ResourceResolver resolver = workflowSession
+				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
+		String emplID = null;
 		String firstName = null;
 		String lastName = null;
 		String encodedPDF = null;
-		String empId = null;
+		String ssn = null;
 		String deptName = null;
+		String logUserVal = null;
+		String mimeType = null;	
+		String initiatedDate = null;
+		String dateComp = null;
+
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
+		
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
-
-			log.info("filePath====== " + filePath);
+			// log.error("filePath= "+filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=======" + filePath);
-				// /
-				// var/fd/dashboard/payload/server0/2019-08-07_3/523TS2EV2Q2XKMLHUNVXUQKTJU_6/Data.xml
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				log.info("xmlFiles=" + filePath);
+
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 				} catch (ValueFormatException e2) {
 					log.error("Exception1=" + e2.getMessage());
 					e2.printStackTrace();
@@ -99,37 +105,64 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 				}
 
 				try {
-					DocumentBuilderFactory dbFactory = DocumentBuilderFactory.newInstance();
+					DocumentBuilderFactory dbFactory = DocumentBuilderFactory
+							.newInstance();
 					DocumentBuilder dBuilder = null;
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
 					} catch (ParserConfigurationException e1) {
-						log.info("ParserConfigurationException=====" + e1);
+						log.info("ParserConfigurationException=" + e1);
 						e1.printStackTrace();
 					}
 					try {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
-						log.info("IOException======" + e1);
+						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//empl_ID", doc,
-								XPathConstants.NODE);
-						empId = empIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//empl_ID", doc,
+										XPathConstants.NODE);
+						emplID = lnNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//first_Name", doc, XPathConstants.NODE);
+						firstName = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//first_Name", doc,
-								XPathConstants.NODE);
-						firstName = fnNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//last_Name", doc,
+										XPathConstants.NODE);
+						lastName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//last_Name", doc,
-								XPathConstants.NODE);
-						lastName = lnNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
+								.evaluate("//departmentName", doc,
+										XPathConstants.NODE);
+						deptName = deptNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node deptNameNode = (org.w3c.dom.Node) xpath.evaluate("//departmentName", doc,
-								XPathConstants.NODE);
-						deptName = deptNameNode.getFirstChild().getNodeValue();
+//						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+//								.evaluate("//LogUser", doc, XPathConstants.NODE);
+//						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						
+//						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
+//								.evaluate("//EmployerDate", doc, XPathConstants.NODE);
+//						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
+//						SimpleDateFormat fromDate = new SimpleDateFormat(
+//								"yyyy-MM-dd");
+//						SimpleDateFormat toDate = new SimpleDateFormat(
+//								"MM/dd/yyyy");
+
+//						if (initiatedDate != null
+//								&& !initiatedDate.equals("")) {
+//							try {
+//								dateComp = toDate.format(fromDate
+//										.parse(initiatedDate));
+//							} catch (ParseException e) {
+//								e.printStackTrace();
+//							}
+//						}
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -150,15 +183,17 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 			// Base encoder
 
 			if (filePath.contains("PayPlan_10_12_11_12.pdf")) {
-				log.info("filePath ======" + filePath);
+				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
+				Node subNode = resolver.getResource(filePath).adaptTo(
+						Node.class);
 				try {
-					is = subNode.getProperty("jcr:data").getBinary().getStream();
+					is = subNode.getProperty("jcr:data").getBinary()
+							.getStream();
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
-						log.info("encodedPDF===="+encodedPDF);
+						// log.info("encodedPDF="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -183,60 +218,56 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 				}
 			}
 		}
+		JsonObject json = new JsonObject();
+		json.addProperty("FirstName", firstName);
+		json.addProperty("LastName", lastName);
+		json.addProperty("CWID", emplID);
+		json.addProperty("SSN", "");
+		json.addProperty("DepartmentID", deptName);
+		json.addProperty("DocType", "");
+		json.addProperty("InitiatedDate", "");
+		json.addProperty("EmpUserID", "");
+		json.addProperty("AttachmentMimeType", "application/pdf");
+		json.addProperty("Attachment", encodedPDF);
+		
+		
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"first_Name\": \"" + firstName + "\"," + "\"last_Name\": \"" + lastName + "\","
-				+ "\"empl_ID\": \"" + empId + "\"," + "\"departmentName\": \"" + deptName + "\"," + "\"AttachmentType\": "
-				+ "\"FinalCobraFinalNoticeDOR\"" + "," + "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"EncodedPDF\":\"" + encodedPDF + "\"}";
-		// log.error("lastName="+lastName);
-		log.error("firstName="+firstName);
-		log.error("empId="+empId);
-		log.error("EMPL_RCD="+deptName);
-		log.error("Json String:" + jsonString.toString());
-
-		log.error("payPlan encodedPDF===="+encodedPDF);
-		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read payPlan");
-			URL url = null;
-			try {
-				String filenetUrl = globalConfigService.getFilenetURL();
-				url = new URL(filenetUrl);
-				// url = new URL("");
-
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			HttpURLConnection con = null;
-			try {
-				con = (HttpURLConnection) url.openConnection();
-				log.info("Con=" + con);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				con.setRequestMethod("POST");
-				con.setRequestProperty("Content-Type", "application/json");
-
-			} catch (ProtocolException e) {
-				log.info("ProtocolException=" + e.getMessage());
-				e.printStackTrace();
-			}
-			con.setDoOutput(true);
-
-			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
-				os.close();
-				con.getResponseCode();
-
-			} catch (IOException e1) {
-				log.error("IOException=" + e1.getMessage());
-				e1.printStackTrace();
-			}
-
+		log.info("Read Pay Plan = "+encodedPDF);
+		URL url = null;
+		try {
+			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			url = new URL(filenetUrl);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
 		}
+		HttpURLConnection con = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+			log.info("Con=" + con);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
 
+		} catch (ProtocolException e) {
+			log.info("ProtocolException=" + e.getMessage());
+			e.printStackTrace();
+		}
+		con.setDoOutput(true);
+
+		try (OutputStream os = con.getOutputStream()) {
+			os.write(json.toString().getBytes("utf-8"));
+			os.close();
+			con.getResponseCode();
+			log.debug("Result=" + con.getResponseCode());
+
+		} catch (IOException e1) {
+			log.error("IOException=" + e1.getMessage());
+			e1.printStackTrace();
+		}finally{
+			con.disconnect();
+		}
 	}
 }

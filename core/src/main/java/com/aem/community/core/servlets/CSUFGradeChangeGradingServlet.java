@@ -95,12 +95,12 @@ public class CSUFGradeChangeGradingServlet extends SlingSafeMethodsServlet {
 						gradingArray.put("D-");
 						gradingArray.put("F");
 						gradingArray.put("I");
-						gradingArray.put("IC");
-						gradingArray.put("RD");
-						gradingArray.put("RP");
-						gradingArray.put("W");
-						gradingArray.put("WE");
-						gradingArray.put("WU");
+//						gradingArray.put("IC");
+//						gradingArray.put("RD");
+//						gradingArray.put("RP");
+//						gradingArray.put("W");
+//						gradingArray.put("WE");
+//						gradingArray.put("WU");
 					} catch (Exception e) {
 						e.printStackTrace();
 					}

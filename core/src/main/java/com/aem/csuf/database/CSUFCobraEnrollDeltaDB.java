@@ -508,7 +508,7 @@ public class CSUFCobraEnrollDeltaDB implements WorkflowProcess {
 						dataMap.put("EMPLOYER_SIGNATURE_DATE", employerSignatureDateObj);
 
 						log.error("Connection Successfull");
-						insertEmployeeFeeWaiverData(conn, dataMap);
+						insertCobraEnrollDeltaData(conn, dataMap);
 
 					} catch (SAXException e) {
 						log.error("SAXException=" + e.getMessage());
@@ -532,7 +532,7 @@ public class CSUFCobraEnrollDeltaDB implements WorkflowProcess {
 		}
 	}
 	
-	public void insertEmployeeFeeWaiverData(Connection conn, LinkedHashMap<String, Object> dataMap) {
+	public void insertCobraEnrollDeltaData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
 		if (conn != null) {
