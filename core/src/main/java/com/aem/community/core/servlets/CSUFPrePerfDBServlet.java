@@ -37,7 +37,10 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 
@@ -56,7 +59,8 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-
+	@Reference
+	private GlobalConfigService globalConfigService;
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		String empID = "";
@@ -65,7 +69,10 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 		String deptID ="";
 		JSONArray emplEvalDetails = null;
 		
-		Connection dbConn = jdbcConnectionService.getAemDEVDBConnection();
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		logger.info("DataSourceVal==========" + dataSourceVal);
+		Connection dbConn = jdbcConnectionService.getDBConnection(dataSourceVal);
+		
 		logger.info("dbConn==========="+dbConn);
 		
 		if (req.getParameter("empID") != null && req.getParameter("empID") != "" ) {
@@ -99,15 +106,15 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 		//String userIDSQL = "select * from aem_mpp_self_eval where empid='899943393' and review_period_from='16-APR-19' and review_period_to='15-APR-20' and deptid='10100'";
 		SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat reqFormat = new SimpleDateFormat("dd-MMM-yy");
-		String userIDSQL = ConfigManager.getValue("PrePerfReviewSQL");
+		String userIDSQL = CSUFConstants.PrePerfReviewSQL;
 		
-		userIDSQL = userIDSQL.replaceAll("<<emplid>>", empID);
+		userIDSQL = userIDSQL.replaceAll("<<empid>>", empID);
 		logger.info("Empid="+userIDSQL);
 		
-		userIDSQL = userIDSQL.replaceAll("<<review_from_dt>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
+		userIDSQL = userIDSQL.replaceAll("<<review_period_from>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
 		logger.info("From="+userIDSQL);
 		
-		userIDSQL = userIDSQL.replaceAll("<<review_to_dt>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
+		userIDSQL = userIDSQL.replaceAll("<<review_period_to>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
 		logger.info("To="+userIDSQL);
 		
 		userIDSQL = userIDSQL.replaceAll("<<deptid>>", deptID);

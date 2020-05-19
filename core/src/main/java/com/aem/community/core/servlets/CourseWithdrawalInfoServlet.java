@@ -145,11 +145,13 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			String studentCourseInfoSQL = "Select * from AR_COURSE_WITHDRAWAL where CWID = '<<CWID>>' and STRM = '<<TERM>>'";
 
 			// Get current term details
-			String[] termInfo = getCurrentTerm(oConnection);
+			//Modified by Swathi on 05192020 from line no 149 - 153
+			//String[] termInfo = getCurrentTerm(oConnection);
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<CWID>>", cwid);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", termInfo[0]);
-
+			//studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", termInfo[0]);
+			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", term);
+			
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
 
@@ -182,6 +184,8 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 					studentInfo.put("NURSING_FLAG", oRresultSet.getString("NURSING_FLAG"));
 					// studentInfo.put("EXPECTED_GRD_DATE",
 					// oRresultSet.getString("EXPECTED_GRAD_DATE"));
+					studentInfo.put("TERM_CODE", oRresultSet.getString("STRM"));
+					studentInfo.put("TERM_DESCR", oRresultSet.getString("TERM_DESCR"));
 
 					try {
 						if (oRresultSet.getString("EIP_FLAG") != null) {
@@ -241,8 +245,9 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 				studentInfo.put("CASEID", caseID);
 
 				// Current Term details added to JSON response
-				studentInfo.put("TERM_CODE", termInfo[0]);
-				studentInfo.put("TERM_DESCR", termInfo[1]);
+				//Modified by Swathi on 05192020 from line no 247 - 248
+				//studentInfo.put("TERM_CODE", termInfo[0]);
+				//studentInfo.put("TERM_DESCR", termInfo[1]);
 
 				// Possible values :
 				// Yes

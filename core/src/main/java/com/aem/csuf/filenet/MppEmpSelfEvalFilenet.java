@@ -140,6 +140,14 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 						org.w3c.dom.Node depVal = (org.w3c.dom.Node) xpath
 								.evaluate("//DeptID", doc, XPathConstants.NODE);
 						depId = depVal.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpUserID", doc,
+								XPathConstants.NODE);
+						empUserID = empUserIdNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath
+								.evaluate("//SupervisorUserID", doc, XPathConstants.NODE);
+						managerUserId = managerUserIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath
 								.evaluate("//ReviewPeriodFrom", doc, XPathConstants.NODE);
@@ -237,7 +245,7 @@ public class MppEmpSelfEvalFilenet implements WorkflowProcess {
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read SPE2578");
+			log.info("Read MPP Self Eval");
 			URL url = null;
 			try {
 				String filenetUrl = globalConfigService.getMppFilenetURL();

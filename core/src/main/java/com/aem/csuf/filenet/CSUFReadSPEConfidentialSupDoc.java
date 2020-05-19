@@ -45,9 +45,9 @@ import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Confidential Support Doc",
 		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE Confidential Support Doc" })
-public class ReadSPEConfidentialSupDoc implements WorkflowProcess {
+public class CSUFReadSPEConfidentialSupDoc implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(ReadSPEConfidentialSupDoc.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFReadSPEConfidentialSupDoc.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
 	@Override
@@ -71,6 +71,8 @@ public class ReadSPEConfidentialSupDoc implements WorkflowProcess {
 		String hrCoordId = null;
 		String administratorId = null;
 		String attachmentMimeType = "";
+		String reviewPeriodFrom = null;
+		String reviewPeriodTo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 
 		// if (xmlNode != null) {
@@ -168,6 +170,14 @@ public class ReadSPEConfidentialSupDoc implements WorkflowProcess {
 						.evaluate("//AdminUserID", doc,
 								XPathConstants.NODE);
 						administratorId = administratorIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodFrom",
+								doc, XPathConstants.NODE);
+						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodTo", doc,
+								XPathConstants.NODE);
+						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -211,8 +221,23 @@ public class ReadSPEConfidentialSupDoc implements WorkflowProcess {
 								is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
 								byte[] bytes = IOUtils.toByteArray(is);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
-
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEConfidentialSupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE99SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+								String fromYear = reviewPeriodFrom.substring(0, 4);
+								String fromMonth = reviewPeriodFrom.substring(5, 7);
+								String endYear = reviewPeriodTo.substring(0, 4);
+								String endMonth = reviewPeriodTo.substring(5, 7);
+									String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+											+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+											+ "\"AttachmentType\": " + "\"SPEConfidentialSupDoc\"" + ","
+											+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+											+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+											+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE99SD\""
+											+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear + "\","
+											+ "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\""
+											+ evaluationType + "\"," + "\"StartMonth\":\"" + fromMonth + "\","
+											+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\"" + empUserId
+											+ "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
+											+ "\"HRCoordUserID\":\"" + hrCoordId + "\","
+											+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
 									log.error("Read inner suppoting doc");
@@ -290,8 +315,23 @@ public class ReadSPEConfidentialSupDoc implements WorkflowProcess {
 							byte[] bytes = IOUtils.toByteArray(is);
 							// log.error("bytes="+bytes);
 							encodedPDF = Base64.getEncoder().encodeToString(bytes);
-
-							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEConfidentialSupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE99SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+							String fromYear = reviewPeriodFrom.substring(0, 4);
+							String fromMonth = reviewPeriodFrom.substring(5, 7);
+							String endYear = reviewPeriodTo.substring(0, 4);
+							String endMonth = reviewPeriodTo.substring(5, 7);
+							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+									+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+									+ "\"AttachmentType\": " + "\"SPEConfidentialSupDoc\"" + ","
+									+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+									+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+									+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE99SD\""
+									+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear + "\","
+									+ "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\""
+									+ evaluationType + "\"," + "\"StartMonth\":\"" + fromMonth + "\","
+									+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\"" + empUserId
+									+ "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
+									+ "\"HRCoordUserID\":\"" + hrCoordId + "\","
+									+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 							if (encodedPDF != null && lastName != null && firstName != null) {
 								log.error("Read outer suppoting doc");

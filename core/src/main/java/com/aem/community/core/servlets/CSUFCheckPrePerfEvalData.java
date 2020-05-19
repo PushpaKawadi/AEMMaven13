@@ -37,6 +37,8 @@ import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
@@ -57,7 +59,8 @@ public class CSUFCheckPrePerfEvalData extends SlingSafeMethodsServlet {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-
+	@Reference
+	private GlobalConfigService globalConfigService;
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		String empID = "";
@@ -65,8 +68,10 @@ public class CSUFCheckPrePerfEvalData extends SlingSafeMethodsServlet {
 		String reviewPeriodFrom ="";
 		String deptID ="";
 		JSONArray emplEvalDetails = null;
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		logger.info("DataSourceVal==========" + dataSourceVal);
+		Connection dbConn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		
-		Connection dbConn = jdbcConnectionService.getAemDEVDBConnection();
 		logger.info("dbConn==========="+dbConn);
 		
 		if (req.getParameter("empID") != null && req.getParameter("empID") != "" ) {

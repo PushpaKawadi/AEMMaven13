@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -43,6 +44,8 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 	private static final Logger log = LoggerFactory.getLogger(CSUFPrePerfEvalDB.class);
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
+	@Reference
+	private GlobalConfigService globalConfigService;
 	
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -223,7 +226,9 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 			}
 		}
-		conn = jdbcConnectionService.getAemDEVDBConnection();
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertSPEData(conn, dataMap);
@@ -232,32 +237,6 @@ public class CSUFPrePerfEvalDB implements WorkflowProcess {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					log.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;

@@ -70,6 +70,8 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 		String managerUserId = "";
 		String hrCoordId = "";
 		String administratorId = "";
+		String reviewPeriodFrom = "";
+		String reviewPeriodTo = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -164,7 +166,13 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 						.evaluate("//AdminUserID", doc,
 								XPathConstants.NODE);
 						administratorId = administratorIdNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodFrom",
+								doc, XPathConstants.NODE);
+						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
 
+						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodTo", doc,
+								XPathConstants.NODE);
+						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -224,13 +232,17 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 		// Create the JSON with the required parameter from Data.xml, encoded
 		// Base 64 to
 		// the Filenet rest call to save the document
+		String fromYear = reviewPeriodFrom.substring(0, 4);
+		String fromMonth = reviewPeriodFrom.substring(5, 7);
+		String endYear = reviewPeriodTo.substring(0, 4);
+		String endMonth = reviewPeriodTo.substring(5, 7);
 		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\","
 				+ "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": " + "\"FinalSPEPerfEval2579DOR\"" + ","
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + "," + "\"Attachment\":\"" + encodedPDF + "\","
 				+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE2579\""
-				+ "," + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\""
-				+ overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
-				+ "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\","
+				+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear + "\"," + "\"OverallRating\":\""
+				+ overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":\""
+				+ fromMonth + "\"," + "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\"" + empUserId + "\","
 				+ "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
 				+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 	
@@ -270,6 +282,8 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			}finally{
+				con.disconnect();
 			}
 
 		}

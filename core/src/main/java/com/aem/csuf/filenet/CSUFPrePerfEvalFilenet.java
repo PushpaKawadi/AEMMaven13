@@ -214,7 +214,7 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
 				+ "\"CBID\": \"" + "" + "\"," + "\"DepartmentID\": \""
 				+ depId + "\"," + "\"DocType\":" + "\"STAFFSE\"" + ","
-				+ "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":"
+				+ "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\""
 				+ endYear + "\"," + "\"StartMonth\":\"" + fromMonth + "\","
 				+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\""
 				+ empUserID + "\"," + "\"ManagerUserID\":\"" + managerUserID + "\","
@@ -256,6 +256,8 @@ public class CSUFPrePerfEvalFilenet implements WorkflowProcess {
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			}finally{
+				con.disconnect();
 			}
 
 		}

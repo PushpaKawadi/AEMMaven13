@@ -313,18 +313,23 @@ public class ReadMPPSupportDoc implements WorkflowProcess {
 								// log.error("bytes="+bytes);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \""
-										+ lastName + "\"," + "\"CWID\": \"" + empId + "\"," + "\"AttachmentType\": "
-										+ "\"FinalMPPPerfEvalDOR\"" + "," + "\"AttachmentMimeType\": \""
-										+ attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\","
-										+ "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\","
-										+ "\"DocType\":" + "\"MPPPESD\"" + "," + "\"EndMonth\":" + "\"05\"" + ","
-										+ "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating
-										+ "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":"
-										+ "\"05\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\""
-										+ empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
-										+ "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\""
-										+ administratorId + "\"}";
+								String fromYear = reviewPeriodFrom.substring(0, 4);
+								String fromMonth = reviewPeriodFrom.substring(5, 7);
+								String endYear = reviewPeriodTo.substring(0, 4);
+								String endMonth = reviewPeriodTo.substring(5, 7);
+								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+										+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+										+ "\"AttachmentType\": " + "\"FinalMPPPerfEvalDOR\"" + ","
+										+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+										+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+										+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"MPPPESD\""
+										+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear
+										+ "\"," + "\"OverallRating\":\"" + overallRating + "\","
+										+ "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":\""
+										+ fromMonth + "\"," + "\"StartYear\":\"" + fromYear + "\","
+										+ "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\""
+										+ managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\","
+										+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
 									log.error("Read outer suppoting doc");
