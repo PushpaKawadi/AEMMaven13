@@ -79,6 +79,7 @@ public class SaveFormWFHistory implements WorkflowProcess {
 		String medicalApprovalStatus = "";
 		String comments = "";
 		String medicalComments = "";
+		String caseId = "";
 		Timestamp stepCompleteTime = null;
 		Timestamp wfCompleteTime = null;
 
@@ -183,21 +184,6 @@ public class SaveFormWFHistory implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					org.w3c.dom.NodeList nList1 = doc
-							.getElementsByTagName("afUnboundData");
-					for (int temp = 0; temp < nList1.getLength(); temp++) {
-						org.w3c.dom.Node nNode1 = nList1.item(temp);
-						if (nNode1.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
-							org.w3c.dom.Element eElement1 = (org.w3c.dom.Element) nNode1;
-							if (eElement1.hasAttribute("caseId")) {
-							caseID = eElement1.getElementsByTagName("caseId")
-									.item(0).getTextContent();
-							}else{
-								caseID ="";
-							}
-
-						}
-					}
 
 					org.w3c.dom.NodeList nList = doc
 							.getElementsByTagName("afBoundData");
@@ -205,8 +191,12 @@ public class SaveFormWFHistory implements WorkflowProcess {
 						org.w3c.dom.Node nNode = nList.item(temp);
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							cwid = eElement.getElementsByTagName("InstructorCWID")
+							
+							caseID = eElement.getElementsByTagName("caseID")
 									.item(0).getTextContent();
+							
+							cwid = eElement.getElementsByTagName("InstructorCWID")
+									.item(0).getTextContent();							
 							
 							String stage = eElement.getElementsByTagName("StageIndicator").item(0).getTextContent();
 							if (stage.equals("ToChair")) {

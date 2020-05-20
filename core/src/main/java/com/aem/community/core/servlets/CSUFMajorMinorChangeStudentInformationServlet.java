@@ -33,12 +33,12 @@ import com.aem.community.util.ConfigManager;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
+		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getGCLoggedinUserID" })
-public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getStudentPeronalInformationWithUserID" })
+public class CSUFMajorMinorChangeStudentInformationServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFGradeChangeUserIDServlet.class);
+			.getLogger(CSUFMajorMinorChangeStudentInformationServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -48,29 +48,28 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String instUserId = "";
-		String termDesc = "";
+		String userId = "";		
 
-		JSONArray gradChangeDetails = null;
-		if (req.getParameter("instUserID") != null
-				&& !req.getParameter("instUserID").trim().equals("")) {
-			instUserId = req.getParameter("instUserID");
-			termDesc = req.getParameter("termDesc");
+		JSONArray majorMinorChangeDetails = null;
+		if (req.getParameter("userID") != null
+				&& !req.getParameter("userID").trim().equals("")) {
+			userId = req.getParameter("userID");
+			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				gradChangeDetails = getGradeChangeUserDetails(instUserId, termDesc, conn);
+				majorMinorChangeDetails = getStudentInformationDetails(userId,  conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (gradChangeDetails != null && !gradChangeDetails.equals("")) {
-				response.getWriter().write(gradChangeDetails.toString());
+			if (majorMinorChangeDetails != null && !majorMinorChangeDetails.equals("")) {
+				response.getWriter().write(majorMinorChangeDetails.toString());
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
@@ -98,8 +97,7 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 		try {
 
 			String sql = "Select AR_COURSE_WITHDRAWAL_SEQ.nextval as CASEID from dual";
-			logger.info("CaseID Function");
-			// LogManager.traceInfoMsg(sClassName, methodName, "sql : " + sql);
+			logger.info("CaseID Function");			
 
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);
@@ -130,38 +128,42 @@ public class CSUFGradeChangeUserIDServlet extends SlingSafeMethodsServlet {
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getGradeChangeUserDetails(String instUserId, String termDesc,
+	public static JSONArray getStudentInformationDetails(String userId,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails=" + instUserId);
+		logger.info("Inside getMajorMinorChangeDetails=" + userId);
 
 		ResultSet oRresultSet = null;
 		JSONObject instInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		String studentCourseInfoSQL = "";
+		String majorMinorChangeInfoSQL = "";
 		Statement oStatement = null;
 		try {
 			
-			studentCourseInfoSQL = CSUFConstants.gradeChangeLoggedIn;
+			majorMinorChangeInfoSQL = CSUFConstants.studentPersonalInformation;
 
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<instr_userid>>", instUserId);
-			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll(
-					"<<TERM_DESCR>>", termDesc);
-			logger.info("Grade change sql=" + studentCourseInfoSQL);
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll(
+					"<<getUser_ID>>", userId);
+			
+			logger.info("MajorMinor change sql=" + majorMinorChangeInfoSQL);
 			oStatement = conn.createStatement();
-			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
+			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
 			
 			
 			// Get the unique Case ID from database sequence
 			String caseID = getCaseID(conn);			
 
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();
+				instInfo = new JSONObject();      
 				instInfo.put("CASEID", caseID);
 
-				instInfo.put("instCwid", oRresultSet.getString("INSTR_CWID"));
-				instInfo.put("instr_name", oRresultSet.getString("INSTR_NAME"));
+				instInfo.put("student_ID", oRresultSet.getString("STUDENT_ID"));				
+				instInfo.put("student_FName", oRresultSet.getString("STUDENT_FNAME"));
+				instInfo.put("student_LName", oRresultSet.getString("STUDENT_LNAME"));
+				instInfo.put("student_Phone", oRresultSet.getString("STUDENT_PHONE"));
+				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));
+				instInfo.put("student_Email", oRresultSet.getString("STUDENT_EMAIL"));
+				instInfo.put("ACAD_PROG", oRresultSet.getString("ACAD_PROG"));				
 
 				jArray.put(instInfo);
 			}

@@ -98,6 +98,7 @@ public class GradeChangeDB implements WorkflowProcess {
 		String rpWorkCompleted = "";
 		String gradeCheck = "";
 		String deptID = "";
+		String caseID = "";
 
 		LinkedHashMap<String, Object> dataMapFormInfo = null;
 		LinkedHashMap<String, Object> dataMapStudentInfo = null;
@@ -160,6 +161,9 @@ public class GradeChangeDB implements WorkflowProcess {
 							if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 								org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 
+								caseID = eElement.getElementsByTagName("caseID")
+										.item(0).getTextContent();
+								
 								term = eElement.getElementsByTagName("Term")
 										.item(0).getTextContent();
 
@@ -247,6 +251,7 @@ public class GradeChangeDB implements WorkflowProcess {
 										.item(0).getTextContent();
 
 								dataMapFormInfo = new LinkedHashMap<String, Object>();
+								dataMapFormInfo.put("CASE_ID", caseID);
 								dataMapFormInfo.put("TERM", term);
 								dataMapFormInfo
 										.put("INSTRUCTOR_CWID", instCwid);
@@ -410,7 +415,7 @@ public class GradeChangeDB implements WorkflowProcess {
 											// DB
 
 											dataMapStudentInfo = new LinkedHashMap<String, Object>();
-
+											dataMapStudentInfo.put("CASE_ID", caseID);
 											dataMapStudentInfo
 													.put("TERM", term);
 											dataMapStudentInfo
