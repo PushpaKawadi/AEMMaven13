@@ -3,6 +3,7 @@ package com.aem.community.core.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.Servlet;
@@ -33,12 +34,12 @@ import com.aem.community.util.ConfigManager;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
+		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getAllMajors" })
-public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getDegreeObjectives" })
+public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeAllMajorsServlet.class);
+			.getLogger(CSUFMajorMinorChangeDegreeDetailsServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -48,14 +49,17 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String acadPlan = "";
-		String acadPlanType = "";
-
-		JSONArray majorMinorChangeDetails = null;
+		String acadProg = "";
+		String acadProgType ="";
+		String diplomaDesc = "";
+		
+		JSONArray degreeDetails = null;
 		if (req.getParameter("AcadProg") != null
-				&& !req.getParameter("AcadProg").trim().equals("") && req.getParameter("AcadPlanType") != null) {
-			acadPlan = req.getParameter("AcadProg");
-			acadPlanType = req.getParameter("AcadPlanType");
+				&& !req.getParameter("AcadProg").trim().equals("")) {
+			
+			acadProg = req.getParameter("AcadProg");			
+			acadProgType = req.getParameter("AcadProgType");			
+			diplomaDesc = req.getParameter("DiplomaDesc");			
 			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -63,15 +67,15 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				majorMinorChangeDetails = getStudentInformationDetails(acadPlan, acadPlanType, conn);
+				degreeDetails = getDegreeDetails(acadProg, acadProgType, diplomaDesc, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (majorMinorChangeDetails != null && !majorMinorChangeDetails.equals("")) {
-				response.getWriter().write(majorMinorChangeDetails.toString());
+			if (degreeDetails != null && !degreeDetails.equals("")) {
+				response.getWriter().write(degreeDetails.toString());
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
@@ -80,7 +84,6 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 			logger.info("Could Not Connect DB");
 		}
 	}
-	
 
 	/**
 	 * Executes SQL based on the user id and retrieves lookup information. Used
@@ -93,42 +96,66 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getStudentInformationDetails(String acadPlan, String acadPlanType,
+	public static JSONArray getDegreeDetails(String acadProg, String acadProgType, String diplomaDesc,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getAllMajorsDetails=" + acadPlan);
+		logger.info("Inside getGradeChnageDetails");		
 
 		ResultSet oRresultSet = null;
-		JSONObject instInfo = null;		
+		JSONObject degreeInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		String majorMinorChangeInfoSQL = "";
+		String degreeInfoSQL = "";
 		Statement oStatement = null;
-		try {
-			
-			majorMinorChangeInfoSQL = CSUFConstants.getAllMajors;
+		try {			
+				if(diplomaDesc != null && !diplomaDesc.equals("")) {
+					degreeInfoSQL = CSUFConstants.getChairDetails;					
 
-			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PROG>>", acadPlan);
-			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
-			
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);								
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadProgType);																	
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<DIPLOMA_DESCR>>", diplomaDesc);
+					
+				}else {
+					
+					degreeInfoSQL = CSUFConstants.getPrimaryDegreeObjective;					
 
-			oStatement = conn.createStatement();
-			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
-			
-			while (oRresultSet.next()) {
-				instInfo = new JSONObject();
-				
-				if(  !oRresultSet.getString("DIPLOMA_DESCR").isEmpty()) {
-					
-				    instInfo.put("Majors", oRresultSet.getString("DIPLOMA_DESCR"));				   
-							
-					jArray.put(instInfo);
-					
-					logger.info("JSON Object value="+instInfo);
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadProgType);					
 				}
+			
+			try {
+				
+				oStatement = conn.createStatement();
+				oRresultSet = oStatement.executeQuery(degreeInfoSQL);
+				
+			}catch (SQLException ex) {
+				degreeInfo = null;
+				logger.info("SQL Exception==="+ex);
+			} 		
+
+			while (oRresultSet.next()) {
+			
+				degreeInfo = new JSONObject();
+				if(diplomaDesc == null) {
+					
+					degreeInfo.put("Degree_Objective", oRresultSet.getString("DEGREE"));
+					
+				}else {
+					
+					degreeInfo.put("DeptID", oRresultSet.getString("DEPTID"));
+					degreeInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
+					degreeInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
+					degreeInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
+					degreeInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
+					degreeInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
+					degreeInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
+				}
+				
+				jArray.put(degreeInfo);
 			}
 
 		} catch (Exception oEx) {
-			instInfo = null;			
+			degreeInfo = null;
+			logger.info("Exception==="+oEx);
 
 		} finally {
 			try {

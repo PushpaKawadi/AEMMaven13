@@ -167,7 +167,9 @@ public class CSUFConstants {
 	public static final String studentPersonalInformation = "SELECT DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>')";
 	public static final String getMajorsDetails = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='UGD' and ACAD_PLAN_TYPE='MAJ'";
 	public static final String getCurrentMajorDetails = "select DIPLOMA_DESCR from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='UGD' and ACAD_PLAN_TYPE='MAJ' and PLAN_RANK='1'";
-	public static final String getAllMajors = "select distinct DIPLOMA_DESCR from AR_STDNT_ACTIV_PLAN where ACAD_PROG='UGD' and ACAD_PLAN_TYPE='MAJ' ORDER BY DIPLOMA_DESCR ASC";
+	public static final String getAllMajors = "select distinct DIPLOMA_DESCR from AR_STDNT_ACTIV_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>' ORDER BY DIPLOMA_DESCR ASC";
+	public static final String getPrimaryDegreeObjective = "select distinct DEGREE from AR_STDNT_ACTIV_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>' and DEGREE not in (' ') ORDER BY DEGREE ASC";
+	public static final String getChairDetails = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>' and DIPLOMA_DESCR='<<DIPLOMA_DESCR>>'"; 
 	//End of Major_Minor Change
 
 }
