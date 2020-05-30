@@ -46,14 +46,14 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 		Connection conn = null;
 		String userId = "";
 		String acadProg = "";
-		String acadProgType = "";
+		String acadPlanType = "";
 
 		JSONArray majorMinorChangeDetails = null;
 		if (req.getParameter("userID") != null && !req.getParameter("userID").trim().equals("")) {
 			userId = req.getParameter("userID");
 			
-			acadProg = req.getParameter("acadProg");
-			acadProgType = req.getParameter("acadProgType");
+			acadProg = req.getParameter("AcadProg");
+			acadPlanType = req.getParameter("AcadPlanType");
 
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -61,7 +61,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				majorMinorChangeDetails = getStudentInformationDetails(userId, conn);
+				majorMinorChangeDetails = getStudentInformationDetails(userId, acadProg, acadPlanType, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -88,9 +88,12 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getStudentInformationDetails(String userId, Connection conn) throws Exception {
+	public static JSONArray getStudentInformationDetails(String userId, String acadProg, String acadPlanType, Connection conn) throws Exception {
 
-		logger.info("Inside getMajorMinorChangeDetails=" + userId);
+		logger.info("Inside getMajorMinorChangeDetails===" );
+		logger.info("userID="+userId);
+		logger.info("acadProg="+acadProg);
+		logger.info("acadPlanType="+acadPlanType);
 
 		ResultSet oRresultSet = null;
 		
@@ -105,8 +108,11 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 
 			majorMinorChangeInfoSQL = CSUFConstants.getMajorsDetails;	
 			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
+			
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
 
-			logger.info("MajorMinor change sql=" + majorMinorChangeInfoSQL);
+			logger.info("getMajors change sql===" + majorMinorChangeInfoSQL);
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);			
 
@@ -140,7 +146,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 //				instInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
 //				instInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
 
-				String currentMajorInfo = getCurrentMajorDetails(userId, conn);
+				String currentMajorInfo = getCurrentMajorDetails(userId, acadProg, acadPlanType, conn);
 				instInfo.put("Current_Major", currentMajorInfo);				
 
 				jArray.put(instInfo);
@@ -166,7 +172,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 		return jArray;
 	}
 
-	public static String getCurrentMajorDetails(String userId, Connection conn) throws Exception {
+	public static String getCurrentMajorDetails(String userId, String acadProg, String acadPlanType, Connection conn) throws Exception {
 
 		logger.info("Inside getCurrentMajorDetails=" + userId);
 
@@ -179,6 +185,9 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 
 			majorMinorChangeInfoSQL = CSUFConstants.getCurrentMajorDetails;
 			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
+			
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
 			logger.info("MajorMinor change Major List sql=" + majorMinorChangeInfoSQL);
 			
 			oStatement = conn.createStatement();

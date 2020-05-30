@@ -3,6 +3,7 @@ package com.aem.community.core.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.Servlet;
@@ -35,10 +36,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getAllMajors" })
-public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getAllConcentration" })
+public class CSUFMajorMinorChangeConcentrationServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeAllMajorsServlet.class);
+			.getLogger(CSUFMajorMinorChangeConcentrationServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -48,14 +49,16 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
+		String userId = "";
 		String acadProg = "";
 		String acadPlanType = "";
 
 		JSONArray majorMinorChangeDetails = null;
-		if (req.getParameter("AcadProg") != null
-				&& !req.getParameter("AcadProg").trim().equals("") && req.getParameter("AcadPlanType") != null) {
+		if (req.getParameter("userID") != null && !req.getParameter("userID").trim().equals("")) {
+			userId = req.getParameter("userID");
+			
 			acadProg = req.getParameter("AcadProg");
-			acadPlanType = req.getParameter("AcadPlanType");
+			acadPlanType = req.getParameter("AcadPlanType");			
 			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -63,7 +66,7 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				majorMinorChangeDetails = getStudentInformationDetails(acadProg, acadPlanType, conn);
+				majorMinorChangeDetails = getAllConcentrationDetails(userId, acadProg, acadPlanType, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -93,10 +96,10 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getStudentInformationDetails(String acadProg, String acadPlanType,
+	public static JSONArray getAllConcentrationDetails(String userId, String acadProg, String acadPlanType, 
 			Connection conn) throws Exception {
 
-		logger.info("Inside getAllMajorsDetails=" + acadProg);
+		logger.info("Inside getAllConcentrationDetails=");		
 
 		ResultSet oRresultSet = null;
 		JSONObject instInfo = null;		
@@ -105,26 +108,35 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 		Statement oStatement = null;
 		try {
 			
-			majorMinorChangeInfoSQL = CSUFConstants.getAllMajors;
+			majorMinorChangeInfoSQL = CSUFConstants.getAllConcentration;
 
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
+			
 			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);
 			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
-			
 
-			oStatement = conn.createStatement();
-			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
+			logger.info("getAllConcentration change sql=" + majorMinorChangeInfoSQL);
+			
+			try {
+				oStatement = conn.createStatement();
+				oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
+			}catch(SQLException ex) {
+				logger.info("SQLException=="+ex);
+			}
+			
 			
 			while (oRresultSet.next()) {
 				instInfo = new JSONObject();
 				
-				if(  !oRresultSet.getString("DIPLOMA_DESCR").isEmpty()) {
+				//if(  !oRresultSet.getString("DIPLOMA_DESCR").isEmpty()) {
 					
-				    instInfo.put("Majors", oRresultSet.getString("DIPLOMA_DESCR"));				   
+				    instInfo.put("AllConcentration", oRresultSet.getString("CONCENTRATION"));	
+				    //instInfo.put("CurrentConcentration", oRresultSet.getString("CONCENTRATION"));
 							
 					jArray.put(instInfo);
 					
-					logger.info("JSON Object value="+instInfo);
-				}
+					logger.info("JSON Object value="+jArray);
+				//}
 			}
 
 		} catch (Exception oEx) {
