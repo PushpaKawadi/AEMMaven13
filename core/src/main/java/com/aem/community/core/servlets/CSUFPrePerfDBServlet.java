@@ -103,23 +103,14 @@ public class CSUFPrePerfDBServlet extends SlingSafeMethodsServlet {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		//String userIDSQL = "select * from aem_mpp_self_eval where empid='899943393' and review_period_from='16-APR-19' and review_period_to='15-APR-20' and deptid='10100'";
 		SimpleDateFormat fromUser = new SimpleDateFormat("yyyy-MM-dd");
 		SimpleDateFormat reqFormat = new SimpleDateFormat("dd-MMM-yy");
 		String userIDSQL = CSUFConstants.PrePerfReviewSQL;
 		
 		userIDSQL = userIDSQL.replaceAll("<<empid>>", empID);
-		logger.info("Empid="+userIDSQL);
-		
 		userIDSQL = userIDSQL.replaceAll("<<review_period_from>>", reqFormat.format(fromUser.parse(reviewPeriodFrom)));
-		logger.info("From="+userIDSQL);
-		
 		userIDSQL = userIDSQL.replaceAll("<<review_period_to>>", reqFormat.format(fromUser.parse(reviewPeriodTo)));
-		logger.info("To="+userIDSQL);
-		
 		userIDSQL = userIDSQL.replaceAll("<<deptid>>", deptID);
-		logger.info("Dept="+userIDSQL);
-		
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();

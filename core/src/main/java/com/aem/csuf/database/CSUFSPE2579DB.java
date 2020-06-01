@@ -58,7 +58,6 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
 		String ratingPeriodFrom = "";
 		String ratingPeriodTo = "";
 		String empId = "";
@@ -217,11 +216,6 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			workflowInstance = workItem.getWorkflow().getId();
@@ -705,32 +699,6 @@ public class CSUFSPE2579DB implements WorkflowProcess {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					log.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;

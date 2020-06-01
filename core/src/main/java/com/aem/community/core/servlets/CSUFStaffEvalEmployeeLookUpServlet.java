@@ -43,13 +43,19 @@ import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=MPP Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST,
-		"sling.servlet.paths=" + "/bin/getStaffManagerAdminDetailsLookup" })
-public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFGetStaffManagerAdminDetails.class);
-	private static final long serialVersionUID = 1L;
+/**
+ * Servlet that writes some sample content into the response. It is mounted for
+ * all resources of a specific Sling resource type. The
+ * {@link SlingSafeMethodsServlet} shall be used for HTTP methods that are
+ * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
+ */
 
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getStaffEvalEmployeeLookup" })
+public class CSUFStaffEvalEmployeeLookUpServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFStaffEvalEmployeeLookUpServlet.class);
+	private static final long serialVersionUID = 1L;
+	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
@@ -57,42 +63,42 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 			throws ServletException, IOException {
 		Connection conn = null;
 
-		String deptid = "";
+		String userID = "";
 		String cwid = "";
+		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("deptid") != null && req.getParameter("deptid") != "" && req.getParameter("cwid") != null
+		if (req.getParameter("cwid") != null
 				&& req.getParameter("cwid") != "") {
-			deptid = req.getParameter("deptid");
 			cwid = req.getParameter("cwid");
-			logger.info("Got deptid =" + deptid);
-			logger.info("Got EmpID =" + cwid);
+			logger.info("userid =" + userID);
+			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, deptid, "SPE2579");
+				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, "SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
+			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String deptid, String docType)
+	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String docType)
 			throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = CSUFConstants.staffManagerAdminDetailsSQL;
-		String lookupFields = CSUFConstants.staffManagerAdminDetailsLookUpFields;
+		String emplIDSQL = CSUFConstants.staffEvalEmplIDSQL;
+		String lookupFields = CSUFConstants.staffEvalLookupFieldsEmpLookup;
 		String[] fields = lookupFields.split(",");
-		emplIDSQL = emplIDSQL.replaceAll("<<DEPT_ID>>", deptid);
-		emplIDSQL = emplIDSQL.replaceAll("<<EMP_ID>>", cwid);
+		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
@@ -104,7 +110,6 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 				}
 				jArray.put(employeeEvalDetails);
 			}
-			logger.info("Got Manager/Admin Details =" + jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
@@ -117,7 +122,7 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 
 				}
 			} catch (Exception e) {
-				logger.error("Exception in CSUFEmployeeLookUpServlet=" + e.getMessage());
+				logger.error("Exception in CSUFEmployeeLookUpServlet="+e.getMessage());
 				e.getStackTrace();
 			}
 		}

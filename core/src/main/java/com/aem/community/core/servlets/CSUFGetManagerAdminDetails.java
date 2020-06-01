@@ -69,7 +69,6 @@ public class CSUFGetManagerAdminDetails extends SlingSafeMethodsServlet {
 
 		String deptid = "";
 		String cwid = "";
-		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("deptid") != null
 				&& req.getParameter("deptid") != ""
@@ -104,7 +103,6 @@ public class CSUFGetManagerAdminDetails extends SlingSafeMethodsServlet {
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		String emplIDSQL = CSUFConstants.managerAdminDetailsSQL;
-		//String lookupFields = ConfigManager.getValue("lookupFields");
 		String lookupFields = CSUFConstants.managerAdminDetailsLookUpFields;
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<DEPT_ID>>", deptid);
@@ -121,6 +119,7 @@ public class CSUFGetManagerAdminDetails extends SlingSafeMethodsServlet {
 				}
 				jArray.put(employeeEvalDetails);
 			}
+			logger.info("Emp Details ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
@@ -143,31 +142,5 @@ public class CSUFGetManagerAdminDetails extends SlingSafeMethodsServlet {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 }

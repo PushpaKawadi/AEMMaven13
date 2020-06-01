@@ -43,11 +43,11 @@ import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read SPE Unit4 Support Doc",
-		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPE Unit4 Support Doc" })
-public class ReadSPEUnit4SupDocs implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Read SPE Custodial Support Doc",
+		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read SPECustodial Support Doc" })
+public class CSUFReadSPECustodialSupDoc implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(ReadSPEUnit4SupDocs.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFReadSPECustodialSupDoc.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
 	@Override
@@ -71,6 +71,8 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 		String hrCoordId = null;
 		String administratorId = null;
 		String attachmentMimeType = "";
+		String reviewPeriodFrom = null;
+		String reviewPeriodTo = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 
 		// if (xmlNode != null) {
@@ -122,12 +124,12 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 						empId = empIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//FirstName", doc,
+								.evaluate("//StaffFirstName", doc,
 										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//LastName", doc,
+								.evaluate("//StaffLastName", doc,
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 											
@@ -136,7 +138,7 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 						cbid = cbidNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//DepartmentID", doc,
+								.evaluate("//Department_ID", doc,
 										XPathConstants.NODE);
 						deptId = deptIdNode.getFirstChild().getNodeValue();
 
@@ -168,6 +170,14 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 						.evaluate("//AdminUserID", doc,
 								XPathConstants.NODE);
 						administratorId = administratorIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodFrom",
+								doc, XPathConstants.NODE);
+						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
+
+						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath.evaluate("//ReviewPeriodTo", doc,
+								XPathConstants.NODE);
+						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -211,8 +221,23 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 								is = attachmentSubNode.getProperty("jcr:data").getBinary().getStream();
 								byte[] bytes = IOUtils.toByteArray(is);
 								encodedPDF = Base64.getEncoder().encodeToString(bytes);
-
-								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUNIT4SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," + "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE4SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+								String fromYear = reviewPeriodFrom.substring(0, 4);
+								String fromMonth = reviewPeriodFrom.substring(5, 7);
+								String endYear = reviewPeriodTo.substring(0, 4);
+								String endMonth = reviewPeriodTo.substring(5, 7);
+									String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+											+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+											+ "\"AttachmentType\": " + "\"SPECustodialSupDoc\"" + ","
+											+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+											+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+											+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPECUSTSD\""
+											+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear + "\","
+											+ "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\""
+											+ evaluationType + "\"," + "\"StartMonth\":\"" + fromMonth + "\","
+											+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\"" + empUserId
+											+ "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
+											+ "\"HRCoordUserID\":\"" + hrCoordId + "\","
+											+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 								if (encodedPDF != null && lastName != null && firstName != null) {
 									log.error("Read inner suppoting doc");
@@ -291,7 +316,23 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 							// log.error("bytes="+bytes);
 							encodedPDF = Base64.getEncoder().encodeToString(bytes);
 
-							String jsonString = "{" + "\"FirstName\": \"" + firstName + "\"," + "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" 	+ empId + "\"," + "\"AttachmentType\": " + "\"SPEUNIT4SupDoc\"" + "," + "\"AttachmentMimeType\": \"" + attachmentMimeType + "\"," +"\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\"," + "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPE4SD\"" + ","  + "\"EndMonth\":" + "\"04\"" + "," + "\"EndYear\":" + "\"2020\"" + "," + "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\"" + evaluationType + "\"," + "\"StartMonth\":" + "\"04\"" + "," + "\"StartYear\":" + "\"2019\"" + "," + "\"EmpUserID\":\"" + empUserId + "\"," + "\"ManagerUserID\":\"" + managerUserId + "\"," + "\"HRCoordUserID\":\"" + hrCoordId + "\"," + "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
+							String fromYear = reviewPeriodFrom.substring(0, 4);
+							String fromMonth = reviewPeriodFrom.substring(5, 7);
+							String endYear = reviewPeriodTo.substring(0, 4);
+							String endMonth = reviewPeriodTo.substring(5, 7);
+								String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
+										+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \"" + empId + "\","
+										+ "\"AttachmentType\": " + "\"SPECustodialSupDoc\"" + ","
+										+ "\"AttachmentMimeType\": \"" + attachmentMimeType + "\","
+										+ "\"Attachment\":\"" + encodedPDF + "\"," + "\"CBID\": \"" + cbid + "\","
+										+ "\"DepartmentID\": \"" + deptId + "\"," + "\"DocType\":" + "\"SPECUSTSD\""
+										+ "," + "\"EndMonth\":\"" + endMonth + "\"," + "\"EndYear\":\"" + endYear + "\","
+										+ "\"OverallRating\":\"" + overallRating + "\"," + "\"EvaluationType\":\""
+										+ evaluationType + "\"," + "\"StartMonth\":\"" + fromMonth + "\","
+										+ "\"StartYear\":\"" + fromYear + "\"," + "\"EmpUserID\":\"" + empUserId
+										+ "\"," + "\"ManagerUserID\":\"" + managerUserId + "\","
+										+ "\"HRCoordUserID\":\"" + hrCoordId + "\","
+										+ "\"AppropriateAdminUserID\":\"" + administratorId + "\"}";
 
 							if (encodedPDF != null && lastName != null && firstName != null) {
 								log.error("Read outer suppoting doc");
@@ -299,8 +340,6 @@ public class ReadSPEUnit4SupDocs implements WorkflowProcess {
 								try {
 									String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
 									url = new URL(filenetUrl);
-									
-									//log.info("jsonString=" + jsonString);
 								} catch (MalformedURLException e) {
 									e.printStackTrace();
 								}

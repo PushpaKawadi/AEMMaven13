@@ -65,7 +65,6 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 
 		String userID = "";
 		String cwid = "";
-		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
 				&& req.getParameter("cwid") != "") {
@@ -86,7 +85,6 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
@@ -112,6 +110,7 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 				}
 				jArray.put(employeeEvalDetails);
 			}
+			logger.info("Emp Details ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
@@ -133,31 +132,5 @@ public class CSUFEmployeeLookUpServlet extends SlingSafeMethodsServlet {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 }

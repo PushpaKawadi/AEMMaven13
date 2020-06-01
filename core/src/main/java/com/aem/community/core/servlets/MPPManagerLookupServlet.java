@@ -59,7 +59,6 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	
 	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
@@ -79,7 +78,7 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				mppManagerDetails = getMppEvalManagerDetails(emplId,deptid, conn, "SPE2579");
+				mppManagerDetails = getMppEvalManagerDetails(emplId, deptid, conn, "SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -90,8 +89,8 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 		}
 	}
 
-	public static JSONArray getMppEvalManagerDetails(String emplId,String deptid, Connection oConnection, String docType)
-			throws Exception {
+	public static JSONArray getMppEvalManagerDetails(String emplId, String deptid, Connection oConnection,
+			String docType) throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject mppEvalManagerDetails;
 		JSONArray jArray = new JSONArray();
@@ -135,31 +134,5 @@ public class MPPManagerLookupServlet extends SlingSafeMethodsServlet {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 }

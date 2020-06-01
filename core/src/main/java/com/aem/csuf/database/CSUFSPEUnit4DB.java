@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -44,7 +45,8 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-
+	@Reference
+	private GlobalConfigService globalConfigService;
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -105,7 +107,10 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 		String hrInitials = "";		
 		String hrComment = "";
 		String workflowInstance = "";
-		
+		String division = "";
+		String division_name = "";
+		String basedOnObs = "";
+		String basedOnObs1 = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -164,144 +169,106 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 							ratingPeriodFrom = eElement.getElementsByTagName("RatingPeriodFrom")
 									.item(0).getTextContent();
-							log.info("RatingPeriodFrom="+ratingPeriodFrom);
 							ratingPeriodTo = eElement.getElementsByTagName("RatingPeriodTo")
 									.item(0).getTextContent();
 							draftDate = eElement.getElementsByTagName("draftDate")
 									.item(0).getTextContent();
-							log.info("RatingPeriodTo="+ratingPeriodTo);
 							empId = eElement.getElementsByTagName("EmpID")
 									.item(0).getTextContent();
-							log.info("empId="+empId);
 							empRCD = eElement.getElementsByTagName("EmpRCD")
 									.item(0).getTextContent();
-							log.info("empRCD="+empRCD);
 							cbid = eElement.getElementsByTagName("CBID")
 									.item(0).getTextContent();
-							log.info("cbid="+cbid);
 							classification = eElement.getElementsByTagName("Classification")
 									.item(0).getTextContent();
-							log.info("classification="+classification);
 							range = eElement.getElementsByTagName("Range")
 									.item(0).getTextContent();
-							log.info("range="+range);
 							evaluationType = eElement.getElementsByTagName("EvaluationType")
 									.item(0).getTextContent();
-							log.info("evaluationType="+evaluationType);
-									
 							firstName = eElement.getElementsByTagName("FirstName")
 									.item(0).getTextContent();
-							log.info("firstName="+firstName);
 							lastName = eElement.getElementsByTagName("LastName")
 									.item(0).getTextContent();
-							log.info("lastName="+lastName);
 							departmentID = eElement.getElementsByTagName("DepartmentID")
 									.item(0).getTextContent();
-							log.info("departmentID="+departmentID);
 							departmentName = eElement.getElementsByTagName("DepartmentName")
 									.item(0).getTextContent();
-							log.info("departmentName="+departmentName);
 							quality = eElement.getElementsByTagName("Quality")
 									.item(0).getTextContent();
-							log.info("quality="+quality);
 							quantity = eElement.getElementsByTagName("Quantity")
 									.item(0).getTextContent();
-							log.info("quantity="+quantity);
 							professionalJudgement = eElement.getElementsByTagName("ProfessionalJudgement")
 									.item(0).getTextContent();
-							log.info("professionalJudgement="+professionalJudgement);
 							contributionCampus = eElement.getElementsByTagName("ContributionCampus")
-									.item(0).getTextContent();		
-							log.info("contributionCampus="+contributionCampus);
+									.item(0).getTextContent();	
 							jobStrengthComment = eElement.getElementsByTagName("JobStrengthComment")
 									.item(0).getTextContent();
-							log.info("jobStrengthComment="+jobStrengthComment);
 							sectionBComment = eElement.getElementsByTagName("SectiotnBComment")
 									.item(0).getTextContent();
-							log.info("sectionBComment="+sectionBComment);
 							sectionCComment = eElement.getElementsByTagName("SectionCProgressComment")
 									.item(0).getTextContent();
-							log.info("sectionCComment="+sectionCComment);
 							sectionDComment = eElement.getElementsByTagName("SectionDImprovementComment")
 									.item(0).getTextContent();
-							log.info("sectionDComment="+sectionDComment);
 							sectionEComment = eElement.getElementsByTagName("SectionEImprovementComment")
 									.item(0).getTextContent();
-							log.info("sectionEComment="+sectionEComment);
 							probEmployee = eElement.getElementsByTagName("ProbEmployee")
 									.item(0).getTextContent();
-							log.info("probEmployee="+probEmployee);
 							overallRating = eElement.getElementsByTagName("OverallRating")
 									.item(0).getTextContent();	
-							log.info("overallRating="+overallRating);
 							evalCB = eElement.getElementsByTagName("EvalCB")
 									.item(0).getTextContent();
-							log.info("evalCB="+evalCB);
 							empDidNoSignCB = eElement.getElementsByTagName("EmpDidNotSignCB")
 									.item(0).getTextContent();
 							evalName = eElement.getElementsByTagName("EvaluatorNameSign")
 									.item(0).getTextContent();
-							log.info("evalName="+evalName);
 							evalSign = eElement.getElementsByTagName("EvaluatorSign")
 									.item(0).getTextContent();
-							log.info("evalSign="+evalSign);
 							evalSignDate = eElement.getElementsByTagName("EvaluatorDate")
 									.item(0).getTextContent();
-							log.info("evalSignDate="+evalSignDate);
 							evalComment = eElement.getElementsByTagName("EvaluatorComment")
 									.item(0).getTextContent();
-							log.info("evalComment="+evalComment);
 							hrCoordCB = eElement.getElementsByTagName("HRCooCB")
 									.item(0).getTextContent();
-							log.info("hrCoordCB="+hrCoordCB);
 							hrCoordSign = eElement.getElementsByTagName("HRCoordinatorSign")
 									.item(0).getTextContent();
-							log.info("hrCoordSign="+hrCoordSign);
 							hrCoordDate = eElement.getElementsByTagName("HRCoordinatorSignDate")
 									.item(0).getTextContent();
-							log.info("hrCoordDate="+hrCoordDate);
 							hrCoordComment = eElement.getElementsByTagName("HRCoordinatorSignComment")
 									.item(0).getTextContent();
-							log.info("hrCoordComment="+hrCoordComment);
 							empCB = eElement.getElementsByTagName("EmpCB").item(0)
 									.getTextContent();
-							log.info("empCB="+empCB);
 							empSign = eElement.getElementsByTagName("EmpSign").item(0)
 									.getTextContent();
-							log.info("empSign="+empSign);
 							empDate = eElement.getElementsByTagName("EmpDate")
 									.item(0).getTextContent();
-							log.info("empDate="+empDate);
 							empComment = eElement.getElementsByTagName("EmpComment")
 									.item(0).getTextContent();
-							log.info("empComment="+empComment);
 							adminCb = eElement.getElementsByTagName("AdminCB")
 									.item(0).getTextContent();
-							log.info("adminCb="+adminCb);
 							adminName = eElement.getElementsByTagName("AdminName")
 									.item(0).getTextContent();
-							log.info("adminName="+adminName);
 							adminSign = eElement.getElementsByTagName("AdminSign")
 									.item(0).getTextContent();
-							log.info("adminSign="+adminSign);
 							adminDate = eElement.getElementsByTagName("AdminDate")
 									.item(0).getTextContent();
-							log.info("adminDate="+adminDate);
 							adminComment = eElement.getElementsByTagName("AdminComment")
 									.item(0).getTextContent();
-							log.info("adminComment="+adminComment);
 							hrCB = eElement.getElementsByTagName("HRDICB")
 									.item(0).getTextContent();
-							log.info("hrCB="+hrCB);
 							hrInitials = eElement.getElementsByTagName("HRDIInitials")
 									.item(0).getTextContent();
-							log.info("hrInitials="+hrInitials);
 							hrDate = eElement.getElementsByTagName("HRDIDate")
 									.item(0).getTextContent();
-							log.info("hrDate="+hrDate);
 							hrComment = eElement.getElementsByTagName("HRDIComment")
 									.item(0).getTextContent();
-							log.info("hrComment="+hrComment);
+							division = eElement.getElementsByTagName("division")
+									.item(0).getTextContent();
+							division_name = eElement.getElementsByTagName("divisionName")
+									.item(0).getTextContent();
+							basedOnObs = eElement.getElementsByTagName("BasedOnObservation")
+									.item(0).getTextContent();
+							basedOnObs1 = eElement.getElementsByTagName("BasedOnObservation1")
+									.item(0).getTextContent();
 						}
 					}			
 					dataMap = new LinkedHashMap<String, Object>();
@@ -398,6 +365,10 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 					dataMap.put("HR_DATE", hrDateObj);
 					dataMap.put("HR_COMMENT", hrComment);
 					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
+					dataMap.put("BASED_ON_OBSERVATION", basedOnObs);
+					dataMap.put("BASED_ON_OBSERVATION1", basedOnObs1);
+					dataMap.put("DIVISION", division);
+					dataMap.put("DIVISION_NAME", division_name);
 					
 					log.error("Datamap Size=" + dataMap.size());
 
@@ -416,7 +387,9 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 
 			}
 		}
-		conn = jdbcConnectionService.getAemDEVDBConnection();
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertSPEData(conn, dataMap);
@@ -425,32 +398,6 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					log.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;

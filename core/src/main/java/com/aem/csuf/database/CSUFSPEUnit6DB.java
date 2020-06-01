@@ -668,32 +668,6 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 	@Reference
 	private DataSourcePool source;
 
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					log.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
-
 	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		if (conn != null) {

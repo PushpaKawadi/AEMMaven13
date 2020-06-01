@@ -283,6 +283,8 @@ public class CSUFSPEUnit6Filenet implements WorkflowProcess {
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			}finally{
+				con.disconnect();
 			}
 
 		}

@@ -33,6 +33,7 @@ import com.adobe.granite.workflow.WorkflowSession;
 import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
+import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
@@ -44,7 +45,8 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-	
+	@Reference
+	private GlobalConfigService globalConfigService;
 
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
@@ -217,6 +219,8 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 		String hrCoordinatorSignComment = "";
 		String workflowInstance = "";
 		String hrCooCB = "";
+		String division = "";
+		String division_name = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -460,6 +464,8 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
 							hrComments = eElement.getElementsByTagName("HRDIComment").item(0).getTextContent();
 							hrOverallRate = eElement.getElementsByTagName("HRDIOverallRate").item(0).getTextContent();
+							division = eElement.getElementsByTagName("division").item(0).getTextContent();
+							division_name = eElement.getElementsByTagName("divisionName").item(0).getTextContent();
 
 						}
 					}
@@ -565,7 +571,7 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 					dataMap.put("DR1_RATING_1", dependReli1);
 					dataMap.put("DR2_RATING_2", dependReli2);
 					dataMap.put("DR3_RATING_3", dependReli3);
-					dataMap.put("DR3_RATING_3", dependReli4);
+					dataMap.put("DR4_RATING_4", dependReli4);
 					dataMap.put("DR5_RATING_5", dependReli5);
 
 					dataMap.put("WRITTENCOMM", writtenCommRB);
@@ -684,7 +690,8 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 					dataMap.put("HR_INITIALS", initials);
 					dataMap.put("HR_OVERALL_RATING", hrOverallRate);
 					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
-					log.error("put complete");
+					dataMap.put("DIVISION", division);
+					dataMap.put("DIVISION_NAME", division_name);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {
@@ -702,7 +709,9 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 
 			}
 		}
-		conn = jdbcConnectionService.getAemDEVDBConnection();
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		log.info("DataSourceVal==========" + dataSourceVal);
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		if (conn != null) {
 			log.error("Connection Successfull");
 			insertSPEData(conn, dataMap);
@@ -711,32 +720,6 @@ public class CSUFSPEUnit1DB implements WorkflowProcess {
 
 	@Reference
 	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					log.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 	public void insertSPEData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;

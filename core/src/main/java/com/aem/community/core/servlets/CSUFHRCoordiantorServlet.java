@@ -69,9 +69,7 @@ public class CSUFHRCoordiantorServlet extends SlingSafeMethodsServlet {
 		String division = "";
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("division") != null && req.getParameter("division") != "") {
-			division = req.getParameter("division");
-			//conn = jdbcConnectionService.getAemProdDBConnection();
-			
+			division = req.getParameter("division");			
 			String dataSourceVal = globalConfigService.getAEMDataSource();
 			logger.info("DataSourceVal==========" + dataSourceVal);
 			conn = jdbcConnectionService.getDBConnection(dataSourceVal);
