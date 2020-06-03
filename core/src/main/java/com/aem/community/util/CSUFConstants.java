@@ -174,6 +174,13 @@ public class CSUFConstants {
 	public static final String getChairDetails = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>' and DIPLOMA_DESCR='<<DIPLOMA_DESCR>>'";
 	public static final String getAllConcentration = "select distinct CONCENTRATION from AR_STDNT_ACTIV_PLAN where DIPLOMA_DESCR in (select DIPLOMA_DESCR from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>')";
 	public static final String getCurrentConcentration = "select distinct CONCENTRATION from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
+	public static final String getConcentrationSignature = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>' and CONCENTRATION='<<CONCENTRATION>>'";
+	public static final String getAllEmhpasis = "select distinct EMP_DESCR from AR_STDNT_ACTIV_PLAN where ACAD_PROG='<<ACAD_PROG>>' AND ACAD_SUBPLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>' AND DIPLOMA_DESCR in(select distinct DIPLOMA_DESCR from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>'))";
+	public static final String getCurrentEmphasis = "select distinct EMP_DESCR from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_SUBPLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>'";
+	public static final String getEmphasisSignature = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_SUBPLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>' and EMP_DESCR='<<EMP_DESCR>>'";
+	public static final String getAllMinors = "select DIPLOMA_DESCR from AR_STDNT_ACTIV_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>'";
+	public static final String getCurrentMinors = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>'";
+	public static final String getMinorSignature = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PLAN where ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_SUBPLAN_TYPE>>' AND DIPLOMA_DESCR='<<DIPLOMA_DESCR>>'";
 	//End of Major_Minor Change
 	
 	//Start of Evaluation Emp Lookup		
