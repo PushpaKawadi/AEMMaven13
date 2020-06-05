@@ -126,17 +126,13 @@ public class CSUFMajorMinorChangeConcentrationServlet extends SlingSafeMethodsSe
 			
 			
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();
-				
-				//if(  !oRresultSet.getString("DIPLOMA_DESCR").isEmpty()) {
+				instInfo = new JSONObject();			
 					
-				    instInfo.put("AllConcentration", oRresultSet.getString("CONCENTRATION"));	
-				    //instInfo.put("CurrentConcentration", oRresultSet.getString("CONCENTRATION"));
+				    instInfo.put("AllConcentration", oRresultSet.getString("CONCENTRATION"));
+				    
 							
 					jArray.put(instInfo);
-					
-					logger.info("JSON Object value="+jArray);
-				//}
+				
 			}
 
 		} catch (Exception oEx) {

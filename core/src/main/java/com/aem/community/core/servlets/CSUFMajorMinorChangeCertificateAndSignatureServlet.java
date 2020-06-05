@@ -56,7 +56,7 @@ public class CSUFMajorMinorChangeCertificateAndSignatureServlet extends SlingSaf
 		
 		logger.info("Inside doGET Method");
 		
-		JSONArray degreeDetails = null;
+		JSONArray certificateDetails = null;
 		if ((req.getParameter("AcadProg") != null && !req.getParameter("AcadProg").trim().equals(""))) {
 			userId = req.getParameter("userID"); 			
 			acadProg = req.getParameter("AcadProg");			
@@ -69,15 +69,15 @@ public class CSUFMajorMinorChangeCertificateAndSignatureServlet extends SlingSaf
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getCurrentConcentrationSignatureDetails(userId, acadProg, acadPlanType, certificate, conn);
+				certificateDetails = getCertificateDetails(userId, acadProg, acadPlanType, certificate, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (degreeDetails != null && !degreeDetails.equals("")) {
-				response.getWriter().write(degreeDetails.toString());
+			if (certificateDetails != null && !certificateDetails.equals("")) {
+				response.getWriter().write(certificateDetails.toString());
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
@@ -98,15 +98,15 @@ public class CSUFMajorMinorChangeCertificateAndSignatureServlet extends SlingSaf
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getCurrentConcentrationSignatureDetails(String userId, String acadProg, String acadPlanType, String certificate,
+	public static JSONArray getCertificateDetails(String userId, String acadProg, String acadPlanType, String certificate,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChangeDetails");			
 
 		ResultSet oRresultSet = null;
-		JSONObject concentrationInfo = new JSONObject();
+		JSONObject certificateInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		String concentrationInfoSQL = "";
+		String certificateInfoSQL = "";
 		Statement oStatement = null;
 		try {			
 //				if(certificate != null && !certificate.equals("")) {
@@ -117,46 +117,48 @@ public class CSUFMajorMinorChangeCertificateAndSignatureServlet extends SlingSaf
 //					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<DIPLOMA_DESCR>>", certificate);
 //					logger.info("SQL for get Minor Signature = " + concentrationInfoSQL);
 //					
-//				}else if(userId != null && !userId.equals("")) {
-//					
-//					concentrationInfoSQL = CSUFConstants.getCurrentMinors;					
-//					
-//					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<getUser_ID>>", userId);
-//					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-//					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
-//					logger.info("SQL for get Current Minor = " + concentrationInfoSQL);
-//					
-//				}else {
+//				}
+				if(userId != null && !userId.equals("")) {
 					
-					concentrationInfoSQL = CSUFConstants.getAllCertificate;				
+					certificateInfoSQL = CSUFConstants.getCurrentCertificate;					
+					
+					certificateInfoSQL = certificateInfoSQL.replaceAll("<<getUser_ID>>", userId);
+					certificateInfoSQL = certificateInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
+					certificateInfoSQL = certificateInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
+					logger.info("SQL for get Current Certificate = " + certificateInfoSQL);
+					
+				}else {
+					
+					certificateInfoSQL = CSUFConstants.getAllCertificate;				
 										
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
-					logger.info("SQL for get All Certificate = " + concentrationInfoSQL);
-				//}
+					certificateInfoSQL = certificateInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
+					certificateInfoSQL = certificateInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
+					logger.info("SQL for get All Certificate = " + certificateInfoSQL);
+				}
 			
 			try {
 				
 				oStatement = conn.createStatement();
-				oRresultSet = oStatement.executeQuery(concentrationInfoSQL);
+				oRresultSet = oStatement.executeQuery(certificateInfoSQL);
 				
 			}catch (SQLException ex) {
-				concentrationInfoSQL = null;
+				certificateInfoSQL = null;
 				logger.info("SQL Exception==="+ex);
 			} 		
 
 			while (oRresultSet.next()) {
 			
-				concentrationInfo = new JSONObject();
-				//if(certificate == null && userId == null) {
+				certificateInfo = new JSONObject();
+				if(userId == null) {
 					
-					concentrationInfo.put("All_Certificate", oRresultSet.getString("TRNSCR_DESCR"));
+					certificateInfo.put("All_Certificate", oRresultSet.getString("TRNSCR_DESCR"));
 					
-//				}else if(certificate == null ){
-//					
-//					concentrationInfo.put("Current_Minor", oRresultSet.getString("DIPLOMA_DESCR"));					
-//					
-//				}else {
+				}else {
+					
+					certificateInfo.put("Current_Certificate", oRresultSet.getString("DESCR"));					
+					
+				}
+//				else {
 //					concentrationInfo.put("DeptID", oRresultSet.getString("DEPTID"));
 //					concentrationInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
 //					concentrationInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
@@ -166,11 +168,11 @@ public class CSUFMajorMinorChangeCertificateAndSignatureServlet extends SlingSaf
 //					concentrationInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
 //				}
 				
-				jArray.put(concentrationInfo);
+				jArray.put(certificateInfo);
 			}
 
 		} catch (Exception oEx) {
-			concentrationInfo = null;
+			certificateInfo = null;
 			logger.info("Exception==="+oEx);
 
 		} finally {

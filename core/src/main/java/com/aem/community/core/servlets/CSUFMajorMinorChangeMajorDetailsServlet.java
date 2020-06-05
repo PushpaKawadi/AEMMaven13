@@ -151,7 +151,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 
 				jArray.put(instInfo);
 			}
-			logger.info("Jarray value is==" + jArray);
+			
 
 		} catch (Exception oEx) {
 			instInfo = null;

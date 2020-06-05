@@ -56,7 +56,7 @@ public class CSUFMajorMinorChangeMinorAndSignatureServlet extends SlingSafeMetho
 		
 		logger.info("Inside doGET Method");
 		
-		JSONArray degreeDetails = null;
+		JSONArray minorDetails = null;
 		if ((req.getParameter("AcadProg") != null && !req.getParameter("AcadProg").trim().equals(""))) {
 			userId = req.getParameter("userID"); 			
 			acadProg = req.getParameter("AcadProg");			
@@ -69,15 +69,15 @@ public class CSUFMajorMinorChangeMinorAndSignatureServlet extends SlingSafeMetho
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getCurrentConcentrationSignatureDetails(userId, acadProg, acadPlanType, minor, conn);
+				minorDetails = getminorDetails(userId, acadProg, acadPlanType, minor, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (degreeDetails != null && !degreeDetails.equals("")) {
-				response.getWriter().write(degreeDetails.toString());
+			if (minorDetails != null && !minorDetails.equals("")) {
+				response.getWriter().write(minorDetails.toString());
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
@@ -98,79 +98,79 @@ public class CSUFMajorMinorChangeMinorAndSignatureServlet extends SlingSafeMetho
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getCurrentConcentrationSignatureDetails(String userId, String acadProg, String acadPlanType, String minor,
+	public static JSONArray getminorDetails(String userId, String acadProg, String acadPlanType, String minor,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChangeDetails");			
 
 		ResultSet oRresultSet = null;
-		JSONObject concentrationInfo = new JSONObject();
+		JSONObject minorInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		String concentrationInfoSQL = "";
+		String minorInfoSQL = "";
 		Statement oStatement = null;
 		try {			
 				if(minor != null && !minor.equals("")) {
-					concentrationInfoSQL = CSUFConstants.getMinorSignature;						
+					minorInfoSQL = CSUFConstants.getMinorSignature;						
 
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);								
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);																	
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<DIPLOMA_DESCR>>", minor);
-					logger.info("SQL for get Minor Signature = " + concentrationInfoSQL);
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);								
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);																	
+					minorInfoSQL = minorInfoSQL.replaceAll("<<DIPLOMA_DESCR>>", minor);
+					logger.info("SQL for get Minor Signature = " + minorInfoSQL);
 					
 				}else if(userId != null && !userId.equals("")) {
 					
-					concentrationInfoSQL = CSUFConstants.getCurrentMinors;					
+					minorInfoSQL = CSUFConstants.getCurrentMinors;					
 					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<getUser_ID>>", userId);
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
-					logger.info("SQL for get Current Minor = " + concentrationInfoSQL);
+					minorInfoSQL = minorInfoSQL.replaceAll("<<getUser_ID>>", userId);
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
+					logger.info("SQL for get Current Minor = " + minorInfoSQL);
 					
 				}else {
 					
-					concentrationInfoSQL = CSUFConstants.getAllMinors;				
+					minorInfoSQL = CSUFConstants.getAllMinors;				
 										
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
-					logger.info("SQL for get All Minor = " + concentrationInfoSQL);
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
+					minorInfoSQL = minorInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);
+					logger.info("SQL for get All Minor = " + minorInfoSQL);
 				}
 			
 			try {
 				
 				oStatement = conn.createStatement();
-				oRresultSet = oStatement.executeQuery(concentrationInfoSQL);
+				oRresultSet = oStatement.executeQuery(minorInfoSQL);
 				
 			}catch (SQLException ex) {
-				concentrationInfoSQL = null;
+				minorInfoSQL = null;
 				logger.info("SQL Exception==="+ex);
 			} 		
 
 			while (oRresultSet.next()) {
 			
-				concentrationInfo = new JSONObject();
+				minorInfo = new JSONObject();
 				if(minor == null && userId == null) {
 					
-					concentrationInfo.put("All_Minor", oRresultSet.getString("DIPLOMA_DESCR"));
+					minorInfo.put("All_Minor", oRresultSet.getString("DIPLOMA_DESCR"));
 					
 				}else if(minor == null ){
 					
-					concentrationInfo.put("Current_Minor", oRresultSet.getString("DIPLOMA_DESCR"));					
+					minorInfo.put("Current_Minor", oRresultSet.getString("DIPLOMA_DESCR"));					
 					
 				}else {
-					concentrationInfo.put("DeptID", oRresultSet.getString("DEPTID"));
-					concentrationInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
-					concentrationInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
-					concentrationInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
-					concentrationInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
-					concentrationInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
-					concentrationInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
+					minorInfo.put("DeptID", oRresultSet.getString("DEPTID"));
+					minorInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
+					minorInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
+					minorInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
+					minorInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
+					minorInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
+					minorInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
 				}
 				
-				jArray.put(concentrationInfo);
+				jArray.put(minorInfo);
 			}
 
 		} catch (Exception oEx) {
-			concentrationInfo = null;
+			minorInfo = null;
 			logger.info("Exception==="+oEx);
 
 		} finally {

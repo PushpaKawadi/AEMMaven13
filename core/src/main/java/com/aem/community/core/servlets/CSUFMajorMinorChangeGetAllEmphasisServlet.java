@@ -131,9 +131,7 @@ public class CSUFMajorMinorChangeGetAllEmphasisServlet extends SlingSafeMethodsS
 				
 				    instInfo.put("AllEmphasis", oRresultSet.getString("EMP_DESCR"));					    
 							
-					jArray.put(instInfo);					
-					logger.info("JSON Object value (Emphasis)="+jArray);
-				
+					jArray.put(instInfo);			
 			}
 
 		} catch (Exception oEx) {

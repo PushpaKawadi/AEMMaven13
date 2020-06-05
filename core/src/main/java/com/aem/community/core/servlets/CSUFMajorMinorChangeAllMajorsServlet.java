@@ -121,9 +121,7 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 					
 				    instInfo.put("Majors", oRresultSet.getString("DIPLOMA_DESCR"));				   
 							
-					jArray.put(instInfo);
-					
-					logger.info("JSON Object value="+instInfo);
+					jArray.put(instInfo);					
 				}
 			}
 
