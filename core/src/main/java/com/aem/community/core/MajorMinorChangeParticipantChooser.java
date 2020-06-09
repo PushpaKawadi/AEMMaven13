@@ -12,7 +12,7 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 
 @Component(service = ParticipantStepChooser.class, property = {
-		"chooser.label=Major/Minor Change dynamic participant chooser" })
+		"chooser.label=Grade Change dynamic participant chooser" })
 
 public class MajorMinorChangeParticipantChooser implements ParticipantStepChooser {
 	private static final Logger logger = LoggerFactory.getLogger(MajorMinorChangeParticipantChooser.class);
@@ -28,19 +28,25 @@ public class MajorMinorChangeParticipantChooser implements ParticipantStepChoose
 		String valStr1;
 		String valStr2;
 		for (Map.Entry<String, Object> entry1 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
-			logger.info("Major/Minor Key ==== " + entry1.getKey() + ",Major/Minor Value === " + entry1.getValue());
-			if (entry1.getKey().matches("stage")) {
-				valStr1 = entry1.getValue().toString();
-				if (valStr1.equals("ToChair")) {
-					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
-						if (entry2.getKey().matches("newMajorChairUserId") || entry2.getKey().matches("secondMajorChairUserId") 
-								|| entry2.getKey().matches("dropMajorChairUserId")) {
+			logger.info("Major/Minor Key = " + entry1.getKey() + ", Major/Minor Value = " + entry1.getValue());
+			if (entry1.getKey().matches("stage")) {				
+				valStr1 = entry1.getValue().toString();			
+				if (valStr1.equals("ToChairNewMajor")) {					
+					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
+						if (entry2.getKey().matches("newMajorChairUserId")) {							
 							valStr2 = entry2.getValue().toString();
-							logger.info("The value of valSTR2222 is------"+valStr2);
 							participant = valStr2;							
 						}
 					}
-				}				
+				}
+				if (valStr1.equals("ToChairSecondMajor")) {					
+					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
+						if (entry2.getKey().matches("secondMajorChairUserId")) {							
+							valStr2 = entry2.getValue().toString();
+							participant = valStr2;							
+						}
+					}
+				}
 				if (valStr1.equals("ToRecords")) {
 					for (Map.Entry<String, Object> entry4 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
 						if (entry4.getKey().matches("recordsDepartmentID")) {
