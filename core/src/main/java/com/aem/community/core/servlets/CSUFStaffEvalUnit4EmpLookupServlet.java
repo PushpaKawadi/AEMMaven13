@@ -50,10 +50,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getStaffEvalEmployeeLookup" })
-public class CSUFStaffEvalEmployeeLookUpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFStaffEvalEmployeeLookUpServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Unit 4 Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/staffEvalUnit4EmplIDLookup" })
+public class CSUFStaffEvalUnit4EmpLookupServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFStaffEvalUnit4EmpLookupServlet.class);
 	private static final long serialVersionUID = 1L;
 	
 	@Reference
@@ -95,8 +95,8 @@ public class CSUFStaffEvalEmployeeLookUpServlet extends SlingSafeMethodsServlet 
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-		String emplIDSQL = CSUFConstants.staffEvalEmplIDSQL;
-		String lookupFields = CSUFConstants.staffEvalLookupFieldsEmpLookup;
+		String emplIDSQL = CSUFConstants.staffEvalUnit4EmplIDSQL;
+		String lookupFields = CSUFConstants.staffEvalUnit4LookupFieldsEmpLookup;
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 		Statement oStatement = null;
@@ -107,6 +107,10 @@ public class CSUFStaffEvalEmployeeLookUpServlet extends SlingSafeMethodsServlet 
 				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
+				}
+				if(!employeeEvalDetails.isNull("EMPLID")) {
+					String empEmailID = getEmailID(oConnection,cwid);
+					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
 				}
 				jArray.put(employeeEvalDetails);
 			}
@@ -127,6 +131,26 @@ public class CSUFStaffEvalEmployeeLookUpServlet extends SlingSafeMethodsServlet 
 			}
 		}
 		return jArray;
+	}
+	public static String getEmailID(Connection oConnection,String cwid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
+			try {
+
+			String getEmailSql = CSUFConstants.getEmailAddressCwidLookup;
+			getEmailSql = getEmailSql.replaceAll("<<Emp_ID>>", cwid);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
+			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
 	}
 
 	@Reference

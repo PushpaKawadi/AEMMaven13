@@ -185,9 +185,45 @@ public class CSUFConstants {
 	public static final String getCurrentCertificate = "select distinct DESCR from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
 	//End of Major_Minor Change
 	
-	//Start of Evaluation Emp Lookup		
-	public static final String staffEvalEmplIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select Working_Title from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle, B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID = Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID";	
-	public static final String staffEvalLookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";		
-	//End of Evaluation Emp Lookup
-
+	//Start of Evaluation Unit 4 Emp Lookup		
+	//public static final String staffEvalUnit4EmplIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select Working_Title from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle, B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID = Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID AND B.UNION_CD = 'R04'";
+	public static final String staffEvalUnit4EmplIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select Working_Title from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle, B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID = Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID";
+	public static final String staffEvalUnit4LookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";		
+	//End of Evaluation Unit 4  Emp Lookup
+	
+	//Start of Evaluation Cust Emp Lookup	
+	public static final String staffEvalCustEmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsCustEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Cust Emp Lookup
+	
+	//Start of Evaluation Conf Emp Lookup	
+	public static final String staffEvalConfEmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsConfEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Conf Emp Lookup
+	
+	//Start of Evaluation Unit1 Emp Lookup	
+	public static final String staffEvalUnit1EmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsUnit1EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Unit1 Emp Lookup
+	
+	//Start of Evaluation Unit2579 Emp Lookup	
+	public static final String staffEvalUnit2579EmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsUnit2579EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Unit2579 Emp Lookup
+	
+	//Start of Evaluation Unit6 Emp Lookup	
+	public static final String staffEvalUnit6EmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsUnit6EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Unit6 Emp Lookup
+	
+	//Start of Evaluation Unit8 Emp Lookup	
+	public static final String staffEvalUnit8EmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
+	public static final String lookupFieldsUnit8EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
+	//End of Evaluation Unit8 Emp Lookup
+	
+	//Start of Get Email Lookup
+	public static final String getEmailAddressCwidLookup = "select EMAILID from EMPL_ACT_DIR_DATA where EMPLOYEEID = '<<Emp_ID>>'";
+	public static final String getEmailAddressUserIdLookup = "select EMAILID from EMPL_ACT_DIR_DATA where USERID = '<<UID>>'";
+	//End of Get Email Lookup
+	
 }

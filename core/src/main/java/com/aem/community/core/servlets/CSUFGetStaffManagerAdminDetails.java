@@ -102,6 +102,16 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
 				}
+				if(!employeeEvalDetails.isNull("MANAGER_EMP_USERID")) {
+					String managerUid = employeeEvalDetails.getString("MANAGER_EMP_USERID");
+					String managerEmailID = getEmailID(oConnection,managerUid);
+					employeeEvalDetails.put("MANAGER_EMAIL_ID", managerEmailID);
+				}
+				if(!employeeEvalDetails.isNull("ADMIN_EMP_USERID")) {
+					String adminUid = employeeEvalDetails.getString("ADMIN_EMP_USERID");
+					String adminEmailID = getEmailID(oConnection,adminUid);
+					employeeEvalDetails.put("ADMIN_EMAIL_ID", adminEmailID);
+				}
 				jArray.put(employeeEvalDetails);
 			}
 			logger.info("Got Manager/Admin Details =" + jArray);
@@ -123,7 +133,26 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 		}
 		return jArray;
 	}
+	public static String getEmailID(Connection oConnection,String uid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
+			try {
 
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", uid);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
+			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
+	}
 	@Reference
 	private DataSourcePool source;
 

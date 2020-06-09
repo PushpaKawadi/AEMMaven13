@@ -111,7 +111,8 @@ public class MppPerfEvalDB implements WorkflowProcess {
 		String hrCoordinatorSignComment = "";
 		String workflowInstance = "";
 		String hrCooCB = "";
-		
+		String division = "";
+		String division_name = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -223,7 +224,10 @@ public class MppPerfEvalDB implements WorkflowProcess {
 							hrCB = eElement.getElementsByTagName("HRDICB").item(0)
 									.getTextContent();
 							hrCooCB = eElement.getElementsByTagName("HRCooCB").item(0).getTextContent();
-                    log.info("val save complete");
+							division = eElement.getElementsByTagName("division").item(0).getTextContent();
+							division_name = eElement.getElementsByTagName("divisionName").item(0).getTextContent();
+
+							log.info("val save complete");
 						}
 					}
 
@@ -328,6 +332,8 @@ public class MppPerfEvalDB implements WorkflowProcess {
 					dataMap.put("HRCOMMENT", hrComments);
 					dataMap.put("HRCB", hrCB);
 					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
+					dataMap.put("DIVISION", division);
+					dataMap.put("DIVISION_NAME", division_name);
 					log.error("put complete");
 
 				} catch (SAXException e) {
