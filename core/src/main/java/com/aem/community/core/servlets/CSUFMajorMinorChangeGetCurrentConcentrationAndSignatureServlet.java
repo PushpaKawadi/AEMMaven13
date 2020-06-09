@@ -36,7 +36,7 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getCurrentConcentrationAndSignatureServlet" })
+		"sling.servlet.paths=" + "/bin/getCurrentConcentration" })
 public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
 			.getLogger(CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet.class);
@@ -51,8 +51,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		Connection conn = null;
 		String userId = "";
 		String acadProg = "";
-		String acadPlanType ="";
-		String diploma = "";
+		String acadPlanType ="";		
 		
 		logger.info("Inside doGET Method");
 		
@@ -60,8 +59,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		if ((req.getParameter("AcadProg") != null && !req.getParameter("AcadProg").trim().equals(""))) {
 			userId = req.getParameter("userID"); 			
 			acadProg = req.getParameter("AcadProg");			
-			acadPlanType = req.getParameter("AcadPlanType");			
-			diploma = req.getParameter("Diploma");	
+			acadPlanType = req.getParameter("AcadPlanType");				
 			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -69,7 +67,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getCurrentConcentrationSignatureDetails(userId, acadProg, acadPlanType, diploma, conn);
+				degreeDetails = getCurrentConcentrationSignatureDetails(userId, acadProg, acadPlanType, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -98,7 +96,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getCurrentConcentrationSignatureDetails(String userId, String acadProg, String acadPlanType, String diploma,
+	public static JSONArray getCurrentConcentrationSignatureDetails(String userId, String acadProg, String acadPlanType,
 			Connection conn) throws Exception {
 
 		logger.info("Inside getGradeChnageDetails");		
@@ -108,22 +106,12 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		JSONArray jArray = new JSONArray();
 		String concentrationInfoSQL = "";
 		Statement oStatement = null;
-		try {			
-				if(diploma != null && !diploma.equals("")) {
-					concentrationInfoSQL = CSUFConstants.getConcentrationSignature;						
-
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);								
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);																	
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<CONCENTRATION>>", diploma);					
-					
-				}else {
-					
+		try {	
 					concentrationInfoSQL = CSUFConstants.getCurrentConcentration;					
 					
 					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<getUser_ID>>", userId);
 					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);					
-				}
+					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);							
 			
 			try {
 				
@@ -137,21 +125,9 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 
 			while (oRresultSet.next()) {
 			
-				concentrationInfo = new JSONObject();
-				if(diploma == null) {
+				concentrationInfo = new JSONObject();				
 					
-					concentrationInfo.put("Current_Concentration", oRresultSet.getString("CONCENTRATION"));
-					
-				}else {
-					
-					concentrationInfo.put("DeptID", oRresultSet.getString("DEPTID"));
-					concentrationInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
-					concentrationInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
-					concentrationInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
-					concentrationInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
-					concentrationInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
-					concentrationInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
-				}
+				concentrationInfo.put("Current_Concentration", oRresultSet.getString("CONCENTRATION"));
 				
 				jArray.put(concentrationInfo);
 			}
