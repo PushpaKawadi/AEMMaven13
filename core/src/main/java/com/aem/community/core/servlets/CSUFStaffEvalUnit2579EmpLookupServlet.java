@@ -50,102 +50,99 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getUserDetails" })
-public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFUserLookUpServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Staff Evaluation Unit 2,5,7 and 9 Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/staffEvalUnit2579EmplIDLookup" })
+public class CSUFStaffEvalUnit2579EmpLookupServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFStaffEvalUnit2579EmpLookupServlet.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
+	public void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
+
 		String userID = "";
+		String cwid = "";
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
+		if (req.getParameter("userID") != null && req.getParameter("userID") != "" && req.getParameter("cwid") != null
+				&& req.getParameter("cwid") != "") {
 			userID = req.getParameter("userID");
+			cwid = req.getParameter("cwid");
+			logger.info("userid =" + userID);
+			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getUserIDDetailsNew(userID, conn, "SPE2579");
+				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, userID, "SPE2579");
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
-
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
-			// Set JSON in String
 			response.getWriter().write(emplEvalDetails.toString());
 		}
 	}
 
-	public static JSONArray getUserIDDetailsNew(String userID, Connection oConnection, String docType)
+	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String userID, String docType)
 			throws Exception {
-
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
-
-		String userIDSQL = CSUFConstants.userIDSQL;
-
-		String lookupFields = CSUFConstants.lookupFieldsUserIdLookup;
-
+		String emplIDSQL = CSUFConstants.staffEvalUnit2579EmplIDSQL;
+		String lookupFields = CSUFConstants.lookupFieldsUnit2579EmpLookup;
 		String[] fields = lookupFields.split(",");
-
-		userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
+		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 		Statement oStatement = null;
 		try {
-
-			logger.info("inside try4");
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(userIDSQL);
-
+			oRresultSet = oStatement.executeQuery(emplIDSQL);			
 			while (oRresultSet.next()) {
-
 				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-
-				}
+				}	
 				if(!employeeEvalDetails.isNull("EMPLID")) {
-					String empEmailID = getEmailID(oConnection,userID);
+					String empEmailID = getEmailID(oConnection,cwid);
 					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
 				}
+				logger.info("Emp Details ="+jArray);
 				jArray.put(employeeEvalDetails);
-				logger.info("jArray=" + jArray);
-			}
-
+			}			
+			
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-
+			employeeEvalDetails = null;
 		} finally {
 			try {
 				if (oConnection != null) {
 					oConnection.close();
+					logger.info("Connection closed");
 
 				}
-
-			} catch (Exception exp) {
-				exp.printStackTrace();
+			} catch (Exception e) {
+				logger.error("Exception in CSUFEmployeeLookUpServlet="+e.getMessage());
+				e.getStackTrace();
 			}
 		}
-
 		return jArray;
 	}
-	public static String getEmailID(Connection oConnection,String uid) throws Exception {
+	
+	public static String getEmailID(Connection oConnection,String cwid) throws Exception {
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
 		String empEmail = "";
 			try {
 
-			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
-			getEmailSql = getEmailSql.replaceAll("<<UID>>", uid);
+			String getEmailSql = CSUFConstants.getEmailAddressCwidLookup;
+			getEmailSql = getEmailSql.replaceAll("<<Emp_ID>>", cwid);
 			oStatement = oConnection.createStatement();
 			
 			oRresultSet = oStatement.executeQuery(getEmailSql);
@@ -158,6 +155,7 @@ public class CSUFUserLookUpServlet extends SlingSafeMethodsServlet {
 		}		
 		return empEmail;
 	}
+
 	@Reference
 	private DataSourcePool source;
 
