@@ -45,9 +45,9 @@ import com.aem.community.core.services.GlobalConfigService;
 
 @Component(property = { Constants.SERVICE_DESCRIPTION + "=Read Pre Perf Eval Support Doc",
 		Constants.SERVICE_VENDOR + "=Thoughtfocus-CSUF", "process.label" + "=Read Pre Perf Eval Support Doc" })
-public class ReadPrePerfEvalSupDocs implements WorkflowProcess {
+public class CSUFReadPrePerfEvalSupDocs implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(ReadPrePerfEvalSupDocs.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFReadPrePerfEvalSupDocs.class);
 	@Reference
 	private GlobalConfigService globalConfigService;
 	@Override
