@@ -146,11 +146,35 @@ public class CSUFReadSPEUnit4SupDocs implements WorkflowProcess {
 								.evaluate("//OverallRating", doc,
 										XPathConstants.NODE);
 						overallRating = overallRatingNode.getFirstChild().getNodeValue();
-						
+						if(overallRating != null) {
+							if(overallRating.equals("1")) {
+								overallRating = "Unacceptable";
+							}
+							else if(overallRating.equals("2")) {
+								overallRating = "Below Expectations";
+							}else if(overallRating.equals("3")) {
+								overallRating = "Meets Expectations";
+							}else if(overallRating.equals("4")) {
+								overallRating = "Exceeds Expectations";
+							}else {
+								overallRating = "Outstanding";
+							}
+						}
 						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath
 								.evaluate("//EvaluationType", doc, XPathConstants.NODE);
 						evaluationType = evaluationTypeNode.getFirstChild().getNodeValue();
-
+						if(evaluationType != null) {
+							if(evaluationType.equals("1")) {
+								evaluationType = "Annual";
+							}
+							else if(evaluationType.equals("2")) {
+								evaluationType = "Temporary";
+							}else if(evaluationType.equals("3")) {
+								evaluationType = "Probationary";
+							}else {
+								evaluationType = "Special";
+							}
+						}
 						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath
 								.evaluate("//EmpUserID", doc,
 										XPathConstants.NODE);

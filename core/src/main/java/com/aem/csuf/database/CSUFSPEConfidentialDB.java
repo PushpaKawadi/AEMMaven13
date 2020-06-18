@@ -402,7 +402,7 @@ public class CSUFSPEConfidentialDB implements WorkflowProcess {
 									.getTextContent();
 							criteriaComment10 = eElement.getElementsByTagName("AdditionalCriteria10").item(0)
 									.getTextContent();
-							overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
+							overallRating = eElement.getElementsByTagName("OverallRating1").item(0).getTextContent();
 							supportFactorComments1 = eElement.getElementsByTagName("supportFactorComments1").item(0)
 									.getTextContent();
 							supportFactorComments2 = eElement.getElementsByTagName("supportFactorComments2").item(0)
