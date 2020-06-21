@@ -146,13 +146,14 @@ public class CSUFMajorMinorChangeGetCurrentEmphasisAndSignatureServlet extends S
 					
 				}else {
 					
-					concentrationInfo.put("DeptID", oRresultSet.getString("DEPTID"));
-					concentrationInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
-					concentrationInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
-					concentrationInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
-					concentrationInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
-					concentrationInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
-					concentrationInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
+					concentrationInfo.put("DEPTID", oRresultSet.getString("DEPTID"));
+					concentrationInfo.put("DEPTNAME", oRresultSet.getString("DEPTNAME"));
+					concentrationInfo.put("FUL_COLLEGE_NAME", oRresultSet.getString("FUL_COLLEGE_NAME"));
+					concentrationInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
+					concentrationInfo.put("CHAIR_EMPNAME", oRresultSet.getString("CHAIR_EMPNAME"));
+					concentrationInfo.put("CHAIR_EMPLID", oRresultSet.getString("CHAIR_EMPLID"));
+					//concentrationInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
+					concentrationInfo.put("CHAIR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				}
 				
 				jArray.put(concentrationInfo);

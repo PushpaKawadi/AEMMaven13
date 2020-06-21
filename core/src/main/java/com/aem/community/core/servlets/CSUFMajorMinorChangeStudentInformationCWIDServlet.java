@@ -3,7 +3,6 @@ package com.aem.community.core.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.Servlet;
@@ -36,10 +35,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getAllMajors" })
-public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getStudentPeronalInformationWithCWID" })
+public class CSUFMajorMinorChangeStudentInformationCWIDServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeAllMajorsServlet.class);
+			.getLogger(CSUFMajorMinorChangeStudentInformationCWIDServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -49,17 +48,20 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String acadProg = "";
-		String trnscrDescr = "";
+		String cwid = "";		
 
 		JSONArray majorMinorChangeDetails = null;
-
-		conn = jdbcConnectionService.getDocDBConnection();
+		if (req.getParameter("Cwid") != null
+				&& !req.getParameter("Cwid").trim().equals("")) {
+			cwid = req.getParameter("Cwid");
+			
+			conn = jdbcConnectionService.getDocDBConnection();
+		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				majorMinorChangeDetails = getStudentInformationDetails(acadProg, trnscrDescr, conn);
+				majorMinorChangeDetails = getStudentInformationDetails(cwid,  conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -77,6 +79,43 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 		}
 	}
 	
+	
+	/**
+	 * Gets the Unique case ID from Database sequence
+	 * 
+	 * @param oConnection - Database connection
+	 * @return - Case ID as string
+	 * @throws Exception
+	 */
+	public static String getCaseID(Connection oConnection) throws Exception {
+
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+
+		long caseID = 0;
+
+		try {
+
+			String sql = "Select AR_COURSE_WITHDRAWAL_SEQ.nextval as CASEID from dual";
+			logger.info("CaseID Function");			
+
+			oStatement = oConnection.createStatement();
+			oRresultSet = oStatement.executeQuery(sql);
+
+			if (oRresultSet.next()) {
+				caseID = oRresultSet.getLong("CASEID");
+			}
+			logger.info("CaseID Function=" + caseID);
+		} catch (Exception oEx) {
+
+			throw oEx;
+
+		}
+
+		return String.valueOf(caseID);
+
+	}
+	
 
 	/**
 	 * Executes SQL based on the user id and retrieves lookup information. Used
@@ -89,45 +128,49 @@ public class CSUFMajorMinorChangeAllMajorsServlet extends SlingSafeMethodsServle
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getStudentInformationDetails(String acadProg, String trnscrDescr,
+	public static JSONArray getStudentInformationDetails(String cwid,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getAllMajorsDetails=" + acadProg);
+		logger.info("Inside getMajorMinorChangeDetails=" + cwid);
 
 		ResultSet oRresultSet = null;
-		JSONObject instInfo = null;		
+		JSONObject instInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
 		String majorMinorChangeInfoSQL = "";
 		Statement oStatement = null;
 		try {
-				
-				majorMinorChangeInfoSQL = CSUFConstants.getAllMajorsUpdated;
-				logger.info("Updated ALl Major SQL is======"+majorMinorChangeInfoSQL);				
+			
+			majorMinorChangeInfoSQL = CSUFConstants.studentPersonalInformationCWID;
 
+			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll(
+					"<<CWID>>", cwid);
 			
-			try {
-				
-				oStatement = conn.createStatement();
-				oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
-				
-			}catch (SQLException ex) {
-				majorMinorChangeInfoSQL = null;
-				logger.info("SQL Exception==="+ex);
-			} 
+			logger.info("MajorMinor change sql=" + majorMinorChangeInfoSQL);
+			oStatement = conn.createStatement();
+			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
 			
+			
+			// Get the unique Case ID from database sequence
+			String caseID = getCaseID(conn);			
+
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();				
+				instInfo = new JSONObject();      
+				instInfo.put("CASEID", caseID);
 
-				instInfo.put("ACAD_PLAN", oRresultSet.getString("ACAD_PLAN"));	
-			    instInfo.put("ALL_MAJORS", oRresultSet.getString("PROGRAMS"));
-			
+				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));				
+				instInfo.put("student_FName", oRresultSet.getString("STUDENT_FNAME"));
+				instInfo.put("student_LName", oRresultSet.getString("STUDENT_LNAME"));
+				instInfo.put("student_Phone", oRresultSet.getString("STUDENT_PHONE"));
+				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));
+				instInfo.put("student_Email", oRresultSet.getString("STUDENT_EMAIL"));
+				//instInfo.put("student_Email", "pushpa.kawadi@thoughtfocus.com");
+				instInfo.put("ACAD_PROG", oRresultSet.getString("ACAD_PROG"));				
 
 				jArray.put(instInfo);
 			}
-	
 
 		} catch (Exception oEx) {
-			instInfo = null;			
+			instInfo = null;
 
 		} finally {
 			try {

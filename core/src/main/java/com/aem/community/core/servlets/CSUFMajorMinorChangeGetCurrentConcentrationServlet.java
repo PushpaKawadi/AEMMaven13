@@ -37,9 +37,9 @@ import com.aem.community.util.ConfigManager;
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
 		"sling.servlet.paths=" + "/bin/getCurrentConcentration" })
-public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet extends SlingSafeMethodsServlet {
+public class CSUFMajorMinorChangeGetCurrentConcentrationServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet.class);
+			.getLogger(CSUFMajorMinorChangeGetCurrentConcentrationServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -59,7 +59,8 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		if ((req.getParameter("AcadProg") != null && !req.getParameter("AcadProg").trim().equals(""))) {
 			userId = req.getParameter("userID"); 			
 			acadProg = req.getParameter("AcadProg");			
-			acadPlanType = req.getParameter("AcadPlanType");				
+			acadPlanType = req.getParameter("AcadPlanType");		
+			
 			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -67,7 +68,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getCurrentConcentrationSignatureDetails(userId, acadProg, acadPlanType, conn);
+				degreeDetails = getCurrentConcentrationDetails(userId, acadProg, acadPlanType, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -96,10 +97,10 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getCurrentConcentrationSignatureDetails(String userId, String acadProg, String acadPlanType,
+	public static JSONArray getCurrentConcentrationDetails(String userId, String acadProg, String acadPlanType,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails");		
+		logger.info("Inside getGradeChnageDetails");
 
 		ResultSet oRresultSet = null;
 		JSONObject concentrationInfo = new JSONObject();
@@ -107,11 +108,12 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationAndSignatureServlet exte
 		String concentrationInfoSQL = "";
 		Statement oStatement = null;
 		try {	
-					concentrationInfoSQL = CSUFConstants.getCurrentConcentration;					
+					concentrationInfoSQL = CSUFConstants.getCurrentConcentration;										
 					
 					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<getUser_ID>>", userId);
 					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);							
+					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
+					logger.info("final value of concentrationInfoSQL = "+ concentrationInfoSQL);
 			
 			try {
 				

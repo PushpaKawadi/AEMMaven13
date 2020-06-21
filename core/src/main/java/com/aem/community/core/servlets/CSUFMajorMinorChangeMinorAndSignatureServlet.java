@@ -157,13 +157,14 @@ public class CSUFMajorMinorChangeMinorAndSignatureServlet extends SlingSafeMetho
 					minorInfo.put("Current_Minor", oRresultSet.getString("DIPLOMA_DESCR"));					
 					
 				}else {
-					minorInfo.put("DeptID", oRresultSet.getString("DEPTID"));
-					minorInfo.put("DeptName", oRresultSet.getString("DEPTNAME"));
-					minorInfo.put("FullCollegeName", oRresultSet.getString("FUL_COLLEGE_NAME"));
-					minorInfo.put("ChairUserID", oRresultSet.getString("CHAIR_USERID"));
-					minorInfo.put("ChairEmpName", oRresultSet.getString("CHAIR_EMPNAME"));
-					minorInfo.put("ChairEmplID", oRresultSet.getString("CHAIR_EMPLID"));
-					minorInfo.put("ChairEmpEmail", oRresultSet.getString("CHAIR_EMAIL"));
+					minorInfo.put("DEPTID", oRresultSet.getString("DEPTID"));
+					minorInfo.put("DEPTNAME", oRresultSet.getString("DEPTNAME"));
+					minorInfo.put("FUL_COLLEGE_NAME", oRresultSet.getString("FUL_COLLEGE_NAME"));
+					minorInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
+					minorInfo.put("CHAIR_EMPNAME", oRresultSet.getString("CHAIR_EMPNAME"));
+					minorInfo.put("CHAIR_EMPLID", oRresultSet.getString("CHAIR_EMPLID"));
+					//minorInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					minorInfo.put("CHAIR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				}
 				
 				jArray.put(minorInfo);

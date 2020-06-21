@@ -3,6 +3,7 @@ package com.aem.community.core.servlets;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 
 import javax.servlet.Servlet;
@@ -32,31 +33,40 @@ import com.aem.community.util.ConfigManager;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/getCurrentMajor" })
-public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFMajorMinorChangeMajorDetailsServlet.class);
+@Component(service = Servlet.class, property = {
+		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
+		"sling.servlet.paths=" + "/bin/getCurrentAdditionalMajorsCode" })
+public class CSUFMajorMinorChangeCurrentAdditionalMajorsCODEServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory
+			.getLogger(CSUFMajorMinorChangeCurrentAdditionalMajorsCODEServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 
-	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
-			throws ServletException, IOException {
-		Connection conn = null;
+	protected void doGet(SlingHttpServletRequest req,
+			SlingHttpServletResponse response) throws ServletException,
+			IOException {
+		Connection conn = null;		
+		String trnscrDescr = "";
 		String userId = "";
 
 		JSONArray majorMinorChangeDetails = null;
-		if (req.getParameter("userID") != null && !req.getParameter("userID").trim().equals("")) {
-			userId = req.getParameter("userID");
-
+		
+		if ((req.getParameter("userID") != null && !req.getParameter("userID").trim().equals(""))) {
+			userId = req.getParameter("userID"); 
+			trnscrDescr = req.getParameter("TrnscrDescr"); 						
+			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
+
+		//conn = jdbcConnectionService.getDocDBConnection();
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				majorMinorChangeDetails = getStudentInformationDetails(userId, conn);
+				majorMinorChangeDetails = getStudentInformationDetails(userId, trnscrDescr, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -73,52 +83,58 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 			logger.info("Could Not Connect DB");
 		}
 	}
+	
 
 	/**
-	 * Executes SQL based on the user id and retrieves lookup information. Used in
-	 * Self lookup FEB forms
+	 * Executes SQL based on the user id and retrieves lookup information. Used
+	 * in Self lookup FEB forms
 	 * 
-	 * @param cwid        - CWID of employee
-	 * @param oConnection - Database connection
+	 * @param cwid
+	 *            - CWID of employee
+	 * @param oConnection
+	 *            - Database connection
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getStudentInformationDetails(String userId, Connection conn) throws Exception {
+	public static JSONArray getStudentInformationDetails(String userId, String trnscrDescr,
+			Connection conn) throws Exception {
 
-		logger.info("Inside getMajorMinorChangeDetails" );	
+		logger.info("Inside getAllMajorsDetails=" + trnscrDescr);
 
 		ResultSet oRresultSet = null;
-		
-		JSONObject instInfo = new JSONObject();
-		
+		JSONObject instInfo = null;		
 		JSONArray jArray = new JSONArray();
-		
-		String majorMinorChangeInfoSQL = "";		
+		String majorMinorChangeInfoSQL = "";
 		Statement oStatement = null;
-		
 		try {
+				
+				majorMinorChangeInfoSQL = CSUFConstants.getCurrentAdditionalMajorsAcadPlan;
+				logger.info("ADDITIONAL Major current SQL is======"+majorMinorChangeInfoSQL);				
+				
+				majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
+				majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<PROGRAM>>", trnscrDescr);
 			
-			majorMinorChangeInfoSQL = CSUFConstants.getCurrentMajorDetailsUpdated;
-			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
-
-			logger.info("Current Major sql=" + majorMinorChangeInfoSQL);
-
-			oStatement = conn.createStatement();
-			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);			
+			try {
+				
+				oStatement = conn.createStatement();
+				oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
+				
+			}catch (SQLException ex) {
+				majorMinorChangeInfoSQL = null;
+				logger.info("SQL Exception==="+ex);
+			} 
 			
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();
-				
-				instInfo.put("ACAD_PLAN", oRresultSet.getString("ACAD_PLAN"));						
-				instInfo.put("CURRENT_MAJOR", oRresultSet.getString("PROGRAMS"));
-				
+				instInfo = new JSONObject();				
+
+				instInfo.put("ACAD_PLAN", oRresultSet.getString("ACAD_PLAN"));	
+
 				jArray.put(instInfo);
-				
 			}
-			
+	
 
 		} catch (Exception oEx) {
-			instInfo = null;
+			instInfo = null;			
 
 		} finally {
 			try {
@@ -132,8 +148,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 				exp.getStackTrace();
 
 			}
-		}		
+		}
 		return jArray;
-		
-	}	
+	}
 }

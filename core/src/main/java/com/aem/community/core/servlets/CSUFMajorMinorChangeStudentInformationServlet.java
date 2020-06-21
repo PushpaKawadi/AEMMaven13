@@ -163,6 +163,7 @@ public class CSUFMajorMinorChangeStudentInformationServlet extends SlingSafeMeth
 				instInfo.put("student_Phone", oRresultSet.getString("STUDENT_PHONE"));
 				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));
 				instInfo.put("student_Email", oRresultSet.getString("STUDENT_EMAIL"));
+				//instInfo.put("student_Email", "pushpa.kawadi@thoughtfocus.com");
 				instInfo.put("ACAD_PROG", oRresultSet.getString("ACAD_PROG"));				
 
 				jArray.put(instInfo);

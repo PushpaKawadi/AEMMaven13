@@ -128,7 +128,8 @@ public class CSUFMajorMinorChangeGetConcentrationChairDetailsServlet extends Sli
 					concentrationInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
 					concentrationInfo.put("CHAIR_EMPNAME", oRresultSet.getString("CHAIR_EMPNAME"));
 					concentrationInfo.put("CHAIR_EMPLID", oRresultSet.getString("CHAIR_EMPLID"));
-					concentrationInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					//concentrationInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					concentrationInfo.put("CHAIR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				
 				jArray.put(concentrationInfo);
 			}

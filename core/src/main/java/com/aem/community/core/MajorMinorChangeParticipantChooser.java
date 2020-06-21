@@ -55,6 +55,22 @@ public class MajorMinorChangeParticipantChooser implements ParticipantStepChoose
 						}
 					}
 				}
+				if (valStr1.equals("ToChairEmphasis")) {					
+					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
+						if (entry2.getKey().matches("emphasisChairUserID")) {							
+							valStr2 = entry2.getValue().toString();
+							participant = valStr2;							
+						}
+					}
+				}
+				if (valStr1.equals("ToChairMinor")) {					
+					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
+						if (entry2.getKey().matches("minorChairUserID")) {							
+							valStr2 = entry2.getValue().toString();
+							participant = valStr2;							
+						}
+					}
+				}
 				if (valStr1.equals("ToRecords")) {
 					for (Map.Entry<String, Object> entry4 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
 						if (entry4.getKey().matches("recordsDepartmentID")) {

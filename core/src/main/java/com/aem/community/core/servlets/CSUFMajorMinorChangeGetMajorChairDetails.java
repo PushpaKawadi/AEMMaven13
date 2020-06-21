@@ -133,7 +133,8 @@ public class CSUFMajorMinorChangeGetMajorChairDetails extends SlingSafeMethodsSe
 					degreeInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
 					degreeInfo.put("CHAIR_EMPNAME", oRresultSet.getString("CHAIR_EMPNAME"));
 					degreeInfo.put("CHAIR_EMPLID", oRresultSet.getString("CHAIR_EMPLID"));
-					degreeInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					//degreeInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					degreeInfo.put("CHAIR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				
 				jArray.put(degreeInfo);
 			}

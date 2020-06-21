@@ -33,9 +33,9 @@ import com.aem.community.util.ConfigManager;
  */
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/getCurrentMajor" })
-public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFMajorMinorChangeMajorDetailsServlet.class);
+		"sling.servlet.methods=" + HttpConstants.METHOD_GET, "sling.servlet.paths=" + "/bin/getCurrentAdditionalMajor" })
+public class CSUFMajorMinorChangeCurrentAdditionalMajorServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFMajorMinorChangeCurrentAdditionalMajorServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -98,7 +98,7 @@ public class CSUFMajorMinorChangeMajorDetailsServlet extends SlingSafeMethodsSer
 		
 		try {
 			
-			majorMinorChangeInfoSQL = CSUFConstants.getCurrentMajorDetailsUpdated;
+			majorMinorChangeInfoSQL = CSUFConstants.getCurrentAdditionalMajors;
 			majorMinorChangeInfoSQL = majorMinorChangeInfoSQL.replaceAll("<<getUser_ID>>", userId);
 
 			logger.info("Current Major sql=" + majorMinorChangeInfoSQL);
