@@ -28,13 +28,13 @@ public class CSUFConstants {
 	// End of Get Staff's Manager/Admin details
 
 	// Start of Get Manager/Admin details lookup
-	public static final String managerAdminDetailsSQL = "SELECT DISTINCT (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) AS MANAGERUSERID, (SELECT USERID FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>' ) ) ) ) ) AS ADMINUSERID, (SELECT (FNAME || ' ' || LNAME) FROM cmsrda.ful_emp_cwid_nt_name WHERE CWID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and EMPLID IN (SELECT EMPLID FROM FUL_ECM_JOB_VW WHERE POSITION_NBR IN (SELECT REPORTS_TO FROM FUL_ECM_JOB_VW WHERE UNION_CD='M80' and emplid='<<EMP_ID>>' AND deptid  = '<<DEPT_ID>>'))))) AS ADMINFULLNAME FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN ful_emp_cwid_nt_name E ON E.CWID = A.EMPLID WHERE B.EMPLID = '<<EMP_ID>>'";
-	public static final String managerAdminDetailsLookUpFields = "MANAGERUSERID,ADMINUSERID,ADMINFULLNAME";
+	public static final String managerAdminDetailsSQL = "SELECT MANAGER_EMP_USERID,ADMIN_EMP_USERID, ADMIN_EMP_NAME FROM STAFF_EVALUATION WHERE EMPLID = '<<EMP_ID>>' AND DEPTID = '<<DEPT_ID>>' AND UNION_CD ='M80'";
+	public static final String managerAdminDetailsLookUpFields = "MANAGER_EMP_USERID,ADMIN_EMP_USERID,ADMIN_EMP_NAME";
 	// End of MPP Get Manager/Admin details lookup
 
 	// Start of self eval get manager details
-	public static final String mppManagerSQL = "Select USERID from ful_emp_cwid_nt_name where CWID = (Select EMPLID from FUL_ECM_JOB_VW where POSITION_NBR in (select REPORTS_TO from FUL_ECM_JOB_VW where emplid='<<EMPL_ID>>' and deptid='<<DEPTID>>'))";
-	public static final String mppManagerLookupFields = "USERID";
+	public static final String mppManagerSQL = "SELECT MANAGER_EMP_USERID FROM STAFF_EVALUATION where EMPLID='<<EMPL_ID>>' and DEPTID='<<DEPTID>>' AND UNION_CD ='M80'";
+	public static final String mppManagerLookupFields = "MANAGER_EMP_USERID";
 	// End of self eval get manager details
 
 	// Start of MPP Self eval user lookup

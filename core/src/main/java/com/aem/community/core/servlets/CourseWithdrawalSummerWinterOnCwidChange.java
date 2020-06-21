@@ -151,9 +151,9 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 			String studentCourseInfoSQL = "";
 
 			if (typeOfWithdrawal.equals("1")) {
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid = '<<CWID>>' and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <=  NON_MED_WD_END_DT";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid = '<<CWID>>' and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <=  TO_DATE(NON_MED_WD_END_DT,'DD-MON-YYYY')";
 			} else {
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid='<<CWID>>' and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= MED_WD_END_DT";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where cwid='<<CWID>>' and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <= TO_DATE(MED_WD_END_DT,'DD-MON-YYYY')";
 			}
 
 			// Get current typeOfWithdrawal details
@@ -209,8 +209,8 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 				String courseID = oRresultSet.getString("CRSE_ID");
 				String courseName = oRresultSet.getString("CRSE_NAME");
 
-				// String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
-				String[] chairInfo = getChairInfo(oConnection, courseID);
+				 String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
+				//String[] chairInfo = getChairInfo(oConnection, courseID);
 
 				courseInfo.put("CHAIR_NAME", chairInfo[1]);
 				// courseInfo.put("CHAIR_CWID", "806225686");
@@ -349,7 +349,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 
 	}
 
-	private static String[] getChairInfo(Connection oConnection, String courseId) throws Exception {
+	private static String[] getChairInfo(Connection oConnection, String courseId, String courseName) throws Exception {
 
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
@@ -358,10 +358,10 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 
 		try {
 
-			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>'";
+			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>' and LOWER(TRIM(CRSE_NAME))=LOWER(TRIM('<<courseName>>'))";
 
 			sql = sql.replaceAll("<<CRSE_ID>>", courseId);
-			// sql = sql.replaceAll("<<courseName>>", courseName);
+			sql = sql.replaceAll("<<courseName>>", courseName);
 
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);

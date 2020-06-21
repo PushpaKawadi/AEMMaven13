@@ -139,7 +139,7 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 						deptId = deptIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//OverallRating", doc,
+								.evaluate("//OverallRating1", doc,
 										XPathConstants.NODE);
 						overallRating = overallRatingNode.getFirstChild().getNodeValue();
 						
@@ -193,7 +193,7 @@ public class CSUFSPECONFIDFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Staff_Performance_Evaluation_Unit8.pdf")) {
+			if (filePath.contains("Staff_Performance_Evaluation_Confidential.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(

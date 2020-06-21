@@ -241,7 +241,7 @@ public class CourseWithdrawalInfoServletNew extends SlingSafeMethodsServlet {
 				logger.info("courseID=" + courseID);
 				//String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
 				
-				String[] chairInfo = getChairInfo(oConnection, courseID);
+				String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
 
 				courseInfo.put("CHAIR_NAME", chairInfo[1]);
 				//courseInfo.put("CHAIR_CWID", "806225686");
@@ -411,7 +411,7 @@ public class CourseWithdrawalInfoServletNew extends SlingSafeMethodsServlet {
 
 	}
 
-	private static String[] getChairInfo(Connection oConnection, String courseId) throws Exception {
+	private static String[] getChairInfo(Connection oConnection, String courseId, String courseName) throws Exception {
 
 
 		ResultSet oRresultSet = null;
@@ -425,10 +425,10 @@ public class CourseWithdrawalInfoServletNew extends SlingSafeMethodsServlet {
 
 			//String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>'";
 
-			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>'";
+			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>' and LOWER(TRIM(CRSE_NAME))=LOWER(TRIM('<<courseName>>'))";
 
 			sql = sql.replaceAll("<<CRSE_ID>>", courseId);
-			//sql = sql.replaceAll("<<courseName>>", courseName);
+			sql = sql.replaceAll("<<courseName>>", courseName);
 
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);

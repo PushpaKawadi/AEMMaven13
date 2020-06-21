@@ -112,6 +112,10 @@ public class CSUFMPPSelfEvaluationServlet extends SlingSafeMethodsServlet {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
 
 				}
+				if(!employeeEvalDetails.isNull("EMPLID")) {
+					String empEmailID = getEmailID(oConnection,userID);
+					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
+				}
 				jArray.put(employeeEvalDetails);
 				logger.info("jArray=" + jArray);
 			}
@@ -138,30 +142,24 @@ public class CSUFMPPSelfEvaluationServlet extends SlingSafeMethodsServlet {
 	@Reference
 	private DataSourcePool source;
 
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
+	public static String getEmailID(Connection oConnection,String uid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
 			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", uid);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
+			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
+	}
 }

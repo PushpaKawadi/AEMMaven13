@@ -123,7 +123,7 @@ public class CSUFStaffPerfEvalReminderServlet extends SlingSafeMethodsServlet {
 										+ "<li>Or, log on to the <a href=\"https://my.fullerton.edu/Portal\" target=\"_blank\" style=\"color: blue;font-size : 16px;\">CSUF portal</a> and go to Titan Online. Search for AEM or Adobe in the search box on the left-hand side of the campus main portal page. Then click the link for Adobe Experience Manager (AEM) Inbox, Or click this <a href=\"https://aemformsprd.fullerton.edu/aem/inbox.html\" target=\"_blank\" style=\"color: blue;font-size : 16px;\">link</a> to be taken directly to the AEM Inbox</li>"
 										+ "<li>Select the form from the AEM inbox and then click Open</li>"
 										+ "<li>Review the form and add Comment (optional) under <b>Signature and Acknowledgement</b> section. Click Agree or Disagree (at the left-hand top of the page) to move the form through the workflow</li>"
-										+ "<li>Once the evaluation is submitted by the manager you must complete the review within "
+										+ "<li>Please complete the review within "
 										+ timeline + " days</li>"
 										+ "<li>For more instructions on how to review your evaluation, please review the <a href=\"https://csuf.screenstepslive.com/s/12867/m/90548/l/1244991-mpp-performance-evaluation-form?token=4bngD-EZoL_6Sl6-2nhhiQLLChZZyPx6\" target=\"_blank\" style=\"color: black;font-size : 16px;font-style:italic;font-weight: bold; \">Staff Evaluation handbook</a></li>"
 										+ "</ul>"

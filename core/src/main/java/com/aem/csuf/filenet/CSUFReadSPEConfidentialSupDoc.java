@@ -143,7 +143,7 @@ public class CSUFReadSPEConfidentialSupDoc implements WorkflowProcess {
 						deptId = deptIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//OverallRating", doc,
+								.evaluate("//OverallRating1", doc,
 										XPathConstants.NODE);
 						overallRating = overallRatingNode.getFirstChild().getNodeValue();
 						
