@@ -280,7 +280,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 
 		try {
 
-			String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where STRM = '<<TERM>>'";
+			String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CFULPRD where STRM = '<<TERM>>'";
 			sql = sql.replaceAll("<<TERM>>", term);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);
