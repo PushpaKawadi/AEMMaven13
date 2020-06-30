@@ -209,6 +209,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 		String hrCooCB = "";
 		String division = "";
 		String division_name = "";
+		String hrCoo_name = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -429,7 +430,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 							hrOverallRate = eElement.getElementsByTagName("HRDIOverallRate").item(0).getTextContent();
 							division = eElement.getElementsByTagName("division").item(0).getTextContent();
 							division_name = eElement.getElementsByTagName("divisionName").item(0).getTextContent();
-
+							hrCoo_name = eElement.getElementsByTagName("HrCooFullName").item(0).getTextContent();
 						}
 					}
 					
@@ -638,6 +639,7 @@ public class CSUFSPEUnit6DB implements WorkflowProcess {
 					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
 					dataMap.put("DIVISION", division);
 					dataMap.put("DIVISION_NAME", division_name);
+					dataMap.put("HRCOO_NAME", hrCoo_name);
 					log.error("put complete");
 					log.error("Datamap Size=" + dataMap.size());
 

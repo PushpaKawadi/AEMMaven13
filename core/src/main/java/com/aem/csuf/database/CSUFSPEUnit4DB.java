@@ -111,6 +111,9 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 		String division_name = "";
 		String basedOnObs = "";
 		String basedOnObs1 = "";
+		String hrCooFname = "";
+		String hrCooLname = "";
+		String hrCoo_name = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -269,6 +272,11 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 									.item(0).getTextContent();
 							basedOnObs1 = eElement.getElementsByTagName("BasedOnObservation1")
 									.item(0).getTextContent();
+							hrCooFname = eElement.getElementsByTagName("HrCoordFname")
+									.item(0).getTextContent();
+							hrCooLname = eElement.getElementsByTagName("HrCoordLname")
+									.item(0).getTextContent();
+							hrCoo_name = hrCooFname.concat(" ".concat(hrCooLname));
 						}
 					}			
 					dataMap = new LinkedHashMap<String, Object>();
@@ -369,7 +377,7 @@ public class CSUFSPEUnit4DB implements WorkflowProcess {
 					dataMap.put("BASED_ON_OBSERVATION1", basedOnObs1);
 					dataMap.put("DIVISION", division);
 					dataMap.put("DIVISION_NAME", division_name);
-					
+					dataMap.put("HRCOO_NAME", hrCoo_name);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {

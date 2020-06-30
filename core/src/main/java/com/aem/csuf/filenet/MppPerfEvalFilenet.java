@@ -117,72 +117,27 @@ public class MppPerfEvalFilenet implements WorkflowProcess {
 						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					XPath xpath = XPathFactory.newInstance().newXPath();
-					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpID", doc, XPathConstants.NODE);
-						empId = empIdNode.getFirstChild().getNodeValue();
+					org.w3c.dom.NodeList nList = doc.getElementsByTagName("afBoundData");
+					for (int temp = 0; temp < nList.getLength(); temp++) {
+						org.w3c.dom.Node nNode = nList.item(temp);
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpFirstName", doc,
-										XPathConstants.NODE);
-						firstName = fnNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpLastName", doc,
-										XPathConstants.NODE);
-						lastName = lnNode.getFirstChild().getNodeValue();
-											
-						org.w3c.dom.Node cbidNode = (org.w3c.dom.Node) xpath
-								.evaluate("//CBID", doc, XPathConstants.NODE);
-						cbid = cbidNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//DeptID", doc,
-										XPathConstants.NODE);
-						deptId = deptIdNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node overallRatingNode = (org.w3c.dom.Node) xpath
-								.evaluate("//OverallRating", doc,
-										XPathConstants.NODE);
-						overallRating = overallRatingNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node evaluationTypeNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EvaluationType", doc, XPathConstants.NODE);
-						evaluationType = evaluationTypeNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node empUserIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpUserID", doc,
-										XPathConstants.NODE);
-						empUserId = empUserIdNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node managerUserIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//ManagerUserID", doc,
-										XPathConstants.NODE);
-						managerUserId = managerUserIdNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node hrCoordIdNode = (org.w3c.dom.Node) xpath
-						.evaluate("//HrCoordId", doc,
-								XPathConstants.NODE);
-						hrCoordId = hrCoordIdNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node administratorIdNode = (org.w3c.dom.Node) xpath
-						.evaluate("//AdminUserID", doc,
-								XPathConstants.NODE);
-						administratorId = administratorIdNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node reviewPeriodFromNode = (org.w3c.dom.Node) xpath
-								.evaluate("//ReviewPeriodFrom", doc, XPathConstants.NODE);
-						reviewPeriodFrom = reviewPeriodFromNode.getFirstChild().getNodeValue();
-						
-						org.w3c.dom.Node reviewPeriodToNode = (org.w3c.dom.Node) xpath
-								.evaluate("//ReviewPeriodTo", doc,
-										XPathConstants.NODE);
-						reviewPeriodTo = reviewPeriodToNode.getFirstChild().getNodeValue();
-
-					} catch (XPathExpressionException e) {
-						e.printStackTrace();
-					}
+						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
+						org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
+						empId = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
+						firstName = eElement.getElementsByTagName("EmpFirstName").item(0).getTextContent();
+						lastName = eElement.getElementsByTagName("EmpLastName").item(0).getTextContent();
+						cbid = eElement.getElementsByTagName("CBID").item(0).getTextContent();
+						deptId = eElement.getElementsByTagName("DeptID").item(0).getTextContent();
+						overallRating = eElement.getElementsByTagName("OverallRating").item(0).getTextContent();
+						evaluationType = eElement.getElementsByTagName("EvaluationType").item(0).getTextContent();
+						empUserId = eElement.getElementsByTagName("EmpUserID").item(0).getTextContent();
+						managerUserId = eElement.getElementsByTagName("ManagerUserID").item(0).getTextContent();
+						hrCoordId = eElement.getElementsByTagName("HrCoordId").item(0).getTextContent();
+						administratorId = eElement.getElementsByTagName("AdminUserID").item(0).getTextContent();
+						reviewPeriodFrom = eElement.getElementsByTagName("ReviewPeriodFrom").item(0).getTextContent();
+						reviewPeriodTo = eElement.getElementsByTagName("ReviewPeriodTo").item(0).getTextContent();
+						}
+					} 
 				} catch (SAXException e) {
 					e.printStackTrace();
 				} finally {
