@@ -68,8 +68,10 @@ public class CSUFStaffEvalUnit4EmpLookupServlet extends SlingSafeMethodsServlet 
 		// JSONObject emplEvalDetails = null;
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("cwid") != null
-				&& req.getParameter("cwid") != "") {
+				&& req.getParameter("cwid") != "" && req.getParameter("userID") != null
+				&& req.getParameter("userID") != "") {
 			cwid = req.getParameter("cwid");
+			userID = req.getParameter("userID");
 			logger.info("userid =" + userID);
 			logger.info("EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
@@ -78,7 +80,7 @@ public class CSUFStaffEvalUnit4EmpLookupServlet extends SlingSafeMethodsServlet 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, "SPE2579");
+				emplEvalDetails = getEmployeeEvalDetails(cwid,userID, conn, "SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -90,7 +92,7 @@ public class CSUFStaffEvalUnit4EmpLookupServlet extends SlingSafeMethodsServlet 
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String docType)
+	public static JSONArray getEmployeeEvalDetails(String cwid, String userID, Connection oConnection, String docType)
 			throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
@@ -99,6 +101,7 @@ public class CSUFStaffEvalUnit4EmpLookupServlet extends SlingSafeMethodsServlet 
 		String lookupFields = CSUFConstants.staffEvalUnit4LookupFieldsEmpLookup;
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
+		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
