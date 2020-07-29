@@ -52,13 +52,13 @@ import com.aem.community.util.DBUtil;
 import com.google.gson.JsonObject;
 
 @Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=initialCobraFilenet",
+		Constants.SERVICE_DESCRIPTION + "=employeeFeeWaiverFilenet",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=InitialCobraFileNet" })
-public class InitialCobraFileNet implements WorkflowProcess {
+		"process.label" + "=employeeFeeWaiverFilenet" })
+public class CSUFEmlpoyeeFeeWaiverFileNet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(InitialCobraFileNet.class);
+			.getLogger(CSUFEmlpoyeeFeeWaiverFileNet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -130,45 +130,45 @@ public class InitialCobraFileNet implements WorkflowProcess {
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
 						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Empl_ID", doc, XPathConstants.NODE);
+								.evaluate("//empId", doc, XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//First_Name", doc,
+								.evaluate("//firstName", doc,
 										XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Last_Name", doc,
+								.evaluate("//lastName", doc,
 										XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//DepartmentName", doc,
-//										XPathConstants.NODE);
-//						deptName = deptNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
+								.evaluate("//departmentName", doc,
+										XPathConstants.NODE);
+						deptName = deptNode.getFirstChild().getNodeValue();
 
 //						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
 //								.evaluate("//LogUser", doc, XPathConstants.NODE);
 //						logUserVal = logUserNode.getFirstChild().getNodeValue();
 						
-						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
-								.evaluate("//DateInitiated", doc, XPathConstants.NODE);
-						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
-						SimpleDateFormat fromDate = new SimpleDateFormat(
-								"yyyy-MM-dd");
-						SimpleDateFormat toDate = new SimpleDateFormat(
-								"MM/dd/yyyy");
-
-						if (initiatedDate != null
-								&& !initiatedDate.equals("")) {
-							try {
-								dateComp = toDate.format(fromDate
-										.parse(initiatedDate));
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-						}
+//						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
+//								.evaluate("//DateInitiated", doc, XPathConstants.NODE);
+//						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
+//						SimpleDateFormat fromDate = new SimpleDateFormat(
+//								"yyyy-MM-dd");
+//						SimpleDateFormat toDate = new SimpleDateFormat(
+//								"MM/dd/yyyy");
+//
+//						if (initiatedDate != null
+//								&& !initiatedDate.equals("")) {
+//							try {
+//								dateComp = toDate.format(fromDate
+//										.parse(initiatedDate));
+//							} catch (ParseException e) {
+//								e.printStackTrace();
+//							}
+//						}
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -188,7 +188,7 @@ public class InitialCobraFileNet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Initial_Cobra.pdf")) {
+			if (filePath.contains("Employee_Fee_Waiver.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(
@@ -230,13 +230,13 @@ public class InitialCobraFileNet implements WorkflowProcess {
 		json.addProperty("CWID", empId);
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", deptName);
-		json.addProperty("DocType", "INTCOBRA");
+		json.addProperty("DocType", "SFEEW");
 		json.addProperty("InitiatedDate", dateComp);
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 		String filenetUrl ="";
-		//log.error("Initial Cobra=" +json.toString());
+		//log.error("Employee Fee Waiver=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
@@ -293,7 +293,7 @@ public class InitialCobraFileNet implements WorkflowProcess {
 				dataMap.put("FILENET_URL", filenetUrl);
 				dataMap.put("DATA_PROCESSED", "0");
 				dataMap.put("FILENET_JSON", json.toString());
-				dataMap.put("FORM_NAME", "Initial Cobra");
+				dataMap.put("FORM_NAME", "Employee Fee Waiver");
 				
 				dbUtil.insertAutitTrace(conn, dataMap, tableName);
 			}
