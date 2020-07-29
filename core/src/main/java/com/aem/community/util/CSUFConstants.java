@@ -238,5 +238,6 @@ public class CSUFConstants {
 	//Start of Get Logged In User Details from DB SQL
 	public static final String getLoggedInUserDetailsFromDB = "SELECT FNAME, LNAME from cmsrda.ful_emp_cwid_nt_name where USERID = '<<get_user_id>>'";
 	public static final String loggedInUserDetailsLookupFields = "FNAME,LNAME";
+	
 	//End of Get Logged In User Details from DB SQL
 }
