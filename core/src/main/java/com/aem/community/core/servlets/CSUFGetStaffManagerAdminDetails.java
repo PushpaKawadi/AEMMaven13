@@ -59,11 +59,13 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 
 		String deptid = "";
 		String cwid = "";
+		String union_cd = "";
 		JSONArray emplEvalDetails = null;
 		if (req.getParameter("deptid") != null && req.getParameter("deptid") != "" && req.getParameter("cwid") != null
-				&& req.getParameter("cwid") != "") {
+				&& req.getParameter("cwid") != "" && req.getParameter("union_cd") != null && req.getParameter("union_cd") != "" ) {
 			deptid = req.getParameter("deptid");
 			cwid = req.getParameter("cwid");
+			union_cd = req.getParameter("union_cd");
 			logger.info("Got deptid =" + deptid);
 			logger.info("Got EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
@@ -72,7 +74,7 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, deptid, "SPE2579");
+				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, deptid,union_cd, "SPE2579");
 
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -83,7 +85,7 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String deptid, String docType)
+	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String deptid,String union_cd, String docType)
 			throws Exception {
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
@@ -93,6 +95,7 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 		String[] fields = lookupFields.split(",");
 		emplIDSQL = emplIDSQL.replaceAll("<<DEPT_ID>>", deptid);
 		emplIDSQL = emplIDSQL.replaceAll("<<EMP_ID>>", cwid);
+		emplIDSQL = emplIDSQL.replaceAll("<<UNION_CD>>", union_cd);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
