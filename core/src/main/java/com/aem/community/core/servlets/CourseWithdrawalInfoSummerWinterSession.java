@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+import java.util.Arrays;
+
 import javax.servlet.Servlet;
 import javax.servlet.ServletException;
 import javax.sql.DataSource;
@@ -60,12 +62,14 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 		String term = "";
 		String sysDate = "";
 		JSONObject courseDetails = null;
-		if (req.getParameter("userId") != null && !req.getParameter("userId").trim().equals("") && req.getParameter("typeOfWithdrawal") != null && !req.getParameter("typeOfWithdrawal").trim().equals("")) {
-			
+		if (req.getParameter("userId") != null && !req.getParameter("userId").trim().equals("")
+				&& req.getParameter("typeOfWithdrawal") != null
+				&& !req.getParameter("typeOfWithdrawal").trim().equals("")) {
+
 			userId = req.getParameter("userId");
 			typeOfWithdrawal = req.getParameter("typeOfWithdrawal");
 			term = req.getParameter("term");
-			//sysDate = req.getParameter("sysDate");
+			// sysDate = req.getParameter("sysDate");
 			logger.info("userId =" + userId);
 			logger.info("typeOfWithdrawal =" + typeOfWithdrawal);
 			logger.info("term =" + term);
@@ -75,9 +79,9 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				
-					courseDetails = getStudentCourseWithdrawalInfo(userId, conn,typeOfWithdrawal,term );
-					
+
+				courseDetails = getStudentCourseWithdrawalInfo(userId, conn, typeOfWithdrawal, term);
+
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -133,8 +137,8 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONObject getStudentCourseWithdrawalInfo(String userId, Connection oConnection,String typeOfWithdrawal, String term )
-			throws Exception {
+	public static JSONObject getStudentCourseWithdrawalInfo(String userId, Connection oConnection,
+			String typeOfWithdrawal, String term) throws Exception {
 
 		logger.error("Inside getStudentCourseWithdrawalInfo");
 
@@ -146,23 +150,33 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 		Statement oStatement = null;
 		try {
 			String studentCourseInfoSQL = "";
+
 			
-			if(typeOfWithdrawal.equals("1")) {			
-				//studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <=  NON_MED_WD_END_DT";	
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <=  TO_DATE(NON_MED_WD_END_DT,'DD-MON-YYYY')";	
-			}else {				
-				//studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= MED_WD_END_DT";
-				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <= TO_DATE(MED_WD_END_DT,'DD-MON-YYYY')";
-			}
 			
+			if (typeOfWithdrawal.equals("1")) {
+				// studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where
+				// LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and
+				// '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= NON_MED_WD_END_DT";
+				//studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'YYYY-MM-DD') > TO_DATE(WD_START_DT,'YYYY-MM-DD') and TO_DATE(SYSDATE,'YYYY-MM-DD') <=  TO_DATE(NON_MED_WD_END_DT,'YYYY-MM-DD')";
+				studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <=  TO_DATE(NON_MED_WD_END_DT,'DD-MON-YYYY')";
+            } else {
+                // studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where
+                // LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and
+                // '<<SYSDATE>>' > WD_START_DT and '<<SYSDATE>>' <= MED_WD_END_DT";
+                //studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'YYYY-MM-DD') > TO_DATE(WD_START_DT,'YYYY-MM-DD') and TO_DATE(SYSDATE,'YYYY-MM-DD') <= TO_DATE(MED_WD_END_DT,'YYYY-MM-DD')";
+            	
+            	studentCourseInfoSQL = "select * from AR_SESSION_COURSE_WITHDRAWAL where LOWER(student_userid) = LOWER('<<userId>>') and STRM = '<<TERM>>' and TO_DATE(SYSDATE,'DD-MON-YYYY') > TO_DATE(WD_START_DT,'DD-MON-YYYY') and TO_DATE(SYSDATE,'DD-MON-YYYY') <= TO_DATE(MED_WD_END_DT,'DD-MON-YYYY')";
+            }
+
 
 			// Get current typeOfWithdrawal details
-			String termInfo = getCurrentTerm(oConnection,term);
+			String termInfo = getCurrentTerm(oConnection, term);
 
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<userId>>", userId);
 			studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<TERM>>", term);
-			//studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<SYSDATE>>", sysDate);
-			logger.info("studentCourseInfoSQL1="+studentCourseInfoSQL);
+			// studentCourseInfoSQL = studentCourseInfoSQL.replaceAll("<<SYSDATE>>",
+			// sysDate);
+			logger.info("studentCourseInfoSQL1=" + studentCourseInfoSQL);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(studentCourseInfoSQL);
 			boolean isStudentInfoSet = false;
@@ -177,22 +191,21 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 					studentInfo.put("MAJOR_DESCR", oRresultSet.getString("MAJOR_DESCR"));
 					studentInfo.put("DEGREE_TYPE", oRresultSet.getString("DEGREE_TYPE"));
 
-					
 					studentInfo.put("STUDENT_EMAIL", oRresultSet.getString("STUDENT_EMAIL"));
-					
+
 					studentInfo.put("STUDENT_PHONE", oRresultSet.getString("STUDENT_PHONE"));
 					studentInfo.put("INTERNATIONAL_FLAG", oRresultSet.getString("INTERNATIONAL_FLAG"));
 					studentInfo.put("EIP_FLAG", oRresultSet.getString("EIP_FLAG"));
 					studentInfo.put("ACADEMIC_PLAN", oRresultSet.getString("ACADEMIC_PLAN"));
 					studentInfo.put("PROGRAM_PLAN", oRresultSet.getString("PROGRAM_PLAN"));
 					studentInfo.put("STRM", oRresultSet.getString("STRM"));
-					
+
 					studentInfo.put("DESCR_TERM_DESCR", oRresultSet.getString("TERM_DESCR"));
 
 					isStudentInfoSet = true;
 
 				}
-				
+
 				courseInfo = new JSONObject();
 
 				courseInfo.put("CLASS_NBR", oRresultSet.getString("CLASS_NBR"));
@@ -206,18 +219,17 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 				courseInfo.put("CLASS_SECTION", oRresultSet.getString("CLASS_SECTION"));
 				// courseInfo.put("INSTR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				// courseInfo.put("INSTR_EMAIL", "yashovardhan.jayaram@thoughtfocus.com");
-				
+
 				String courseID = oRresultSet.getString("CRSE_ID");
 				String courseName = oRresultSet.getString("CRSE_NAME");
-				
+
 				// String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
-				String[] chairInfo = getChairInfo(oConnection, courseID, courseName);
+				String[] chairInfo = getChairInfo(oConnection, courseID,courseName);
 
 				courseInfo.put("CHAIR_NAME", chairInfo[1]);
 				// courseInfo.put("CHAIR_CWID", "806225686");
 				courseInfo.put("CHAIR_USERID", chairInfo[2]);
 				courseInfo.put("CHAIR_EMAIL", chairInfo[3]);
-				
 
 				courseInfoArray.put(i, courseInfo);
 				i++;
@@ -230,7 +242,7 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 				studentInfo.put("CASEID", caseID);
 
 				// Current Term details added to JSON response
-				
+
 				studentInfo.put("TERM_DESCR", termInfo);
 
 				// Possible values :
@@ -243,11 +255,13 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 			} else {
 				studentInfo = null;
 			}
-			
+
 		} catch (Exception oEx) {
 			// logger.error(m_strClassName, methodName, oEx.getMessage());
 			// logger.error(m_strClassName, methodName, oEx.getMessage(),oEx);
 			studentInfo = null;
+			logger.error("Exception in Summer Withdrawal getStudentCourseWithdrawalInfo="
+                    + Arrays.toString(oEx.getStackTrace()));
 
 		} finally {
 			try {
@@ -282,21 +296,25 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 
 		try {
 
-			String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where STRM = '<<TERM>>'";
+			//String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where STRM = '<<TERM>>'";
+			//Added on 06172020 - Query fix
+			String sql = "Select distinct DESCR from SYSADM.PS_TERM_TBL@DBL_CFULPRD where STRM = '<<TERM>>'";
 			sql = sql.replaceAll("<<TERM>>", term);
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);
 
 			if (oRresultSet.next()) {
 				termDesc = oRresultSet.getString("DESCR");
-				
+
 			}
 		} catch (Exception oEx) {
 			// LogManager.traceErrMsg(m_strClassName, methodName, "Failed to get
 			// term details from database. " + oEx.getMessage());
 			// LogManager.traceMethodException(m_strClassName, methodName,
 			// oEx.getMessage(),oEx);
-			throw oEx;
+			logger.error("Exception in Summer Withdrawal getCurrentTerm="
+                    + Arrays.toString(oEx.getStackTrace()));
+			//throw oEx;
 
 		}
 		/*
@@ -342,16 +360,17 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 			}
 			logger.info("CaseID Function=" + caseID);
 		} catch (Exception oEx) {
-			
-			throw oEx;
+			logger.error("Exception in Summer Withdrawal getCaseID="
+                    + Arrays.toString(oEx.getStackTrace()));
+			//throw oEx;
 
 		}
-		
+
 		return String.valueOf(caseID);
 
 	}
 
-	private static String[] getChairInfo(Connection oConnection, String courseId, String courseName) throws Exception {
+	private static String[] getChairInfo(Connection oConnection, String courseId,String courseName) throws Exception {
 
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
@@ -359,7 +378,6 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 		String[] chairVal = new String[4];
 
 		try {
-			
 
 			String sql = "Select * from AR_Course_Chair_Info where CRSE_ID = '<<CRSE_ID>>' and LOWER(TRIM(CRSE_NAME))=LOWER(TRIM('<<courseName>>'))";
 
@@ -382,8 +400,9 @@ public class CourseWithdrawalInfoSummerWinterSession extends SlingSafeMethodsSer
 			// term details from database. " + oEx.getMessage());
 			// LogManager.traceMethodException(m_strClassName, methodName,
 			// oEx.getMessage(),oEx);
-			throw oEx;
-
+			//throw oEx;
+			logger.error("Exception in Summer Withdrawal getChairInfo="
+                    + Arrays.toString(oEx.getStackTrace()));
 		}
 		/*
 		 * finally { try { if (oStatement != null) oStatement.close();
