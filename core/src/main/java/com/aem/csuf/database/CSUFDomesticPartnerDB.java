@@ -37,16 +37,17 @@ import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.day.commons.datasource.poolservice.DataSourcePool;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=Vision LIFE-LTD Enrollment Save in DB",
-		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=VisionLifeLtdEnrollmentSave" })
-public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=Domestic Partner Save in DB",
+		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=DomesticPartnerSave" })
+public class CSUFDomesticPartnerDB implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CSUFVisionLifeLtdEnrollmentDB.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFDomesticPartnerDB.class);
 	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
 	@Reference
 	private GlobalConfigService globalConfigService;
+	
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession, MetaDataMap processArguments)
 			throws WorkflowException {
@@ -56,41 +57,24 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-
+		String certifyCB1 = "";
+		String tax_year = "";
+		String name_of_employee = "";
+		String name_of_domestic_partner = "";
+		String certifyCB2 = "";
+		String tax_year2 = "";
+		String name_of_employee1 = "";
+		String name_of_domestic_partner1 = "";
+		String emp_signature = "";
 		String ssn = "";
-		String firstName = "";
-		String middleName = "";
-		String lastName = "";
-		String cbid = "";
-		String agencyCode = "";
-		String unitCode = "";
-		String classCode = "";
-		String serialCode = "";
-		String new1Check = "";
-		String delete1Check = "";
-		String month1 = "";
-		String year1 = "";
-		String new2Check = "";
-		String delete2Check = "";
-		String month2 = "";
-		String year2 = "";
-		String lifeCode = "";
-		String new3Check = "";
-		String delete3Check = "";
-		String month3 = "";
-		String year3 = "";
-		String ltdCode = "";
-		String new4Check = "";
-		String delete4Check = "";
-		String month4 = "";
-		String year4 = "";
-		String remarks = "";
-		String formCompletedBy = "";
-		String authorizedSign = "";
-		String campusName = "";
-		String telephoneNumber = "";
-		String dateInitiated = "";
-
+		String first_Name = "";
+		String last_Name = "";
+		String campus = "";
+		String date_Initiated = "";
+		String campus_representative = "";
+		String telephone_no = "";
+		String date_Approved = "";
+		String workflowInstance = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -102,7 +86,7 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-
+			workflowInstance = workItem.getWorkflow().getId();
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -145,91 +129,59 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-							ssn = eElement.getElementsByTagName("ssn").item(0).getTextContent();
-							firstName = eElement.getElementsByTagName("first_Name").item(0)
+							certifyCB1 = eElement.getElementsByTagName("certifyCB1").item(0).getTextContent();
+							tax_year = eElement.getElementsByTagName("tax_year").item(0)
 									.getTextContent();
-							middleName = eElement.getElementsByTagName("middle_Name").item(0).getTextContent();
-							lastName = eElement.getElementsByTagName("last_Name").item(0).getTextContent();
-							cbid = eElement.getElementsByTagName("cbid").item(0).getTextContent();
-							agencyCode = eElement.getElementsByTagName("agency").item(0).getTextContent();
-							unitCode = eElement.getElementsByTagName("unit").item(0).getTextContent();
-							classCode = eElement.getElementsByTagName("classCode").item(0).getTextContent();
-							serialCode = eElement.getElementsByTagName("serial").item(0).getTextContent();
-							new1Check = eElement.getElementsByTagName("new1").item(0).getTextContent();
-							delete1Check = eElement.getElementsByTagName("delete1").item(0).getTextContent();
-							month1 = eElement.getElementsByTagName("month1").item(0).getTextContent();
-							year1 = eElement.getElementsByTagName("year1").item(0).getTextContent();
-							new2Check = eElement.getElementsByTagName("new2").item(0).getTextContent();
-							delete2Check = eElement.getElementsByTagName("delete2").item(0).getTextContent();
-							month2 = eElement.getElementsByTagName("month2").item(0).getTextContent();
-							year2 = eElement.getElementsByTagName("year2").item(0).getTextContent();
-							lifeCode = eElement.getElementsByTagName("lifeCode").item(0).getTextContent();
-							new3Check = eElement.getElementsByTagName("new3").item(0).getTextContent();
-							delete3Check = eElement.getElementsByTagName("delete3").item(0).getTextContent();
-							month3 = eElement.getElementsByTagName("month3").item(0).getTextContent();
-							year3 = eElement.getElementsByTagName("year3").item(0)
-									.getTextContent();
-							ltdCode = eElement.getElementsByTagName("ltdCode").item(0)
-									.getTextContent();
-							new4Check = eElement.getElementsByTagName("new4").item(0).getTextContent();
-							delete4Check = eElement.getElementsByTagName("delete4").item(0)
-									.getTextContent();
-							month4 = eElement.getElementsByTagName("month4").item(0).getTextContent();
-							year4 = eElement.getElementsByTagName("year4").item(0)
-									.getTextContent();
-							remarks = eElement.getElementsByTagName("remarks").item(0).getTextContent();
-							formCompletedBy = eElement.getElementsByTagName("form_Completed_By").item(0)
-									.getTextContent();
-							authorizedSign = eElement.getElementsByTagName("authorized_Sign").item(0)
-									.getTextContent();
-							campusName = eElement.getElementsByTagName("campus_Name").item(0)
-									.getTextContent();
-							telephoneNumber = eElement.getElementsByTagName("telephone_Number").item(0)
-									.getTextContent();
-							dateInitiated = eElement.getElementsByTagName("date_Initiated").item(0)
-									.getTextContent();
+							name_of_employee = eElement.getElementsByTagName("name_of_employee").item(0).getTextContent();
+							name_of_domestic_partner = eElement.getElementsByTagName("name_of_domestic_partner").item(0).getTextContent();
+							certifyCB2 = eElement.getElementsByTagName("certifyCB2").item(0).getTextContent();
+							tax_year2 = eElement.getElementsByTagName("tax_year2").item(0).getTextContent();
+							name_of_employee1 = eElement.getElementsByTagName("name_of_employee1").item(0).getTextContent();
+							name_of_domestic_partner1 = eElement.getElementsByTagName("name_of_domestic_partner1").item(0).getTextContent();
+							emp_signature = eElement.getElementsByTagName("emp_signature").item(0).getTextContent();
+							ssn = eElement.getElementsByTagName("SSN").item(0).getTextContent();
+							first_Name = eElement.getElementsByTagName("First_Name").item(0).getTextContent();
+							last_Name = eElement.getElementsByTagName("Last_Name").item(0).getTextContent();
+							campus = eElement.getElementsByTagName("campus").item(0).getTextContent();
+							date_Initiated = eElement.getElementsByTagName("Date_Initiated").item(0).getTextContent();
+							campus_representative = eElement.getElementsByTagName("campus_representative").item(0).getTextContent();
+							telephone_no = eElement.getElementsByTagName("Telephone_no").item(0).getTextContent();
+							date_Approved = eElement.getElementsByTagName("Date_Approved").item(0).getTextContent();
+													
 						}
 					}
 
 					dataMap = new LinkedHashMap<String, Object>();
-					dataMap.put("SSN", ssn);
-					dataMap.put("FIRST_NAME", firstName);
-					dataMap.put("LAST_NAME", lastName);
-					dataMap.put("MIDDLE_NAME", middleName);
-					dataMap.put("CBID", cbid);
-					dataMap.put("AGENCY", agencyCode);
-					dataMap.put("UNIT", unitCode);
-					dataMap.put("CLASSCODE", classCode);
-					dataMap.put("SERIAL", serialCode);
-					dataMap.put("NEW1", new1Check);
-					dataMap.put("DELETE1", delete1Check);
-					dataMap.put("MONTH1", month1);
-					dataMap.put("YEAR1", year1);
-					dataMap.put("NEW2", new2Check);
-					dataMap.put("DELETE2", delete2Check);
-					dataMap.put("MONTH2", month2);
-					dataMap.put("YEAR2", year2);
-					dataMap.put("NEW3", new3Check);
-					dataMap.put("DELETE3", delete3Check);
-					dataMap.put("MONTH3", month3);
-					dataMap.put("YEAR3", year3);
-					dataMap.put("NEW4", new4Check);
-					dataMap.put("DELETE4", delete4Check);
-					dataMap.put("MONTH4", month4);
-					dataMap.put("YEAR4", year4);
-					dataMap.put("LIFECODE", lifeCode);
-					dataMap.put("LTDCODE", ltdCode);
-					dataMap.put("REMARKS", remarks);
-					dataMap.put("FORM_COMPLETED_BY", formCompletedBy);
-					dataMap.put("AUTHORIZED_SIGN", authorizedSign);
-					dataMap.put("CAMPUS_NAME", campusName);
-					dataMap.put("TELEPHONE_NUMBER", telephoneNumber);
-					Object dateInitiatedObj = null;
-					if (dateInitiated != null && dateInitiated != "") {
-						Date dateInitiatedNew = Date.valueOf(dateInitiated);
-						dateInitiatedObj = dateInitiatedNew;
+					
+					dataMap.put("CERTIFY_CB1", certifyCB1);
+					dataMap.put("TAX_YEAR1", tax_year);
+					dataMap.put("EMP_NAME1", name_of_employee);
+					dataMap.put("DOMESTIC_PARTNER_NAME1", name_of_domestic_partner);
+					dataMap.put("CERTIFY_CB2", certifyCB2);
+					dataMap.put("TAX_YEAR2", tax_year2);
+					dataMap.put("EMP_NAME2", name_of_employee1);					
+					dataMap.put("DOMESTIC_PARTNER_NAME2", name_of_domestic_partner1);
+					dataMap.put("EMP_SIGN", emp_signature);
+					dataMap.put("SSN", ssn);					
+					dataMap.put("FIRST_NAME", first_Name);
+					dataMap.put("LAST_NAME", last_Name);
+					dataMap.put("CAMPUS", campus);
+					Object date_InitiatedObj = null;
+					if (date_Initiated != null && date_Initiated != "") {
+						Date date_InitiatedNew = Date.valueOf(date_Initiated);
+						date_InitiatedObj = date_InitiatedNew;
 					}
-					dataMap.put("DATE_INITIATED", dateInitiatedObj);
+					dataMap.put("DATE_INITIATED", date_InitiatedObj);
+					dataMap.put("CAMPUS_REPRESENTATIVE", campus_representative);
+					dataMap.put("TELE_NO", telephone_no);
+					Object date_ApprovedObj = null;
+					if (date_Approved != null && date_Approved != "") {
+						Date date_ApprovedNew = Date.valueOf(date_Approved);
+						date_ApprovedObj = date_ApprovedNew;
+					}
+					dataMap.put("DATE_APPROVED", date_ApprovedObj);					
+									
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {
@@ -248,7 +200,6 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 			}
 		}
 		String dataSourceVal = globalConfigService.getAEMDataSource();
-		log.info("DataSourceVal==========" + dataSourceVal);
 		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 		if (conn != null) {
 			log.error("Connection Successfull");
@@ -270,7 +221,7 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 				log.error("SQLException=" + e1.getMessage());
 				e1.printStackTrace();
 			}
-			String tableName = "AEM_VISION_LIFE_LTD_ENROLLMENT";
+			String tableName = "AEM_DOMESTIC_PARTNER_DPND_CERT";
 			StringBuilder sql = new StringBuilder("INSERT INTO  ").append(tableName).append(" (");
 			StringBuilder placeholders = new StringBuilder();
 			for (Iterator<String> iter = dataMap.keySet().iterator(); iter.hasNext();) {

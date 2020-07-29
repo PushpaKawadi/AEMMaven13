@@ -52,8 +52,8 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Vision Life Ltd Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getVisionLifeLtdLookup" })
-public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CSUFVisionLifeLtd.class);
+public class CSUFVisionLifeLtdServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFVisionLifeLtdServlet.class);
 	private static final long serialVersionUID = 1L;
 	
 	@Reference
@@ -64,7 +64,6 @@ public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 		Connection conn = null;
 
 		String ssn = "";
-
 		// JSONObject emplEvalDetails = null;
 		JSONArray visionDetails = null;
 		if (req.getParameter("ssn") != null && req.getParameter("ssn") != "") {
@@ -108,9 +107,14 @@ public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 			while (oRresultSet.next()) {
 				visionLifeDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					//logger.info("fied="+fields[i]);
 					visionLifeDetails.put(fields[i], oRresultSet.getString(fields[i]));
 				}
+				if(!visionLifeDetails.isNull("EMP_USERID")) {
+					String empUid = visionLifeDetails.getString("EMP_USERID");
+					String empEmailID = getEmailID(oConnection,empUid);
+					visionLifeDetails.put("EMP_EMAIL_ID", empEmailID);
+				}
+				logger.info("visionLifeDetails =" + visionLifeDetails);
 				jArray.put(visionLifeDetails);
 			}
 		} catch (Exception oEx) {
@@ -132,33 +136,25 @@ public class CSUFVisionLifeLtd extends SlingSafeMethodsServlet {
 		return jArray;
 	}
 
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
+	public static String getEmailID(Connection oConnection,String uid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
 			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
+
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", uid);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
 			}
-		}
-		return null;
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
 	}
 
 }

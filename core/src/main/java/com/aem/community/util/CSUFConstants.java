@@ -102,10 +102,10 @@ public class CSUFConstants {
 	// End of Short App Emp Fee Waiver
 
 	// Start of Vision LIFE_LTD Lookup
-	public static final String visionLifeSQL = "Select  A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.UNION_CD, B.CSU_UNIT, B.JOBCODE, B.EMPL_RCD+1 AS Serial, B.CSU_SCO_AGENCY, B.DEPTNAME From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where A.NATIONAL_ID = Replace('<<SSN>>','-','') AND B.EMPLID = A.EMPLID";
-	public static final String lookupFieldsVisionLife = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,UNION_CD,CSU_UNIT,JOBCODE,Serial,CSU_SCO_AGENCY,DEPTNAME";
+	public static final String visionLifeSQL = "Select  A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.UNION_CD, B.CSU_UNIT, B.JOBCODE, B.EMPL_RCD+1 AS Serial, B.CSU_SCO_AGENCY, B.DEPTNAME, C.USERID as EMP_USERID From FUL_EMP_CWID_NT_NAME C, FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where A.NATIONAL_ID = Replace('<<SSN>>','-','') AND B.EMPLID = A.EMPLID and C.CWID = B.EMPLID";
+	public static final String lookupFieldsVisionLife = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,UNION_CD,CSU_UNIT,JOBCODE,Serial,CSU_SCO_AGENCY,DEPTNAME,EMP_USERID";
 	// End of Vision LIFE_LTD Lookup
-
+	
 	// Start of Grade Change
 	public static final String gradeChangeSingleStudent = "Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>' and cwid ='<<cwid>>'";
 	public static final String gradeChangeBulk = "Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>'";
@@ -240,4 +240,14 @@ public class CSUFConstants {
 	public static final String loggedInUserDetailsLookupFields = "FNAME,LNAME";
 	
 	//End of Get Logged In User Details from DB SQL
+	
+	// Start of Direct Pay Dental
+	public static final String directPayDental = "Select A.FIRST_NAME, A.LAST_NAME,  A.MIDDLE_NAME,   B.JOBCODE,  A.CITY, A.STATE, A.POSTAL, A.HOME_PHONE,  B.UNION_CD, B.DEPTNAME,  A.ADDRESS1, C.USERID as EMP_USERID From FUL_EMP_CWID_NT_NAME C , FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>','-','') AND A.EMPLID = B.EMPLID and C.CWID = B.EMPLID";
+	public static final String directPayDentalLookUpFields = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,JOBCODE,CITY,STATE,POSTAL,HOME_PHONE,UNION_CD,DEPTNAME,ADDRESS1,EMP_USERID";
+	// End of Direct Pay Dental
+
+	// Start of Domestic Partner
+	public static final String domesticPartner = "Select A.FIRST_NAME, A.LAST_NAME,A.NATIONAL_ID, B.DEPTNAME, B.JOBCODE,C.USERID as EMP_USERID From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C Where  A.EMPLID = B.EMPLID AND A.emplid = C.cwid AND C.userid = '<<getUser_ID>>' AND C.CWID = B.EMPLID";
+	public static final String domesticPartnerLookUpFields = "FIRST_NAME,LAST_NAME,NATIONAL_ID,DEPTNAME,JOBCODE,EMP_USERID";
+	// End of Domestic Partner
 }

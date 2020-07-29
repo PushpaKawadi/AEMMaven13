@@ -45,11 +45,11 @@ import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
 import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=VisionLifeLtdDOR",
-		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=VisionLifeLtdDOR" })
-public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=DomesticPartnerDOR",
+		Constants.SERVICE_VENDOR + "=Adobe Systems", "process.label" + "=DomesticPartnerDOR" })
+public class CSUFDomesticPartnerFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(CSUFVisionLifeLtdFilenet.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFDomesticPartnerFilenet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -113,23 +113,23 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//ssn", doc,
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//SSN", doc,
 								XPathConstants.NODE);
 						ssn = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//first_Name", doc,
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//First_Name", doc,
 								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//last_Name", doc,
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//Last_Name", doc,
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
 						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//empUserId", doc,
 								XPathConstants.NODE);
 						empUserVal = logUserNode.getFirstChild().getNodeValue();
-
-						org.w3c.dom.Node dateInitiatedNode = (org.w3c.dom.Node) xpath.evaluate("//date_Initiated", doc,
+						
+						org.w3c.dom.Node dateInitiatedNode = (org.w3c.dom.Node) xpath.evaluate("//Date_Initiated", doc,
 								XPathConstants.NODE);
 						dateInitiated = dateInitiatedNode.getFirstChild().getNodeValue();
 
@@ -161,7 +161,7 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Vision_LIFE-LTD_Enrollment.pdf")) {
+			if (filePath.contains("Domestic_Partner_Dependent_Certification.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -201,7 +201,7 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 		json.addProperty("CWID", "");
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", "");
-		json.addProperty("DocType", "VLLTD");
+		json.addProperty("DocType", "DPDC");
 		json.addProperty("InitiatedDate", dateInitiated);
 		json.addProperty("EmpUserID", empUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
@@ -233,7 +233,7 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 
 		try (OutputStream os = con.getOutputStream()) {
 			os.write(json.toString().getBytes("utf-8"));
-			log.info("Read Vision Life LTD DOR");
+			log.info("Read Domestic Partner Dependent Certification DOR="+json.toString());
 			os.close();
 			con.getResponseCode();
 			log.debug("Result=" + con.getResponseCode());
