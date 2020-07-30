@@ -50,10 +50,10 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Special Consultant Servlet",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getSplEmpLookup" })
-public class SCPRStaffOrMPPEmpServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(SCPRStaffOrMPPEmpServlet.class);
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Special Consultant User Servlet",
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getSplUserLookup" })
+public class CSUFSCPRStaffOrMPPUserServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFSCPRStaffOrMPPUserServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -62,22 +62,18 @@ public class SCPRStaffOrMPPEmpServlet extends SlingSafeMethodsServlet {
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
-
-		String cwid = "";
-		// JSONObject emplEvalDetails = null;
+		String userID = "";
 		JSONArray emplEvalDetails = null;
-		if (req.getParameter("cwid") != null && req.getParameter("cwid") != "") {
-			cwid = req.getParameter("cwid");
-			logger.info("EmpID =" + cwid);
+		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
+			userID = req.getParameter("userID");
+			logger.info("userid =" + userID);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				emplEvalDetails = getEmployeeEvalDetails(cwid, conn, "SPE2579");
-				logger.error("emplEvalDetails=" + emplEvalDetails);
-
+				emplEvalDetails = getUserIDDetailsNew(userID, conn, "SPE2579");
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -89,84 +85,83 @@ public class SCPRStaffOrMPPEmpServlet extends SlingSafeMethodsServlet {
 		}
 	}
 
-	public static JSONArray getEmployeeEvalDetails(String cwid, Connection oConnection, String docType)
+	public static JSONArray getUserIDDetailsNew(String userID, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 
-		String lookupFields = CSUFConstants.SCPREmpIdLookupFields;
-
-		String emplIDSQL = CSUFConstants.SCPREmpIDSQL;
-
-		String[] fields = lookupFields.split(",");
-
-		emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-
 		Statement oStatement = null;
 		try {
+
+			String userIDSQL = CSUFConstants.SCPRUserIDSQL;
+			String lookupFields = CSUFConstants.SCPRUserIdLookupfields;
+			String[] fields = lookupFields.split(",");
+
+			userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
+
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(emplIDSQL);
+			oRresultSet = oStatement.executeQuery(userIDSQL);
 
 			while (oRresultSet.next()) {
+				logger.info("oRresultSet=" + oRresultSet);
 
 				employeeEvalDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i], oRresultSet.getString(fields[i]));
-					logger.info("employeeEvalDetails =" + employeeEvalDetails);
+
+				}
+				if (!employeeEvalDetails.isNull("EMP_USERID")) {
+					String empUid = employeeEvalDetails.getString("EMP_USERID");
+					String empEmailID = getEmailID(oConnection, empUid);
+					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
 				}
 				jArray.put(employeeEvalDetails);
+				logger.info("jArray=" + jArray);
 			}
 
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-			employeeEvalDetails = null;
+
 		} finally {
 			try {
 				if (oConnection != null) {
 					oConnection.close();
 
 				}
-				// oStatement.close();
-				// oRresultSet.close();
-			} catch (Exception exp) {
 
+			} catch (Exception exp) {
+				logger.info("Finally=" + exp);
+				exp.printStackTrace();
 			}
 		}
 
-		// return employeeEvalDetails;
 		return jArray;
 	}
 
 	@Reference
 	private DataSourcePool source;
 
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
+	public static String getEmailID(Connection oConnection, String uid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
 		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
 
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", uid);
+			oStatement = oConnection.createStatement();
+
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
 			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
 		}
-		return null;
+		return empEmail;
 	}
-
 }

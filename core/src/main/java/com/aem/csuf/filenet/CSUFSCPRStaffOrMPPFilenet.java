@@ -1,7 +1,9 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -41,12 +43,13 @@ import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
 import com.aem.community.util.ConfigManager;
+import com.google.gson.JsonObject;
 
-@Component(property = { Constants.SERVICE_DESCRIPTION + "=SCPRFacultyDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=SCPRFacultyDOR" })
-public class SCPRFacultyFilenet implements WorkflowProcess {
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=SCPRSTAFFORMPPDOR", Constants.SERVICE_VENDOR + "=Adobe Systems",
+		"process.label" + "=SCPRSTAFFORMPPDOR" })
+public class CSUFSCPRStaffOrMPPFilenet implements WorkflowProcess {
 
-	private static final Logger log = LoggerFactory.getLogger(SCPRFacultyFilenet.class);
+	private static final Logger log = LoggerFactory.getLogger(CSUFSCPRStaffOrMPPFilenet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -62,21 +65,22 @@ public class SCPRFacultyFilenet implements WorkflowProcess {
 		String lastName = null;
 		String encodedPDF = null;
 		String empId = null;
-		String depId = null;
+		String deptID = null;
+		String empUserVal = null;
+		String dateInitiated = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
+			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
+
+			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
+
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
 
 				try {
@@ -109,25 +113,25 @@ public class SCPRFacultyFilenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpID", doc, XPathConstants.NODE);
+						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath.evaluate("//EmpID", doc,
+								XPathConstants.NODE);
 						empId = empIdNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpFname", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpFname", doc,
+								XPathConstants.NODE);
 						firstName = fnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//EmpLname", doc,
-										XPathConstants.NODE);
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath.evaluate("//EmpLname", doc,
+								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node depVal = (org.w3c.dom.Node) xpath
-								.evaluate("//HRDeptID", doc, XPathConstants.NODE);
-						depId = depVal.getFirstChild().getNodeValue();
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//empUserId", doc,
+								XPathConstants.NODE);
+						empUserVal = logUserNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath.evaluate("//HRDeptID", doc,
+								XPathConstants.NODE);
+						deptID = deptIdNode.getFirstChild().getNodeValue();
 
-						
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -146,7 +150,7 @@ public class SCPRFacultyFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Special_Consultant_Pay_Request_Faculty.pdf")) {
+			if (filePath.contains("Special_Consultant_Pay_Request_Staff_or_MPP.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(Node.class);
@@ -155,6 +159,7 @@ public class SCPRFacultyFilenet implements WorkflowProcess {
 					try {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
+						// log.info("encodedPDF="+encodedPDF);
 					} catch (IOException e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
@@ -179,54 +184,66 @@ public class SCPRFacultyFilenet implements WorkflowProcess {
 				}
 			}
 		}
+		JsonObject json = new JsonObject();
+		json.addProperty("InitiatedDate", "");
+		json.addProperty("DepartmentID", deptID);
+		json.addProperty("DocType", "SPCON");
+		json.addProperty("CWID", empId);
+		json.addProperty("FirstName", firstName);
+		json.addProperty("LastName", lastName);
+		json.addProperty("SSN", "");
+		json.addProperty("AttachmentMimeType", "application/pdf");
+		json.addProperty("Attachment", encodedPDF);
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		String jsonString = "{" + "\"FirstName\": \"" + firstName + "\","
-				+ "\"LastName\": \"" + lastName + "\"," + "\"CWID\": \""
-				+ empId + "\"," + "\"AttachmentType\": " + "\"SCPRFacultyDOR\"" + ","
-				+ "\"AttachmentMimeType\": " + "\"application/pdf\"" + ","
-				+ "\"DepartmentID\": \"" + depId + "\"," + "\"DocType\":" + "\"SPCON\"" + ","
-				+ "\"Attachment\":\"" + encodedPDF + "\"}";
-		if (encodedPDF != null && empId != null) {
+		URL url = null;
+		try {
+			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			url = new URL(filenetUrl);
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
+		HttpURLConnection con = null;
+		try {
+			con = (HttpURLConnection) url.openConnection();
+			log.info("Con=" + con);
+		} catch (IOException e1) {
+			e1.printStackTrace();
+		}
+		try {
+			con.setRequestMethod("POST");
+			con.setRequestProperty("Content-Type", "application/json");
+
+		} catch (ProtocolException e) {
+			log.info("ProtocolException=" + e.getMessage());
+			e.printStackTrace();
+		}
+		con.setDoOutput(true);
+
+		try (OutputStream os = con.getOutputStream()) {
+			os.write(json.toString().getBytes("utf-8"));
 			log.info("Read SCPR Staff/MPP DOR");
-			URL url = null;
-			try {
-				String filenetUrl = globalConfigService.getStaffEvalFilenetURL();
-				url = new URL(filenetUrl);
-			 //	log.info("json ="+jsonString);
-			} catch (MalformedURLException e) {
-				e.printStackTrace();
-			}
-			HttpURLConnection con = null;
-			try {
-				con = (HttpURLConnection) url.openConnection();
-				log.info("Con=" + con);
-			} catch (IOException e1) {
-				e1.printStackTrace();
-			}
-			try {
-				con.setRequestMethod("POST");
-				con.setRequestProperty("Content-Type", "application/json");
-
-			} catch (ProtocolException e) {
-				log.info("ProtocolException=" + e.getMessage());
-				e.printStackTrace();
-			}
-			con.setDoOutput(true);
-
-			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.getBytes("utf-8"));
-				os.close();
-				con.getResponseCode();
-				log.error("Res=" + con.getResponseCode());
-			} catch (IOException e1) {
-				log.error("IOException=" + e1.getMessage());
-				e1.printStackTrace();
-			}
-
+			os.close();
+			int responseCode = con.getResponseCode();
+			log.debug("Result=" + con.getResponseCode());
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				log.info("Response from Filenet=" + response.toString());
+				if (response.toString().contains("Failed")) {
+					log.info("Response code=" + response.toString());
+				}
 		}
 
+		} catch (IOException e1) {
+			log.error("IOException=" + e1.getMessage());
+			e1.printStackTrace();
+		} finally {
+			con.disconnect();
+		}
 	}
 }
