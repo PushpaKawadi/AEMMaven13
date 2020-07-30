@@ -1,17 +1,22 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;  
 import java.util.Date; 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -43,16 +48,17 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
+import com.aem.community.util.DBUtil;
 import com.google.gson.JsonObject;
 
 @Component(property = {
 		Constants.SERVICE_DESCRIPTION + "=payPlan10_12_11_12_FileNet",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
 		"process.label" + "=payPlan10_12_11_12_FileNet" })
-public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
+public class CSUF10_12_11_12_PayPlanFileNet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(PayPlan10_12_11_12Filenet.class);
+			.getLogger(CSUF10_12_11_12_PayPlanFileNet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
@@ -65,17 +71,21 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
 		Document doc = null;
 		InputStream is = null;
-		String emplID = null;
+		String empId = null;
 		String firstName = null;
 		String lastName = null;
 		String encodedPDF = null;
-		String ssn = null;
-		String deptName = null;
+		String CBID = null;
+		String employeeStatus = null;		
+		String departmentID = null;		
 		String logUserVal = null;
 		String mimeType = null;	
 		String initiatedDate = null;
+		String sCOPositionNumber = null;
+		String scoPositionNumberValue = null;
 		String dateComp = null;
-
+		Connection conn = null;
+		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		
@@ -122,38 +132,67 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 					}
 					XPath xpath = XPathFactory.newInstance().newXPath();
 					try {
-						
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//empl_ID", doc,
-										XPathConstants.NODE);
-						emplID = lnNode.getFirstChild().getNodeValue();
-						
 						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//first_Name", doc, XPathConstants.NODE);
-						firstName = empIdNode.getFirstChild().getNodeValue();
+								.evaluate("//empl_ID", doc, XPathConstants.NODE);
+						empId = empIdNode.getFirstChild().getNodeValue();
+						log.info("empId value===="+empId);
 
 						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
+								.evaluate("//first_Name", doc,
+										XPathConstants.NODE);
+						firstName = fnNode.getFirstChild().getNodeValue();
+						log.info("firstName value===="+firstName);
+
+						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
 								.evaluate("//last_Name", doc,
 										XPathConstants.NODE);
-						lastName = fnNode.getFirstChild().getNodeValue();
+						lastName = lnNode.getFirstChild().getNodeValue();
+						log.info("lastName value===="+lastName);
 
 						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath
-								.evaluate("//departmentName", doc,
+								.evaluate("//departmentID", doc,
 										XPathConstants.NODE);
-						deptName = deptNode.getFirstChild().getNodeValue();
-
-//						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//LogUser", doc, XPathConstants.NODE);
-//						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						departmentID = deptNode.getFirstChild().getNodeValue();
+						log.info("departmentID value===="+departmentID);
 						
+						org.w3c.dom.Node CBIDNode = (org.w3c.dom.Node) xpath
+								.evaluate("//cbid", doc,
+										XPathConstants.NODE);
+						CBID = CBIDNode.getFirstChild().getNodeValue();
+						log.info("CBID value===="+CBID);
+
+						org.w3c.dom.Node employeeStatusNode = (org.w3c.dom.Node) xpath
+								.evaluate("//statusMenu", doc, XPathConstants.NODE);
+						employeeStatus = employeeStatusNode.getFirstChild().getNodeValue();
+						log.info("employeeStatus value===="+employeeStatus);
+						
+						org.w3c.dom.Node sCOPositionNumberNode = (org.w3c.dom.Node) xpath
+								.evaluate("//scoPositionNumber", doc, XPathConstants.NODE);
+						sCOPositionNumber = sCOPositionNumberNode.getFirstChild().getNodeValue();
+						log.info("sCOPositionNumber value===="+sCOPositionNumber);
+						
+//						int scoPositionNumber = Integer.parseInt(sCOPositionNumber);
+//						if(scoPositionNumber == 1) {
+//							scoPositionNumberValue = "Permanent";
+//						}
+//						else if(scoPositionNumber == 2) {
+//							scoPositionNumberValue = "Probationary";
+//						}
+//						else if(scoPositionNumber == 3) {
+//							scoPositionNumberValue = "MPP";
+//						}
+//						else if(scoPositionNumber == 4) {
+//							scoPositionNumberValue = "Temporary";
+//						}
+//						
 //						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//EmployerDate", doc, XPathConstants.NODE);
+//								.evaluate("//dateInitiated", doc, XPathConstants.NODE);
 //						initiatedDate = initiatedDateNode.getFirstChild().getNodeValue();
 //						SimpleDateFormat fromDate = new SimpleDateFormat(
 //								"yyyy-MM-dd");
 //						SimpleDateFormat toDate = new SimpleDateFormat(
 //								"MM/dd/yyyy");
-
+//
 //						if (initiatedDate != null
 //								&& !initiatedDate.equals("")) {
 //							try {
@@ -221,22 +260,24 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 		JsonObject json = new JsonObject();
 		json.addProperty("FirstName", firstName);
 		json.addProperty("LastName", lastName);
-		json.addProperty("CWID", emplID);
-		json.addProperty("SSN", "");
-		json.addProperty("DepartmentID", deptName);
-		json.addProperty("DocType", "");
+		json.addProperty("CWID", empId);
+		json.addProperty("CBID", CBID);
+		json.addProperty("DepartmentID", departmentID);
+		json.addProperty("DocType", "10121112PP");
+		json.addProperty("EmployeeStatus", employeeStatus);
 		json.addProperty("InitiatedDate", "");
-		json.addProperty("EmpUserID", "");
+		json.addProperty("SCOPositionNumber", sCOPositionNumber);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
-		
-		
-
-		log.info("Read Pay Plan = "+encodedPDF);
+		String filenetUrl ="";
+		//log.error("0_12_11_12_Pay_Plan_Self=" +json.toString());
 		URL url = null;
 		try {
-			String filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
 			url = new URL(filenetUrl);
+		
+		log.info("Read Pay Plan");
+
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -260,8 +301,36 @@ public class PayPlan10_12_11_12Filenet implements WorkflowProcess {
 		try (OutputStream os = con.getOutputStream()) {
 			os.write(json.toString().getBytes("utf-8"));
 			os.close();
-			con.getResponseCode();
-			log.debug("Result=" + con.getResponseCode());
+			int responseCode = con.getResponseCode();
+			log.info("POST Response Code to Filenet :: " + responseCode);
+			if (responseCode == HttpURLConnection.HTTP_OK) { 
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				log.info("Response from Filenet============="+response.toString()); //{5E77A58F-EA81-4A33-8C35-B2DA3FD55AA4}
+				
+				
+				DBUtil dbUtil = new DBUtil();
+				String tableName = "AEM_AUDIT_TRACE";
+				
+				dataMap = new LinkedHashMap<String, Object>();
+				
+				Timestamp auditStTime = new java.sql.Timestamp(System.currentTimeMillis());
+				
+				dataMap.put("EVENT_TYPE", "Filenet");
+				dataMap.put("AUDIT_TIME", auditStTime);
+				dataMap.put("FILENET_URL", filenetUrl);
+				dataMap.put("DATA_PROCESSED", "0");
+				dataMap.put("FILENET_JSON", json.toString());
+				dataMap.put("FORM_NAME", "10_12_11_12_Pay_Plan_Self");
+				
+				dbUtil.insertAutitTrace(conn, dataMap, tableName);
+			}
 
 		} catch (IOException e1) {
 			log.error("IOException=" + e1.getMessage());
