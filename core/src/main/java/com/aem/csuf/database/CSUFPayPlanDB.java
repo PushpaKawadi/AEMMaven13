@@ -342,9 +342,9 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 										.getTextContent();
 								log.info("appropriateAdminName value is========"+appropriateAdminName);
 
-//								date1 = eElement.getElementsByTagName("date1").item(0)
-//										.getTextContent();
-//								log.info("monthOff2 value is========"+monthOff2);
+								date1 = eElement.getElementsByTagName("date1").item(0)
+										.getTextContent();
+								log.info("date1 value is========"+date1);
 
 								approvalGrantedYes = eElement.getElementsByTagName("approvalGrantedYes").item(0)
 										.getTextContent();
@@ -354,9 +354,9 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 										.getTextContent();
 								log.info("vpSignature value is========"+vpSignature);
 
-//								date2 = eElement.getElementsByTagName("date2").item(0)
-//										.getTextContent();
-//								log.info("monthOff2 value is========"+monthOff2);
+								date2 = eElement.getElementsByTagName("date2").item(0)
+										.getTextContent();
+								log.info("date2 value is========"+date2);
 
 															}
 						}
@@ -433,7 +433,6 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 						dataMap.put("SECOND_MONTH_OFF", secondMonthOff);
 						dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
 						dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName); 
-						dataMap.put("DATE2", date2);
 						
 						Object date1Obj = null;
 						if (date1 != null && date1 != "") {
@@ -442,8 +441,7 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 						}
 						dataMap.put("DATE1", date1Obj);
 						dataMap.put("APPROVAL_GRANTED_YES", approvalGrantedYes);
-						dataMap.put("VP_SIGNATURE", vpSignature);
-						
+						dataMap.put("VP_SIGNATURE", vpSignature);						
 
 						Object date2Obj = null;
 						if (date2 != null && date2 != "") {
