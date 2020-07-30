@@ -1,7 +1,9 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -235,8 +237,21 @@ public class CSUFVisionLifeLtdFilenet implements WorkflowProcess {
 			os.write(json.toString().getBytes("utf-8"));
 			log.info("Read Vision Life LTD DOR");
 			os.close();
-			con.getResponseCode();
+			int responseCode = con.getResponseCode();
 			log.debug("Result=" + con.getResponseCode());
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				log.info("Response from Filenet=" + response.toString());
+				if (response.toString().contains("Failed")) {
+					log.info("Response code=" + response.toString());
+				}
+		}
 
 		} catch (IOException e1) {
 			log.error("IOException=" + e1.getMessage());

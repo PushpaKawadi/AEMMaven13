@@ -1,16 +1,20 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.Timestamp;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -128,7 +132,7 @@ public class CSUFDomesticPartnerFilenet implements WorkflowProcess {
 						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//empUserId", doc,
 								XPathConstants.NODE);
 						empUserVal = logUserNode.getFirstChild().getNodeValue();
-						
+
 						org.w3c.dom.Node dateInitiatedNode = (org.w3c.dom.Node) xpath.evaluate("//Date_Initiated", doc,
 								XPathConstants.NODE);
 						dateInitiated = dateInitiatedNode.getFirstChild().getNodeValue();
@@ -218,6 +222,7 @@ public class CSUFDomesticPartnerFilenet implements WorkflowProcess {
 		try {
 			con = (HttpURLConnection) url.openConnection();
 			log.info("Con=" + con);
+
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
@@ -233,10 +238,22 @@ public class CSUFDomesticPartnerFilenet implements WorkflowProcess {
 
 		try (OutputStream os = con.getOutputStream()) {
 			os.write(json.toString().getBytes("utf-8"));
-			log.info("Read Domestic Partner Dependent Certification DOR="+json.toString());
+			log.info("Read Domestic Partner Dependent Certification DOR");
 			os.close();
-			con.getResponseCode();
-			log.debug("Result=" + con.getResponseCode());
+			int responseCode = con.getResponseCode();			
+			if (responseCode == HttpURLConnection.HTTP_OK) {
+				BufferedReader in = new BufferedReader(new InputStreamReader(con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				log.info("Response from Filenet=" + response.toString());
+				if (response.toString().contains("Failed")) {
+					log.info("Response code=" + response.toString());
+				}
+		}
 
 		} catch (IOException e1) {
 			log.error("IOException=" + e1.getMessage());
