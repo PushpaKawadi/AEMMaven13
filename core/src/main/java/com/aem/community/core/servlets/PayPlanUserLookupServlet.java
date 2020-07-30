@@ -23,7 +23,10 @@ import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -36,28 +39,33 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  */
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=10_12_11_12_PayPlan",
-		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/payPlanUserLookUp" })
+		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/payPlanUserLookUpServlet" })
 public class PayPlanUserLookupServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(PayPlanUserLookupServlet.class);
+    private final static Logger logger = LoggerFactory.getLogger(PayPlanUserLookupServlet.class);
 	private static final long serialVersionUID = 1L;
-
+	
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
-	
+
 	protected void doGet(SlingHttpServletRequest req, SlingHttpServletResponse response)
 			throws ServletException, IOException {
 		Connection conn = null;
 		String userID = "";
-		JSONArray newPositionManagerDetails = null;
+		//String cwid = "";
+		JSONArray PayPlanDetails = null;
+		
 		if (req.getParameter("userID") != null && req.getParameter("userID") != "") {
-			userID = req.getParameter("userID");
+			userID = req.getParameter("userID");			
+			logger.info("userID =" + userID);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				newPositionManagerDetails = getPayPlanDetails(userID, conn, "payPlan");
+				PayPlanDetails = getPayPlanDetails(userID, conn, "payPlan");
+				logger.info("emplFeeWaiverDetails ="+PayPlanDetails);
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -65,61 +73,71 @@ public class PayPlanUserLookupServlet extends SlingSafeMethodsServlet {
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			response.getWriter().write(newPositionManagerDetails.toString());
+			response.getWriter().write(PayPlanDetails.toString());
 		}
 	}
-
+/**
+ * 
+ * @param cwid
+ * @param oConnection
+ * @param docType
+ * @return
+ * @throws Exception
+ */
 	public static JSONArray getPayPlanDetails(String userID, Connection oConnection, String docType)
 			throws Exception {
 
 		ResultSet oRresultSet = null;
-		JSONObject newCareerDevelopmentDetails;
+		//JSONObject employeeEvalDetails = new JSONObject();
+		
+		JSONObject payPlanJSONDetails;
 		JSONArray jArray = new JSONArray();
-
-        String userIDSQL = ConfigManager.getValue("PayPlanUserLookUp");
-        logger.info("The userID SQL is=" + userIDSQL);
-
-        String lookupFields = ConfigManager.getValue("PayPlanLookUpFields");
-        logger.info("The user LookUp Fields are=" + lookupFields);
-
+	
+		//String emplIDSQL = ConfigManager.getValue("DependentFeeWaiverUserLookUp");		
+		String emplIDSQL = CSUFConstants.PayPlanUserLookUp;
+		logger.info("Dependent User Lookup"+emplIDSQL);
+		
+		//String lookupFields = ConfigManager.getValue("DependentFeeWaiverUserLookUpFields");
+		String lookupFields = CSUFConstants.PayPlanLookUpFields;
+		logger.info("Dependent User Lookup Fields"+lookupFields); 
+		
 		String[] fields = lookupFields.split(",");
+		
+		emplIDSQL = emplIDSQL.replaceAll("<<getUser_ID>>", userID);
+		logger.info("SQL Comman is= "+emplIDSQL);
+		//emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
 
-        userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
-        logger.info("User ID is="+userIDSQL);
 		Statement oStatement = null;
 		try {
-
-			logger.info("inside try4");
 			oStatement = oConnection.createStatement();
-			oRresultSet = oStatement.executeQuery(userIDSQL);
-
+			oRresultSet = oStatement.executeQuery(emplIDSQL);
 			while (oRresultSet.next()) {
-
-				newCareerDevelopmentDetails = new JSONObject();
+				payPlanJSONDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
-					newCareerDevelopmentDetails.put(fields[i], oRresultSet.getString(fields[i]));
-
+					payPlanJSONDetails.put(fields[i], oRresultSet.getString(fields[i]));
+					logger.info("employeeWaiverDetails ="+payPlanJSONDetails);
 				}
-				jArray.put(newCareerDevelopmentDetails);
-				logger.info("jArray=" + jArray);
+				jArray.put(payPlanJSONDetails);
 			}
-
+			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
 			oEx.printStackTrace();
-
+			payPlanJSONDetails = null;
 		} finally {
 			try {
-				if (oConnection != null) {
+				if (oConnection != null){
 					oConnection.close();
-
+					
 				}
-
+				// oStatement.close();
+				// oRresultSet.close();
 			} catch (Exception exp) {
-				exp.printStackTrace();
+
 			}
 		}
 
+		//return employeeEvalDetails;
 		return jArray;
 	}
 
@@ -137,12 +155,12 @@ public class PayPlanUserLookupServlet extends SlingSafeMethodsServlet {
 			return con;
 
 		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
+			logger.error("Conn Exception=" + e.getMessage());
 			e.printStackTrace();
 		} finally {
 			try {
 				if (con != null) {
-					logger.info("Conn Exec=");
+					logger.info("Conn available=");
 				}
 			} catch (Exception exp) {
 				logger.info("Finally Exec=" + exp);

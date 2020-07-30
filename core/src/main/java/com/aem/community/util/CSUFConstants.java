@@ -1,6 +1,12 @@
 package com.aem.community.util;
 
 public class CSUFConstants {
+	
+	// Start of 10_12_11_12 PayPlan
+	public static final String PayPlanUserLookUp = "Select A.FIRST_NAME, A.LAST_NAME, substr(A.WORK_PHONE,7,10) as Extension, B.DEPTNAME, B.DEPTID,  B.EMPL_RCD, B.POSITION_NBR, B.DESCR, B.UNION_CD, ('242' || ' - ' || B.CSU_UNIT || ' - ' || B.JOBCODE || ' - ' ||  '00' || (EMPL_RCD+1) ) as SCOPosNum, B.STD_HOURS, B.POSITION_NBR, B.GRADE, B.EMPLID  from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C where A.EMPLID = C.cwid and C.userid = '<<getUser_ID>>' and A.EMPLID = B.EMPLID";
+	public static final String PayPlanLookUpFields = "FIRST_NAME,LAST_NAME,Extension,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,SCOPosNum,STD_HOURS,POSITION_NBR,GRADE,EMPLID";	
+	// End of 10_12_11_12 PayPlan
+	
 	// Start of Dock Notice
 	public static final String dockNoticeUserIdSql = "Select A.EMPLID, A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.EMPL_RCD, B.DEPTID, B.DEPTNAME, ('242 -' || B.CSU_UNIT || ' - ' || B.JOBCODE || ' - '  || '00' || (B.EMPL_RCD+1) ) as SCO_Position_Num, A.NATIONAL_ID from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C where A.EMPLID = B.EMPLID and A.EMPLID = C.cwid and C.userid = ('<<getUser_ID>>')";
 	public static final String dockNoticeFields = "EMPLID,FIRST_NAME,LAST_NAME,MIDDLE_NAME,EMPL_RCD,DEPTID,DEPTNAME,SCO_POSITION_NUM,NATIONAL_ID";
