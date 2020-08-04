@@ -185,7 +185,7 @@ public class CSUFConstants {
 		public static final String getCurrentMinorsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MIN'";
 		public static final String getAllMinorAcadPlan = "Select ACAD_PLAN from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN'and PROGRAMS='<<PROGRAM>>'";
 		public static final String getCurrentMinorAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-		public static final String getMinorChairDetails = "select distinct DEPTID,DEPTNAME,FUL_COLLEGE_NAME,CHAIR_USERID,CHAIR_EMPNAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_STDNT_ACTIV_PLAN where ACAD_PROG='UGD' and ACAD_PLAN_TYPE='MIN' AND DIPLOMA_DESCR='<<DESCRIPTION>>'";
+		public static final String getMinorChairDetails = "select distinct DEPTID,DEPTNAME,CHAIR_USERID,CHAIR_NAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
 		public static final String getAllCertificates = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' ORDER BY PROGRAMS ASC";
 		public static final String getCurrentCertificates = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='CER'";
 		public static final String getAllCertificateAcadPlan = "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'";
