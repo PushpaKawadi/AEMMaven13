@@ -36,10 +36,10 @@ import com.aem.community.util.ConfigManager;
 @Component(service = Servlet.class, property = {
 		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getCurrentConcentration" })
-public class CSUFMajorMinorChangeGetCurrentConcentrationServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getChairDetails" })
+public class CSUFMajorMinorChangeGetAllChairDetails extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeGetCurrentConcentrationServlet.class);
+			.getLogger(CSUFMajorMinorChangeGetAllChairDetails.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -49,18 +49,13 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationServlet extends SlingSaf
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String userId = "";
-		String acadProg = "";
-		String acadPlanType ="";		
-		
-		logger.info("Inside doGET Method");
+		String program = "";
 		
 		JSONArray degreeDetails = null;
-		if ((req.getParameter("AcadProg") != null && !req.getParameter("AcadProg").trim().equals(""))) {
-			userId = req.getParameter("userID"); 			
-			acadProg = req.getParameter("AcadProg");			
-			acadPlanType = req.getParameter("AcadPlanType");		
+		if (req.getParameter("Program") != null
+				&& !req.getParameter("Program").trim().equals("")) {		
 			
+			program = req.getParameter("Program");
 			
 			conn = jdbcConnectionService.getDocDBConnection();
 		}
@@ -68,7 +63,7 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationServlet extends SlingSaf
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getCurrentConcentrationDetails(userId, acadProg, acadPlanType, conn);
+				degreeDetails = getDegreeDetails(program, conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -97,45 +92,49 @@ public class CSUFMajorMinorChangeGetCurrentConcentrationServlet extends SlingSaf
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getCurrentConcentrationDetails(String userId, String acadProg, String acadPlanType,
+	public static JSONArray getDegreeDetails(String program,
 			Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails");
+		logger.info("Inside getMajorChairDetails");		
 
 		ResultSet oRresultSet = null;
-		JSONObject concentrationInfo = new JSONObject();
+		JSONObject degreeInfo = new JSONObject();
 		JSONArray jArray = new JSONArray();
-		String concentrationInfoSQL = "";
+		String degreeInfoSQL = "";
 		Statement oStatement = null;
-		try {	
-					concentrationInfoSQL = CSUFConstants.getCurrentConcentration;										
-					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<getUser_ID>>", userId);
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					concentrationInfoSQL = concentrationInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadPlanType);	
-					logger.info("final value of concentrationInfoSQL = "+ concentrationInfoSQL);
+		try {		
+					degreeInfoSQL = CSUFConstants.getAllChairDetials;					
+																	
+					degreeInfoSQL = degreeInfoSQL.replaceAll("<<PROGRAM>>", program);
+					logger.info("NEW SQL IS = "+degreeInfoSQL);
 			
 			try {
 				
 				oStatement = conn.createStatement();
-				oRresultSet = oStatement.executeQuery(concentrationInfoSQL);
+				oRresultSet = oStatement.executeQuery(degreeInfoSQL);
 				
 			}catch (SQLException ex) {
-				concentrationInfoSQL = null;
+				degreeInfo = null;
 				logger.info("SQL Exception==="+ex);
 			} 		
 
 			while (oRresultSet.next()) {
 			
-				concentrationInfo = new JSONObject();				
+					degreeInfo = new JSONObject();
 					
-				concentrationInfo.put("Current_Concentration", oRresultSet.getString("CONCENTRATION"));
+					degreeInfo.put("DEPTID", oRresultSet.getString("DEPTID"));
+					degreeInfo.put("DEPTNAME", oRresultSet.getString("DEPTNAME"));					
+					degreeInfo.put("CHAIR_USERID", oRresultSet.getString("CHAIR_USERID"));
+					degreeInfo.put("CHAIR_EMPNAME", oRresultSet.getString("CHAIR_EMPNAME"));
+					degreeInfo.put("CHAIR_EMPLID", oRresultSet.getString("CHAIR_EMPLID"));
+					degreeInfo.put("CHAIR_EMAIL", oRresultSet.getString("CHAIR_EMAIL"));
+					//degreeInfo.put("CHAIR_EMAIL", "pushpa.kawadi@thoughtfocus.com");
 				
-				jArray.put(concentrationInfo);
+				jArray.put(degreeInfo);
 			}
 
 		} catch (Exception oEx) {
-			concentrationInfo = null;
+			degreeInfo = null;
 			logger.info("Exception==="+oEx);
 
 		} finally {

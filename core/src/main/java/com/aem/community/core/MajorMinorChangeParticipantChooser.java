@@ -12,7 +12,7 @@ import com.adobe.granite.workflow.exec.Workflow;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 
 @Component(service = ParticipantStepChooser.class, property = {
-		"chooser.label=Grade Change dynamic participant chooser" })
+		"chooser.label=Major/Minor Change dynamic participant chooser" })
 
 public class MajorMinorChangeParticipantChooser implements ParticipantStepChooser {
 	private static final Logger logger = LoggerFactory.getLogger(MajorMinorChangeParticipantChooser.class);
@@ -46,26 +46,18 @@ public class MajorMinorChangeParticipantChooser implements ParticipantStepChoose
 							participant = valStr2;							
 						}
 					}
-				}				
-				if (valStr1.equals("ToChairConcentration")) {					
-					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
-						if (entry2.getKey().matches("concentrationChairUserID")) {							
-							valStr2 = entry2.getValue().toString();
-							participant = valStr2;							
-						}
-					}
-				}
-				if (valStr1.equals("ToChairEmphasis")) {					
-					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
-						if (entry2.getKey().matches("emphasisChairUserID")) {							
-							valStr2 = entry2.getValue().toString();
-							participant = valStr2;							
-						}
-					}
-				}
+				}								
 				if (valStr1.equals("ToChairMinor")) {					
 					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
 						if (entry2.getKey().matches("minorChairUserID")) {							
+							valStr2 = entry2.getValue().toString();
+							participant = valStr2;							
+						}
+					}
+				}
+				if (valStr1.equals("ToChairCertificate")) {					
+					for (Map.Entry<String, Object> entry2 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {						
+						if (entry2.getKey().matches("certificateChairUserID")) {							
 							valStr2 = entry2.getValue().toString();
 							participant = valStr2;							
 						}

@@ -34,12 +34,12 @@ import com.aem.community.util.ConfigManager;
  */
 
 @Component(service = Servlet.class, property = {
-		Constants.SERVICE_DESCRIPTION + "=Grade Change Servlet",
+		Constants.SERVICE_DESCRIPTION + "=Major & Minor Change Servlet",
 		"sling.servlet.methods=" + HttpConstants.METHOD_GET,
-		"sling.servlet.paths=" + "/bin/getDegreeObjectives" })
-public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsServlet {
+		"sling.servlet.paths=" + "/bin/getAllMinorsUpdated" })
+public class CSUFMajorMinorChangeAllMinorsServlet extends SlingSafeMethodsServlet {
 	private final static Logger logger = LoggerFactory
-			.getLogger(CSUFMajorMinorChangeDegreeDetailsServlet.class);
+			.getLogger(CSUFMajorMinorChangeAllMinorsServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
@@ -49,32 +49,23 @@ public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsSe
 			SlingHttpServletResponse response) throws ServletException,
 			IOException {
 		Connection conn = null;
-		String acadProg = "";
-		String acadProgType ="";
-		//String diplomaDesc = "";
-		
-		JSONArray degreeDetails = null;
-		if (req.getParameter("AcadProg") != null
-				&& !req.getParameter("AcadProg").trim().equals("")) {
-			
-			acadProg = req.getParameter("AcadProg");			
-			acadProgType = req.getParameter("AcadProgType");								
-			
-			conn = jdbcConnectionService.getDocDBConnection();
-		}
+
+		JSONArray majorMinorChangeDetails = null;
+
+		conn = jdbcConnectionService.getDocDBConnection();
 
 		if (conn != null) {
 			try {
 				logger.info("Connection Success=" + conn);
-				degreeDetails = getDegreeDetails(acadProg, acadProgType, conn);
+				majorMinorChangeDetails = getStudentInformationDetails(conn);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
 			response.setContentType("application/json");
 			response.setCharacterEncoding("UTF-8");
 			// Set JSON in String
-			if (degreeDetails != null && !degreeDetails.equals("")) {
-				response.getWriter().write(degreeDetails.toString());
+			if (majorMinorChangeDetails != null && !majorMinorChangeDetails.equals("")) {
+				response.getWriter().write(majorMinorChangeDetails.toString());
 			} else {
 				logger.info("Data not available");
 				response.getWriter().write("Requested Data Unavailable");
@@ -83,6 +74,7 @@ public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsSe
 			logger.info("Could Not Connect DB");
 		}
 	}
+	
 
 	/**
 	 * Executes SQL based on the user id and retrieves lookup information. Used
@@ -95,43 +87,41 @@ public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsSe
 	 * @return - JSONObject of key value pairs consisting of the lookup data
 	 * @throws Exception
 	 */
-	public static JSONArray getDegreeDetails(String acadProg, String acadProgType, 
-			Connection conn) throws Exception {
+	public static JSONArray getStudentInformationDetails(Connection conn) throws Exception {
 
-		logger.info("Inside getGradeChnageDetails");		
 
 		ResultSet oRresultSet = null;
-		JSONObject degreeInfo = new JSONObject();
+		JSONObject instInfo = null;		
 		JSONArray jArray = new JSONArray();
-		String degreeInfoSQL = "";
+		String majorMinorChangeInfoSQL = "";
 		Statement oStatement = null;
-		try {		
-					degreeInfoSQL = CSUFConstants.getPrimaryDegreeObjective;					
-
-					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PROG>>", acadProg);					
-					degreeInfoSQL = degreeInfoSQL.replaceAll("<<ACAD_PLAN_TYPE>>", acadProgType);								
-			try {
+		try {
 				
-				oStatement = conn.createStatement();
-				oRresultSet = oStatement.executeQuery(degreeInfoSQL);
+				majorMinorChangeInfoSQL = CSUFConstants.getAllMinorsUpdated;
+				logger.info("Updated ALl Minor SQL is======"+majorMinorChangeInfoSQL);				
+
+			
+			try {				
+				oStatement = conn.createStatement();				
+				oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);				
 				
 			}catch (SQLException ex) {
-				degreeInfo = null;
+				majorMinorChangeInfoSQL = null;
 				logger.info("SQL Exception==="+ex);
-			} 		
-
-			while (oRresultSet.next()) {
+			} 
 			
-					degreeInfo = new JSONObject();
-									
-					degreeInfo.put("Degree_Objective", oRresultSet.getString("DEGREE"));
+			while (oRresultSet.next()) {
+				instInfo = new JSONObject();				
 				
-				jArray.put(degreeInfo);
+				instInfo.put("All_minors", oRresultSet.getString("PROGRAMS"));		    
+				instInfo.put("Acad_Plan", oRresultSet.getString("ACAD_PLAN"));							
+
+				jArray.put(instInfo);
 			}
+	
 
 		} catch (Exception oEx) {
-			degreeInfo = null;
-			logger.info("Exception==="+oEx);
+			instInfo = null;			
 
 		} finally {
 			try {
@@ -145,7 +135,8 @@ public class CSUFMajorMinorChangeDegreeDetailsServlet extends SlingSafeMethodsSe
 				exp.getStackTrace();
 
 			}
-		}
+		}		
 		return jArray;
+		
 	}
 }
