@@ -133,6 +133,21 @@ public class CSUFSCPRFacultyFilenet implements WorkflowProcess {
 						org.w3c.dom.Node deptIdNode = (org.w3c.dom.Node) xpath.evaluate("//HRDeptID", doc,
 								XPathConstants.NODE);
 						deptID = deptIdNode.getFirstChild().getNodeValue();
+						
+						org.w3c.dom.Node dateInitiatedNode = (org.w3c.dom.Node) xpath.evaluate("//EmpDate", doc,
+								XPathConstants.NODE);
+						dateInitiated = dateInitiatedNode.getFirstChild().getNodeValue();
+
+						SimpleDateFormat fromDate = new SimpleDateFormat("yyyy-MM-dd");
+						SimpleDateFormat toDate = new SimpleDateFormat("MM/dd/yyyy");
+
+						if (dateInitiated != null && !dateInitiated.equals("")) {
+							try {
+								dateInitiated = toDate.format(fromDate.parse(dateInitiated));
+							} catch (ParseException e) {
+								e.printStackTrace();
+							}
+						}
 
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
@@ -188,13 +203,14 @@ public class CSUFSCPRFacultyFilenet implements WorkflowProcess {
 		}
 		JsonObject json = new JsonObject();	
 		
-		json.addProperty("InitiatedDate", "");
+		json.addProperty("InitiatedDate", dateInitiated);
 		json.addProperty("DepartmentID", deptID);
 		json.addProperty("DocType", "SPCON");
 		json.addProperty("CWID", empId);
 		json.addProperty("FirstName", firstName);
 		json.addProperty("LastName", lastName);
 		json.addProperty("SSN", "");
+		json.addProperty("EmpUserID", empUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 
