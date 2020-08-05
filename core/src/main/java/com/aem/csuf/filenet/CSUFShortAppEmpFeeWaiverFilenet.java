@@ -11,6 +11,8 @@ import java.net.ProtocolException;
 import java.net.URL;
 import java.sql.Connection;
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Base64;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
@@ -33,6 +35,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
+
+
+
 
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
@@ -71,6 +76,8 @@ public class CSUFShortAppEmpFeeWaiverFilenet implements WorkflowProcess {
 		String ssnNo = "";
 		String deptID = "";
 		String logUserVal = "";
+		String signedDate ="";
+		String dateComp = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		Connection conn = null;
@@ -140,6 +147,21 @@ public class CSUFShortAppEmpFeeWaiverFilenet implements WorkflowProcess {
 									.item(0).getTextContent();
 							ssnNo = eElement.getElementsByTagName("SSN")
 									.item(0).getTextContent();
+							signedDate = eElement.getElementsByTagName("SignedDate")
+									.item(0).getTextContent();
+							SimpleDateFormat fromDate = new SimpleDateFormat(
+									"yyyy-MM-dd");
+							SimpleDateFormat toDate = new SimpleDateFormat(
+									"MM/dd/yyyy");
+							if (signedDate != null
+									&& !signedDate.equals("")) {
+								try {
+									dateComp = toDate.format(fromDate
+											.parse(signedDate));
+								} catch (ParseException e) {
+									e.printStackTrace();
+								}
+							}
 
 						}
 					}
@@ -202,7 +224,7 @@ public class CSUFShortAppEmpFeeWaiverFilenet implements WorkflowProcess {
 			json.addProperty("SSN", ssnNo);
 			json.addProperty("DepartmentID", "");
 			json.addProperty("DocType", "SAEFW");
-			json.addProperty("InitiatedDate", "");
+			json.addProperty("InitiatedDate", dateComp);
 			json.addProperty("EmpUserID", logUserVal);
 			json.addProperty("AttachmentMimeType", "application/pdf");
 			json.addProperty("Attachment", encodedPDF);

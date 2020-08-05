@@ -82,6 +82,7 @@ public class CSUFDockNoticeFiletNet implements WorkflowProcess {
 		String initiatedDate = null;
 		String month = null;
 		String year = null;
+		String logUserDeatils = null;
 		String dateComp = null;
 		Connection conn = null;
 		LinkedHashMap<String, Object> dataMap = null;
@@ -178,6 +179,12 @@ public class CSUFDockNoticeFiletNet implements WorkflowProcess {
 								"yyyy-MM-dd");
 						SimpleDateFormat toDate = new SimpleDateFormat(
 								"MM/dd/yyyy");
+						
+						org.w3c.dom.Node loggedinUser = (org.w3c.dom.Node) xpath
+								.evaluate("//logUser", doc, XPathConstants.NODE);
+						logUserDeatils = loggedinUser.getFirstChild().getNodeValue();
+						log.info("logUserDeatils value===="+logUserDeatils);
+						
 
 						if (initiatedDate != null
 								&& !initiatedDate.equals("")) {
@@ -250,13 +257,15 @@ public class CSUFDockNoticeFiletNet implements WorkflowProcess {
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", departmentID);
 		json.addProperty("DocType", "DOCK");
-		json.addProperty("InitiatedDate", "");
+		json.addProperty("InitiatedDate", dateComp);
 		json.addProperty("Month", month);
 		json.addProperty("Year", year);
+		json.addProperty("EmpUserID", logUserDeatils);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
+		
+		
 		String filenetUrl ="";
-		//log.error("0_12_11_12_Pay_Plan_Self=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
