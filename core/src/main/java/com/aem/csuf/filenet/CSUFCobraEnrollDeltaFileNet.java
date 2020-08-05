@@ -1,17 +1,22 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;  
 import java.util.Date; 
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -43,6 +48,7 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
+import com.aem.community.util.DBUtil;
 import com.google.gson.JsonObject;
 
 @Component(property = {
@@ -74,7 +80,8 @@ public class CSUFCobraEnrollDeltaFileNet implements WorkflowProcess {
 		String mimeType = null;	
 		String initiatedDate = null;
 		String dateComp = null;
-
+		Connection conn = null;
+		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 		
@@ -140,9 +147,9 @@ public class CSUFCobraEnrollDeltaFileNet implements WorkflowProcess {
 										XPathConstants.NODE);
 						deptName = deptNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//LogUser", doc, XPathConstants.NODE);
-//						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LogUser", doc, XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
 						
 						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
 								.evaluate("//EmployerDate", doc, XPathConstants.NODE);
@@ -222,19 +229,19 @@ public class CSUFCobraEnrollDeltaFileNet implements WorkflowProcess {
 		json.addProperty("CWID", "");
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", deptName);
-		json.addProperty("DocType", "");
+		json.addProperty("DocType", "CDELTA");
 		json.addProperty("InitiatedDate", dateComp);
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
-		
-		
-
-		log.info("Read Cobra Enroll Delta = ");
+		String filenetUrl ="";
+		log.error("Employee Fee Waiver=" +json.toString());
 		URL url = null;
 		try {
-			String filenetUrl = ""; //globalConfigService.getHRBenefitsFilenetURL();
-			url = new URL(filenetUrl);
+			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
+			url = new URL(filenetUrl);		
+
+		log.info("Read Cobra Enroll Delta = ");		
 		} catch (MalformedURLException e) {
 			e.printStackTrace();
 		}
@@ -258,8 +265,37 @@ public class CSUFCobraEnrollDeltaFileNet implements WorkflowProcess {
 		try (OutputStream os = con.getOutputStream()) {
 			os.write(json.toString().getBytes("utf-8"));
 			os.close();
-			con.getResponseCode();
-			log.debug("Result=" + con.getResponseCode());
+			int responseCode = con.getResponseCode();
+			log.info("POST Response Code to Filenet :: " + responseCode);
+			if (responseCode == HttpURLConnection.HTTP_OK) { 
+				BufferedReader in = new BufferedReader(new InputStreamReader(
+						con.getInputStream()));
+				String inputLine;
+				StringBuffer response = new StringBuffer();
+				while ((inputLine = in.readLine()) != null) {
+					response.append(inputLine);
+				}
+				in.close();
+				log.info("Response from Filenet============="+response.toString()); //{5E77A58F-EA81-4A33-8C35-B2DA3FD55AA4}
+				
+				
+				DBUtil dbUtil = new DBUtil();
+				String tableName = "AEM_AUDIT_TRACE";
+				
+				dataMap = new LinkedHashMap<String, Object>();
+				
+				Timestamp auditStTime = new java.sql.Timestamp(System.currentTimeMillis());
+				
+				dataMap.put("EVENT_TYPE", "Filenet");
+				dataMap.put("AUDIT_TIME", auditStTime);
+				dataMap.put("FILENET_URL", filenetUrl);
+				dataMap.put("DATA_PROCESSED", "0");
+				dataMap.put("FILENET_JSON", json.toString());
+				dataMap.put("FORM_NAME", "Cobra Enroll Delta");
+				
+				dbUtil.insertAutitTrace(conn, dataMap, tableName);
+			}
+
 
 		} catch (IOException e1) {
 			log.error("IOException=" + e1.getMessage());

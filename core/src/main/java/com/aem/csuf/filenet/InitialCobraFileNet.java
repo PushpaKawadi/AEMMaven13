@@ -148,9 +148,9 @@ public class InitialCobraFileNet implements WorkflowProcess {
 //										XPathConstants.NODE);
 //						deptName = deptNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//LogUser", doc, XPathConstants.NODE);
-//						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LogUser", doc, XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
 						
 						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
 								.evaluate("//DateInitiated", doc, XPathConstants.NODE);
@@ -236,7 +236,7 @@ public class InitialCobraFileNet implements WorkflowProcess {
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 		String filenetUrl ="";
-		//log.error("Initial Cobra=" +json.toString());
+		log.error("Initial Cobra=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();

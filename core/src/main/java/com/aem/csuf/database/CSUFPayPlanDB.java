@@ -176,187 +176,136 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 								org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
 								
 								empl_ID = eElement.getElementsByTagName("empl_ID").item(0).getTextContent();
-								log.info("empl_ID value is========"+empl_ID);
 
 								first_Name = eElement.getElementsByTagName("first_Name").item(0).getTextContent();
-								log.info("first_Name value is========"+first_Name);
 
 								last_Name = eElement.getElementsByTagName("last_Name").item(0)
 										.getTextContent();
-								log.info("last_Name value is========"+last_Name);
 
 								empl_RCD = eElement.getElementsByTagName("empl_RCD").item(0)
 										.getTextContent();
-								log.info("empl_RCD value is========"+empl_RCD);
 								
 								extension = eElement.getElementsByTagName("extension").item(0)
 										.getTextContent();
-								log.info("extension value is========"+extension);
 
 								scoPositionNumber = eElement.getElementsByTagName("scoPositionNumber").item(0).getTextContent();
-								log.info("scoPositionNumber value is========"+scoPositionNumber);
 
 								timebase = eElement.getElementsByTagName("timebase").item(0).getTextContent();
-								log.info("timebase value is========"+timebase);
 
 								statusMenu = eElement.getElementsByTagName("statusMenu").item(0)
 										.getTextContent();
-								log.info("statusMenu value is========"+statusMenu);
 
 								cbid = eElement.getElementsByTagName("cbid").item(0)
 										.getTextContent();
-								log.info("cbid value is========"+cbid);
 
 								classification = eElement.getElementsByTagName("classification").item(0).getTextContent();
-								log.info("classification value is========"+classification);
 
 								grade = eElement.getElementsByTagName("grade").item(0)
 										.getTextContent();
-								log.info("grade value is========"+grade);
 
 								cmsPositionNumber = eElement.getElementsByTagName("cmsPositionNumber").item(0)
 										.getTextContent();
-								log.info("cmsPositionNumber value is========"+cmsPositionNumber);
 
 								departmentName = eElement.getElementsByTagName("departmentName").item(0)
 										.getTextContent();
-								log.info("departmentName value is========"+departmentName);
 
 								departmentID = eElement.getElementsByTagName("departmentID").item(0).getTextContent();
-								log.info("departmentID value is========"+departmentID);
 
 								payPlanCHK = eElement.getElementsByTagName("payPlanCHK").item(0)
 										.getTextContent();
-								log.info("payPlanCHK value is========"+payPlanCHK);
 
 								effectiveDate = eElement.getElementsByTagName("effectiveDate").item(0)
 										.getTextContent();
-								log.info("effectiveDate value is========"+effectiveDate);
 
 								work11 = eElement.getElementsByTagName("work11CHK").item(0).getTextContent();
-								log.info("work11 value is========"+work11);
 								
 								work10 = eElement.getElementsByTagName("work10CHK").item(0).getTextContent();
-								log.info("work10 value is========"+work10);								
 								
 								work5 = eElement.getElementsByTagName("work5CHK").item(0).getTextContent();
-								log.info("work5 value is========"+work5);								
 								
 								variation = eElement.getElementsByTagName("variationCHK").item(0).getTextContent();
-								log.info("variation value is========"+variation);
 								
 								variationField = eElement.getElementsByTagName("variationField").item(0).getTextContent();
-								log.info("variationField value is========"+variationField);
 
 								monthOff1 = eElement.getElementsByTagName("monthOff1").item(0)
 										.getTextContent();
-								log.info("monthOff1 value is========"+monthOff1);
 
 								monthOff2 = eElement.getElementsByTagName("monthOff2").item(0)
 										.getTextContent();
-								log.info("monthOff2 value is========"+monthOff2);
 
 								employeeSignature = eElement.getElementsByTagName("employeeSignature").item(0)
 										.getTextContent();
-								log.info("employeeSignature value is========"+employeeSignature);
 								
 								empDate = eElement.getElementsByTagName("empDate").item(0)
 										.getTextContent();
-								log.info("empDate value is========"+empDate);
 
 								onCycle = eElement.getElementsByTagName("onCycle").item(0)
 										.getTextContent();
-								log.info("onCycle value is========"+onCycle);
 
 								offCycle = eElement.getElementsByTagName("offCycle").item(0)
 										.getTextContent();
-								log.info("offCycle value is========"+offCycle);
 
 								currentMonthlySalary = eElement.getElementsByTagName("currentMonthlySalary").item(0)
 										.getTextContent();
-								log.info("currentMonthlySalary value is========"+currentMonthlySalary);
 
 								adjustedSalary = eElement.getElementsByTagName("adjustedSalary").item(0)
 										.getTextContent();
-								log.info("adjustedSalary value is========"+adjustedSalary);
 
 								dateDiscussed = eElement.getElementsByTagName("dateDiscussed").item(0)
 										.getTextContent();
-								log.info("dateDiscussed value is========"+dateDiscussed);
 
 								payPlan10 = eElement.getElementsByTagName("payPlan10").item(0).getTextContent();
-								log.info("payPlan10 value is========"+payPlan10);
 
 								payPlan11 = eElement.getElementsByTagName("payPlan11").item(0).getTextContent();
-								log.info("payPlan11 value is========"+payPlan11);
 
 								startDate = eElement.getElementsByTagName("startDate").item(0).getTextContent();
-								log.info("startDate value is========"+startDate);
 
 								monthSal = eElement.getElementsByTagName("monthSal").item(0).getTextContent();
-								log.info("monthSal value is========"+monthSal);
 
 								daystowork = eElement.getElementsByTagName("daystowork").item(0)
 										.getTextContent();
-								log.info("daystowork value is========"+daystowork);
 
 								annualSalary = eElement.getElementsByTagName("annualSalary").item(0)
 										.getTextContent();
-								log.info("annualSalary value is========"+annualSalary);
 
 								possibleworkdays = eElement.getElementsByTagName("possibleworkdays").item(0)
 										.getTextContent();
-								log.info("possibleworkdays value is========"+possibleworkdays);
 
 								monthSal1 = eElement.getElementsByTagName("monthSal1").item(0)
 										.getTextContent();
-								log.info("monthSal1 value is========"+monthSal1);
 
 								monthstowork = eElement.getElementsByTagName("monthstowork").item(0).getTextContent();
-								log.info("monthstowork value is========"+monthstowork);
 
 								projectedEarnedSalary = eElement.getElementsByTagName("projectedEarnedSalary").item(0).getTextContent();
-								log.info("projectedEarnedSalary value is========"+projectedEarnedSalary);
 
 								annualSalary1 = eElement.getElementsByTagName("annualSalary1").item(0).getTextContent();
-								log.info("annualSalary1 value is========"+annualSalary1);
 
 								projectedEarnedSalary1 = eElement.getElementsByTagName("projectedEarnedSalary1").item(0).getTextContent();
-								log.info("projectedEarnedSalary1 value is========"+projectedEarnedSalary1);
 
 								settlementAmount = eElement.getElementsByTagName("settlementAmount").item(0).getTextContent();
-								log.info("settlementAmount value is========"+settlementAmount);
 
 								firstMonthOff = eElement.getElementsByTagName("firstMonthOff").item(0)
 										.getTextContent();
-								log.info("firstMonthOff value is========"+firstMonthOff);
 
 								secondMonthOff = eElement.getElementsByTagName("secondMonthOff").item(0)
 										.getTextContent();
-								log.info("secondMonthOff value is========"+secondMonthOff);
 
 								approvalRecommendedYes = eElement.getElementsByTagName("approvalRecommendedYes").item(0).getTextContent();
-								log.info("approvalRecommendedYes value is========"+approvalRecommendedYes);
 
 								appropriateAdminName = eElement.getElementsByTagName("appropriateAdminName").item(0)
 										.getTextContent();
-								log.info("appropriateAdminName value is========"+appropriateAdminName);
 
 								date1 = eElement.getElementsByTagName("date1").item(0)
 										.getTextContent();
-								log.info("date1 value is========"+date1);
 
 								approvalGrantedYes = eElement.getElementsByTagName("approvalGrantedYes").item(0)
 										.getTextContent();
-								log.info("approvalGrantedYes value is========"+approvalGrantedYes);
 
 								vpSignature = eElement.getElementsByTagName("vpSignature").item(0)
 										.getTextContent();
-								log.info("vpSignature value is========"+vpSignature);
 
 								date2 = eElement.getElementsByTagName("date2").item(0)
 										.getTextContent();
-								log.info("date2 value is========"+date2);
 
 															}
 						}

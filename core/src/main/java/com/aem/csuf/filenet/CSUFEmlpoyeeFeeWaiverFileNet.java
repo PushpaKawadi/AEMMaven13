@@ -148,9 +148,9 @@ public class CSUFEmlpoyeeFeeWaiverFileNet implements WorkflowProcess {
 										XPathConstants.NODE);
 						deptName = deptNode.getFirstChild().getNodeValue();
 
-//						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
-//								.evaluate("//LogUser", doc, XPathConstants.NODE);
-//						logUserVal = logUserNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath
+								.evaluate("//LogUser", doc, XPathConstants.NODE);
+						logUserVal = logUserNode.getFirstChild().getNodeValue();
 						
 //						org.w3c.dom.Node initiatedDateNode = (org.w3c.dom.Node) xpath
 //								.evaluate("//DateInitiated", doc, XPathConstants.NODE);
@@ -231,12 +231,12 @@ public class CSUFEmlpoyeeFeeWaiverFileNet implements WorkflowProcess {
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", deptName);
 		json.addProperty("DocType", "SFEEW");
-		json.addProperty("InitiatedDate", dateComp);
+		json.addProperty("InitiatedDate", "");
 		json.addProperty("EmpUserID", logUserVal);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 		String filenetUrl ="";
-		//log.error("Employee Fee Waiver=" +json.toString());
+		log.error("Employee Fee Waiver=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
