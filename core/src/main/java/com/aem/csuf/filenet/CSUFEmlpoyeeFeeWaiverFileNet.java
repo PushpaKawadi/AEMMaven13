@@ -236,7 +236,7 @@ public class CSUFEmlpoyeeFeeWaiverFileNet implements WorkflowProcess {
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 		String filenetUrl ="";
-		log.error("Employee Fee Waiver=" +json.toString());
+		//log.error("Employee Fee Waiver=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();

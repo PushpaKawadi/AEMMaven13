@@ -236,7 +236,7 @@ public class InitialCobraFileNet implements WorkflowProcess {
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 		String filenetUrl ="";
-		log.error("Initial Cobra=" +json.toString());
+		//log.error("Initial Cobra=" +json.toString());
 		URL url = null;
 		try {
 			filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
