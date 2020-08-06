@@ -170,27 +170,26 @@ public class CSUFConstants {
 	//End of Evaluation Emp Lookup
 	
 	//Start of Major_Minor Change
-	//Start of Major_Minor Change
-		public static final String studentPersonalInformationCWID = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG from AR_CSU_STDNT_PROG_DATA where STUDENT_ID='<<CWID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
-		public static final String studentPersonalInformation = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG from AR_CSU_STDNT_PROG_DATA where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
-		public static final String getMajorsDetails = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
-		public static final String getCurrentMajorDetailsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK='1'";	
-		public static final String getAllMajorsUpdated = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' ORDER BY PROGRAMS ASC";
-		public static final String getAllMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' and PROGRAMS='<<PROGRAM>>'";
-		public static final String getAllAdditionalMajors = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' ORDER BY PROGRAMS ASC";
-		public static final String getAllAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' and PROGRAMS='<<PROGRAM>>'";
-		public static final String getCurrentAdditionalMajors = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK>='2'";
-		public static final String getCurrentAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MAJ' and PLAN_RANK>='2' and PROGRAMS='<<PROGRAM>>'";
-		public static final String getAllMinorsUpdated = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN' ORDER BY PROGRAMS ASC";
-		public static final String getCurrentMinorsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MIN'";
-		public static final String getAllMinorAcadPlan = "Select ACAD_PLAN from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN'and PROGRAMS='<<PROGRAM>>'";
-		public static final String getCurrentMinorAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-		public static final String getMinorChairDetails = "select distinct DEPTID,DEPTNAME,CHAIR_USERID,CHAIR_NAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-		public static final String getAllCertificates = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' ORDER BY PROGRAMS ASC";
-		public static final String getCurrentCertificates = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='CER'";
-		public static final String getAllCertificateAcadPlan = "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'";
-		public static final String getCurrentCertificateAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-		public static final String getAllChairDetials = "select distinct CHAIR_EMPLID,CHAIR_EMPNAME,CHAIR_USERID,CHAIR_EMAIL,DEPTID,DEPTNAME from AR_CSU_STDNT_PROG where PROGRAMS='<<PROGRAM>>'";
+	public static final String studentPersonalInformationCWID = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where STUDENT_ID='<<CWID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
+	public static final String studentPersonalInformation = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
+	public static final String getMajorsDetails = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
+	public static final String getCurrentMajorDetailsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK='1'";	
+	public static final String getAllMajorsUpdated = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' ORDER BY PROGRAMS ASC";
+	public static final String getAllMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' and PROGRAMS='<<PROGRAM>>'";
+	public static final String getAllAdditionalMajors = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' ORDER BY PROGRAMS ASC";
+	public static final String getAllAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' and PROGRAMS='<<PROGRAM>>'";
+	public static final String getCurrentAdditionalMajors = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK>='2'";
+	public static final String getCurrentAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MAJ' and PLAN_RANK>='2' and PROGRAMS='<<PROGRAM>>'";
+	public static final String getAllMinorsUpdated = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN' ORDER BY PROGRAMS ASC";
+	public static final String getCurrentMinorsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MIN'";
+	public static final String getAllMinorAcadPlan = "Select ACAD_PLAN from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN'and PROGRAMS='<<PROGRAM>>'";
+	public static final String getCurrentMinorAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
+	public static final String getMinorChairDetails = "select distinct DEPTID,DEPTNAME,CHAIR_USERID,CHAIR_NAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
+	public static final String getAllCertificates = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' ORDER BY PROGRAMS ASC";
+	public static final String getCurrentCertificates = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='CER'";
+	public static final String getAllCertificateAcadPlan = "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'";
+	public static final String getCurrentCertificateAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
+	public static final String getAllChairDetials = "select distinct CHAIR_EMPLID,CHAIR_EMPNAME,CHAIR_USERID,CHAIR_EMAIL,DEPTID,DEPTNAME from AR_CSU_STDNT_PROG where PROGRAMS='<<PROGRAM>>'";
 	//End of Major_Minor Change
 	
 	//Start of Evaluation Unit 4 Emp Lookup		

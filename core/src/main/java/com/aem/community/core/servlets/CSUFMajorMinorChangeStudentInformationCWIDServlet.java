@@ -149,25 +149,25 @@ public class CSUFMajorMinorChangeStudentInformationCWIDServlet extends SlingSafe
 			oStatement = conn.createStatement();
 			oRresultSet = oStatement.executeQuery(majorMinorChangeInfoSQL);
 			
-			
 			// Get the unique Case ID from database sequence
 			String caseID = getCaseID(conn);			
-
 			while (oRresultSet.next()) {
-				instInfo = new JSONObject();      
+				instInfo = new JSONObject(); 
 				instInfo.put("CASEID", caseID);
 
-				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));				
+				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));
 				instInfo.put("student_FName", oRresultSet.getString("STUDENT_FNAME"));
 				instInfo.put("student_LName", oRresultSet.getString("STUDENT_LNAME"));
 				instInfo.put("student_Phone", oRresultSet.getString("STUDENT_PHONE"));
 				instInfo.put("student_UserID", oRresultSet.getString("STUDENT_USERID"));
-				instInfo.put("student_Email", oRresultSet.getString("STUDENT_EMAIL"));
-				//instInfo.put("student_Email", "pushpa.kawadi@thoughtfocus.com");
-				instInfo.put("ACAD_PROG", oRresultSet.getString("ACAD_PROG"));				
+				instInfo.put("student_Email", oRresultSet.getString("STUDENT_EMAIL"));	
+				instInfo.put("ACAD_PROG", oRresultSet.getString("ACAD_PROG"));	
+				instInfo.put("term_descr", oRresultSet.getString("TERM_DESCR"));
+				instInfo.put("acad_year", oRresultSet.getString("ACAD_YEAR"));
 
-				jArray.put(instInfo);
+				jArray.put(instInfo);				
 			}
+			logger.info("JSON String is = "+ jArray.put(instInfo));
 
 		} catch (Exception oEx) {
 			instInfo = null;
