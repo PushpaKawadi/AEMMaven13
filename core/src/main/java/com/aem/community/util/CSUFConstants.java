@@ -169,7 +169,7 @@ public class CSUFConstants {
 	public static final String lookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
 	//End of Evaluation Emp Lookup
 	
-	//Start of Major_Minor Change
+	/*//Start of Major_Minor Change
 	public static final String studentPersonalInformationCWID = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where STUDENT_ID='<<CWID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
 	public static final String studentPersonalInformation = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
 	public static final String getMajorsDetails = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
@@ -190,7 +190,7 @@ public class CSUFConstants {
 	public static final String getAllCertificateAcadPlan = "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'";
 	public static final String getCurrentCertificateAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
 	public static final String getAllChairDetials = "select distinct CHAIR_EMPLID,CHAIR_EMPNAME,CHAIR_USERID,CHAIR_EMAIL,DEPTID,DEPTNAME from AR_CSU_STDNT_PROG where PROGRAMS='<<PROGRAM>>'";
-	//End of Major_Minor Change
+	//End of Major_Minor Change */
 	
 	//Start of Evaluation Unit 4 Emp Lookup		
 	//public static final String staffEvalUnit4EmplIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select Working_Title from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle, B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID = Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID AND B.UNION_CD='R04'";
