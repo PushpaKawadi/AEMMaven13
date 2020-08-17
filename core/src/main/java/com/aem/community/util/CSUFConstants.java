@@ -249,4 +249,9 @@ public class CSUFConstants {
 	public static final String domesticPartner = "Select A.FIRST_NAME, A.LAST_NAME,A.NATIONAL_ID, B.DEPTNAME, B.JOBCODE,C.USERID as EMP_USERID From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C Where  A.EMPLID = B.EMPLID AND A.emplid = C.cwid AND C.userid = '<<getUser_ID>>' AND C.CWID = B.EMPLID";
 	public static final String domesticPartnerLookUpFields = "FIRST_NAME,LAST_NAME,NATIONAL_ID,DEPTNAME,JOBCODE,EMP_USERID";
 	// End of Domestic Partner
+	
+	// Start of Short App Emp Fee Waiver
+	public static final String confirmationTicketEmp = "select * from HR_STUDENT_WORKER_DATA where CLASS_CODE ='<<CLASS_CODE>>' and cwid='<<CWID>>'";
+	public static final String confTicketLookupFields = "CWID,EMPL_RCD,EFFECTIVE_DATE,CURRENT_DATE,APPOINTMENT_END_DATE,FULL_NAME,LAST_NAME,FIRST_NAME,MIDDLE_NAME,ACTION,ACTION_REASON,DEPARTMENT_CODE,DEPARTMENT,CMS_POSITION_NUMBER,AGENCY,REPORTING_UNIT,CLASS_CODE,SERIAL_NUMBER,JOB_TITLE,COMPENSATION_RATE";
+	// End of Short App Emp Fee Waiver
 }
