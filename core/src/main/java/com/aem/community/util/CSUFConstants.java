@@ -1,12 +1,12 @@
 package com.aem.community.util;
 
 public class CSUFConstants {
-	
+
 	// Start of 10_12_11_12 PayPlan
 	public static final String PayPlanUserLookUp = "Select A.FIRST_NAME, A.LAST_NAME, substr(A.WORK_PHONE,7,10) as Extension, B.DEPTNAME, B.DEPTID,  B.EMPL_RCD, B.POSITION_NBR, B.DESCR, B.UNION_CD, ('242' || ' - ' || B.CSU_UNIT || ' - ' || B.JOBCODE || ' - ' ||  '00' || (EMPL_RCD+1) ) as SCOPosNum, B.STD_HOURS, B.POSITION_NBR, B.GRADE, B.EMPLID  from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C where A.EMPLID = C.cwid and C.userid = '<<getUser_ID>>' and A.EMPLID = B.EMPLID";
-	public static final String PayPlanLookUpFields = "FIRST_NAME,LAST_NAME,Extension,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,SCOPosNum,STD_HOURS,POSITION_NBR,GRADE,EMPLID";	
+	public static final String PayPlanLookUpFields = "FIRST_NAME,LAST_NAME,Extension,DEPTNAME,DEPTID,EMPL_RCD,POSITION_NBR,DESCR,UNION_CD,SCOPosNum,STD_HOURS,POSITION_NBR,GRADE,EMPLID";
 	// End of 10_12_11_12 PayPlan
-	
+
 	// Start of Dock Notice
 	public static final String dockNoticeUserIdSql = "Select A.EMPLID, A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.EMPL_RCD, B.DEPTID, B.DEPTNAME, ('242 -' || B.CSU_UNIT || ' - ' || B.JOBCODE || ' - '  || '00' || (B.EMPL_RCD+1) ) as SCO_Position_Num, A.NATIONAL_ID from FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C where A.EMPLID = B.EMPLID and A.EMPLID = C.cwid and C.userid = ('<<getUser_ID>>')";
 	public static final String dockNoticeFields = "EMPLID,FIRST_NAME,LAST_NAME,MIDDLE_NAME,EMPL_RCD,DEPTID,DEPTNAME,SCO_POSITION_NUM,NATIONAL_ID";
@@ -111,7 +111,7 @@ public class CSUFConstants {
 	public static final String visionLifeSQL = "Select  A.FIRST_NAME, A.LAST_NAME, A.MIDDLE_NAME, B.UNION_CD, B.CSU_UNIT, B.JOBCODE, B.EMPL_RCD+1 AS Serial, B.CSU_SCO_AGENCY, B.DEPTNAME, C.USERID as EMP_USERID From FUL_EMP_CWID_NT_NAME C, FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where A.NATIONAL_ID = Replace('<<SSN>>','-','') AND B.EMPLID = A.EMPLID and C.CWID = B.EMPLID";
 	public static final String lookupFieldsVisionLife = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,UNION_CD,CSU_UNIT,JOBCODE,Serial,CSU_SCO_AGENCY,DEPTNAME,EMP_USERID";
 	// End of Vision LIFE_LTD Lookup
-	
+
 	// Start of Grade Change
 	public static final String gradeChangeSingleStudent = "Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>' and cwid ='<<cwid>>'";
 	public static final String gradeChangeBulk = "Select * from AR_GRADE_FORM where TERM_DESCR = '<<TERM_DESCR>>' and CRSE_NAME ='<<CRSE_NAME>>' and class_nbr ='<<classNo>>' and class_section ='<<sectionNo>>' and INSTR_CWID ='<<instCwid>>'";
@@ -163,83 +163,115 @@ public class CSUFConstants {
 	public static final String vspCobra = "Select B.LAST_NAME, B.FIRST_NAME, B.MIDDLE_NAME, B.BIRTHDATE,  B.ADDRESS1, B.CITY, B.STATE, B.POSTAL, 'N/A' as DeptName, 'N/A' as Jobcode From FUL_ECM_BEN_VW B Where  B.NATIONAL_ID = Replace('<<Applicant_SSN>>','-','') union Select B.LAST_NAME, B.FIRST_NAME, B.MIDDLE_NAME, B.BIRTHDATE,  B.ADDRESS1, B.CITY, B.STATE, B.POSTAL, A.DEPTNAME, A.JOBCODE From FUL_ECM_PERS_VW B, FUL_ECM_JOB_VW A Where  B.NATIONAL_ID = Replace('<<Applicant_SSN>>', '-','') AND A.EMPLID = B.EMPLID";
 	public static final String vspCobraLookUpFields = "LAST_NAME,FIRST_NAME,MIDDLE_NAME,BIRTHDATE,ADDRESS1,CITY,STATE,POSTAL,DEPTNAME,JOBCODE";
 	// End of VSP Cobra
-	
-	//Start of Evaluation Emp Lookup	
+
+	// Start of Evaluation Emp Lookup
 	public static final String emplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL";
-	public static final String lookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Emp Lookup
-	
-	/*//Start of Major_Minor Change
-	public static final String studentPersonalInformationCWID = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where STUDENT_ID='<<CWID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
-	public static final String studentPersonalInformation = "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'";
-	public static final String getMajorsDetails = "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'";
-	public static final String getCurrentMajorDetailsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK='1'";	
-	public static final String getAllMajorsUpdated = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' ORDER BY PROGRAMS ASC";
-	public static final String getAllMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' and PROGRAMS='<<PROGRAM>>'";
-	public static final String getAllAdditionalMajors = "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' ORDER BY PROGRAMS ASC";
-	public static final String getAllAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' and PROGRAMS='<<PROGRAM>>'";
-	public static final String getCurrentAdditionalMajors = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK>='2'";
-	public static final String getCurrentAdditionalMajorsAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MAJ' and PLAN_RANK>='2' and PROGRAMS='<<PROGRAM>>'";
-	public static final String getAllMinorsUpdated = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN' ORDER BY PROGRAMS ASC";
-	public static final String getCurrentMinorsUpdated = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MIN'";
-	public static final String getAllMinorAcadPlan = "Select ACAD_PLAN from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN'and PROGRAMS='<<PROGRAM>>'";
-	public static final String getCurrentMinorAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-	public static final String getMinorChairDetails = "select distinct DEPTID,DEPTNAME,CHAIR_USERID,CHAIR_NAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-	public static final String getAllCertificates = "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' ORDER BY PROGRAMS ASC";
-	public static final String getCurrentCertificates = "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='CER'";
-	public static final String getAllCertificateAcadPlan = "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'";
-	public static final String getCurrentCertificateAcadPlan = "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'";
-	public static final String getAllChairDetials = "select distinct CHAIR_EMPLID,CHAIR_EMPNAME,CHAIR_USERID,CHAIR_EMAIL,DEPTID,DEPTNAME from AR_CSU_STDNT_PROG where PROGRAMS='<<PROGRAM>>'";
-	//End of Major_Minor Change */
-	
-	//Start of Evaluation Unit 4 Emp Lookup		
-	//public static final String staffEvalUnit4EmplIDSQL = "Select A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorName, (Select Working_Title from ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle, B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID = Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID AND B.UNION_CD='R04'";
-	//Modified on 07012020
+	public static final String lookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Emp Lookup
+
+	/*
+	 * //Start of Major_Minor Change public static final String
+	 * studentPersonalInformationCWID =
+	 * "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where STUDENT_ID='<<CWID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'"
+	 * ; public static final String studentPersonalInformation =
+	 * "select DISTINCT STUDENT_ID,STUDENT_EMAIL,STUDENT_FNAME,STUDENT_LNAME,STUDENT_PHONE,STUDENT_USERID,ACAD_PROG,TERM_DESCR,ACAD_YEAR from AR_CSU_STDNT_PROG_DATA where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP')  and PLAN_RANK ='1'"
+	 * ; public static final String getMajorsDetails =
+	 * "select * from AR_CSU_STDNT_PLAN where UPPER(STUDENT_USERID) = UPPER('<<getUser_ID>>') and ACAD_PROG='<<ACAD_PROG>>' and ACAD_PLAN_TYPE='<<ACAD_PLAN_TYPE>>'"
+	 * ; public static final String getCurrentMajorDetailsUpdated =
+	 * "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK='1'"
+	 * ; public static final String getAllMajorsUpdated =
+	 * "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' ORDER BY PROGRAMS ASC"
+	 * ; public static final String getAllMajorsAcadPlan =
+	 * "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%1MJ%' and PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getAllAdditionalMajors =
+	 * "select distinct ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' ORDER BY PROGRAMS ASC"
+	 * ; public static final String getAllAdditionalMajorsAcadPlan =
+	 * "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG where DESCR like '%2MJ%' and PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getCurrentAdditionalMajors =
+	 * "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE in ('MAJ','PRP') and PLAN_RANK>='2'"
+	 * ; public static final String getCurrentAdditionalMajorsAcadPlan =
+	 * "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MAJ' and PLAN_RANK>='2' and PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getAllMinorsUpdated =
+	 * "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN' ORDER BY PROGRAMS ASC"
+	 * ; public static final String getCurrentMinorsUpdated =
+	 * "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='MIN'"
+	 * ; public static final String getAllMinorAcadPlan =
+	 * "Select ACAD_PLAN from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='MIN'and PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getCurrentMinorAcadPlan =
+	 * "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getMinorChairDetails =
+	 * "select distinct DEPTID,DEPTNAME,CHAIR_USERID,CHAIR_NAME,CHAIR_EMPLID,CHAIR_EMAIL from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getAllCertificates =
+	 * "Select ACAD_PLAN, PROGRAMS from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' ORDER BY PROGRAMS ASC"
+	 * ; public static final String getCurrentCertificates =
+	 * "select distinct ACAD_PLAN,PROGRAMS from AR_CSU_STDNT_PROG_DATA where STUDENT_USERID='<<getUser_ID>>' and ACAD_CAREER='UGRD' and ACAD_PLAN_TYPE='CER'"
+	 * ; public static final String getAllCertificateAcadPlan =
+	 * "Select ACAD_PLAN  from AR_CSU_STDNT_PROG where ACAD_PLAN_TYPE='CER' and PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getCurrentCertificateAcadPlan =
+	 * "select distinct ACAD_PLAN from AR_CSU_STDNT_PROG_DATA where PROGRAMS='<<PROGRAM>>'"
+	 * ; public static final String getAllChairDetials =
+	 * "select distinct CHAIR_EMPLID,CHAIR_EMPNAME,CHAIR_USERID,CHAIR_EMAIL,DEPTID,DEPTNAME from AR_CSU_STDNT_PROG where PROGRAMS='<<PROGRAM>>'"
+	 * ; //End of Major_Minor Change
+	 */
+
+	// Start of Evaluation Unit 4 Emp Lookup
+	// public static final String staffEvalUnit4EmplIDSQL = "Select A.FIRST_NAME,
+	// A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR,
+	// B.GRADE, (Select supervisor_name from ful_ecm_reports_vw where b.reports_to =
+	// position_nbr) as SupervisorName, (Select Working_Title from
+	// ful_ecm_reports_vw where b.reports_to = position_nbr) as SupervisorTitle,
+	// B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS
+	// EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID =
+	// B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT
+	// JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE A.EMPLID =
+	// Replace('<<Empl_ID>>', '-', '') and A.EMPLID = B.EMPLID AND
+	// B.UNION_CD='R04'";
+	// Modified on 07012020
 	public static final String staffEvalUnit4EmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID	from HR_STAFF_EVALUATION where EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL AND UNION_CD='R04'";
-	public static final String staffEvalUnit4LookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";		
-	//End of Evaluation Unit 4  Emp Lookup
-	
-	//Start of Evaluation Cust Emp Lookup	
+	public static final String staffEvalUnit4LookupFieldsEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Unit 4 Emp Lookup
+
+	// Start of Evaluation Cust Emp Lookup
 	public static final String staffEvalCustEmplIDSQL = "SELECT A.FIRST_NAME, A.LAST_NAME, A.EMPLID, B.DEPTID, B.DEPTNAME, B.UNION_CD, B.EMPL_RCD, B.DESCR, B.GRADE, D.SUPERVISOR_NAME AS SupervisorName, D.WORKING_TITLE AS SupervisorTitle,B.FUL_DIVISION as DIVSION, B.FUL_DIVISION_NAME as DIVISION_NAME, E.USERID AS EMPUSERID FROM FUL_ECM_JOB_VW B LEFT JOIN FUL_ECM_PERS_VW A ON A.EMPLID = B.EMPLID LEFT JOIN FUL_ECM_REPORTS_VW D ON D.POSITION_NBR = B.REPORTS_TO LEFT JOIN cmsrda.ful_emp_cwid_nt_name E on A.EMPLID = E.CWID WHERE B.EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and B.UNION_CD='R05'";
-	public static final String lookupFieldsCustEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Cust Emp Lookup
-	
-	//Start of Evaluation Conf Emp Lookup	
+	public static final String lookupFieldsCustEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Cust Emp Lookup
+
+	// Start of Evaluation Conf Emp Lookup
 	public static final String staffEvalConfEmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID from HR_STAFF_EVALUATION WHERE EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and UNION_CD='C99'";
-	public static final String lookupFieldsConfEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Conf Emp Lookup
-	
-	//Start of Evaluation Unit1 Emp Lookup	
+	public static final String lookupFieldsConfEmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Conf Emp Lookup
+
+	// Start of Evaluation Unit1 Emp Lookup
 	public static final String staffEvalUnit1EmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID from HR_STAFF_EVALUATION WHERE EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and	UNION_CD='R01'";
-	public static final String lookupFieldsUnit1EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Unit1 Emp Lookup
-	
-	//Start of Evaluation Unit2579 Emp Lookup	
+	public static final String lookupFieldsUnit1EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Unit1 Emp Lookup
+
+	// Start of Evaluation Unit2579 Emp Lookup
 	public static final String staffEvalUnit2579EmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID from HR_STAFF_EVALUATION WHERE EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and UNION_CD in ('R02','R05','R07','R09')";
-	public static final String lookupFieldsUnit2579EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Unit2579 Emp Lookup
-	
-	//Start of Evaluation Unit6 Emp Lookup	
+	public static final String lookupFieldsUnit2579EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Unit2579 Emp Lookup
+
+	// Start of Evaluation Unit6 Emp Lookup
 	public static final String staffEvalUnit6EmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID from HR_STAFF_EVALUATION WHERE EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and UNION_CD ='R06'";
-	public static final String lookupFieldsUnit6EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Unit6 Emp Lookup
-	
-	//Start of Evaluation Unit8 Emp Lookup	
+	public static final String lookupFieldsUnit6EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Unit6 Emp Lookup
+
+	// Start of Evaluation Unit8 Emp Lookup
 	public static final String staffEvalUnit8EmplIDSQL = "select FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID from HR_STAFF_EVALUATION WHERE EMPLID = '<<Empl_ID>>' AND ISEVALUSER('<<getUser_ID>>') IS NOT NULL and UNION_CD ='R08'";
-	public static final String lookupFieldsUnit8EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";	
-	//End of Evaluation Unit8 Emp Lookup
-	
-	//Start of Get Email Lookup
+	public static final String lookupFieldsUnit8EmpLookup = "FIRST_NAME,LAST_NAME,EMPLID,DEPTID,DEPTNAME,UNION_CD,EMPL_RCD,DESCR,GRADE,SupervisorName,SupervisorTitle,DIVSION,DIVISION_NAME,EMPUSERID";
+	// End of Evaluation Unit8 Emp Lookup
+
+	// Start of Get Email Lookup
 	public static final String getEmailAddressCwidLookup = "select EMAILID from EMPL_ACT_DIR_DATA where EMPLOYEEID = '<<Emp_ID>>'";
 	public static final String getEmailAddressUserIdLookup = "select EMAILID from EMPL_ACT_DIR_DATA where USERID = '<<UID>>'";
-	//End of Get Email Lookup
-	
-	//Start of Get Logged In User Details from DB SQL
+	// End of Get Email Lookup
+
+	// Start of Get Logged In User Details from DB SQL
 	public static final String getLoggedInUserDetailsFromDB = "SELECT FNAME, LNAME from cmsrda.ful_emp_cwid_nt_name where USERID = '<<get_user_id>>'";
 	public static final String loggedInUserDetailsLookupFields = "FNAME,LNAME";
-	
-	//End of Get Logged In User Details from DB SQL
-	
+
+	// End of Get Logged In User Details from DB SQL
+
 	// Start of Direct Pay Dental
 	public static final String directPayDental = "Select A.FIRST_NAME, A.LAST_NAME,  A.MIDDLE_NAME,   B.JOBCODE,  A.CITY, A.STATE, A.POSTAL, A.HOME_PHONE,  B.UNION_CD, B.DEPTNAME,  A.ADDRESS1, C.USERID as EMP_USERID From FUL_EMP_CWID_NT_NAME C , FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B Where  A.NATIONAL_ID = Replace('<<SSN>>','-','') AND A.EMPLID = B.EMPLID and C.CWID = B.EMPLID";
 	public static final String directPayDentalLookUpFields = "FIRST_NAME,LAST_NAME,MIDDLE_NAME,JOBCODE,CITY,STATE,POSTAL,HOME_PHONE,UNION_CD,DEPTNAME,ADDRESS1,EMP_USERID";
@@ -249,9 +281,13 @@ public class CSUFConstants {
 	public static final String domesticPartner = "Select A.FIRST_NAME, A.LAST_NAME,A.NATIONAL_ID, B.DEPTNAME, B.JOBCODE,C.USERID as EMP_USERID From  FUL_ECM_PERS_VW A, FUL_ECM_JOB_VW B, FUL_EMP_CWID_NT_NAME C Where  A.EMPLID = B.EMPLID AND A.emplid = C.cwid AND C.userid = '<<getUser_ID>>' AND C.CWID = B.EMPLID";
 	public static final String domesticPartnerLookUpFields = "FIRST_NAME,LAST_NAME,NATIONAL_ID,DEPTNAME,JOBCODE,EMP_USERID";
 	// End of Domestic Partner
-	
+
 	// Start of Short App Emp Fee Waiver
 	public static final String confirmationTicketEmp = "select * from HR_STUDENT_WORKER_DATA where CLASS_CODE ='<<CLASS_CODE>>' and cwid='<<CWID>>'";
 	public static final String confTicketLookupFields = "CWID,EMPL_RCD,EFFECTIVE_DATE,CURRENT_DATE,APPOINTMENT_END_DATE,FULL_NAME,LAST_NAME,FIRST_NAME,MIDDLE_NAME,ACTION,ACTION_REASON,DEPARTMENT_CODE,DEPARTMENT,CMS_POSITION_NUMBER,AGENCY,REPORTING_UNIT,CLASS_CODE,SERIAL_NUMBER,JOB_TITLE,COMPENSATION_RATE";
 	// End of Short App Emp Fee Waiver
+
+	// Start of get dept chair and dean details
+	public static final String getChairDeanInfoSQL = "select CHAIR_USERID, CHAIR_NAME,CHAIR_EMAIL,DEAN_USERID,DEAN_EMAIL,DEAN_NAME from AR_DEPT_CHAIR_INFO where DEPTID = '<<dept_id>>'";
+	// End of get dept chair and dean details
 }

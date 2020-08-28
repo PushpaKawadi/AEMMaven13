@@ -109,11 +109,13 @@ public class CSUFGetStaffManagerAdminDetails extends SlingSafeMethodsServlet {
 					String managerUid = employeeEvalDetails.getString("MANAGER_EMP_USERID");
 					String managerEmailID = getEmailID(oConnection,managerUid);
 					employeeEvalDetails.put("MANAGER_EMAIL_ID", managerEmailID);
+					
 				}
 				if(!employeeEvalDetails.isNull("ADMIN_EMP_USERID")) {
 					String adminUid = employeeEvalDetails.getString("ADMIN_EMP_USERID");
 					String adminEmailID = getEmailID(oConnection,adminUid);
 					employeeEvalDetails.put("ADMIN_EMAIL_ID", adminEmailID);
+					
 				}
 				jArray.put(employeeEvalDetails);
 			}
