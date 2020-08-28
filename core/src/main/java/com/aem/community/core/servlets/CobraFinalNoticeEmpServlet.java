@@ -25,6 +25,8 @@ import org.slf4j.LoggerFactory;
 
 
 
+
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
 import com.aem.community.util.ConfigManager;
@@ -115,6 +117,12 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 					cobraFinalNoticeDetails.put(fields[i], oRresultSet.getString(fields[i]));
 					logger.info("employeeEvalDetails ="+cobraFinalNoticeDetails);
 				}
+				
+				if(cobraFinalNoticeDetails.length() > 0) {
+					String empEmailID = getEmailID(oConnection,cwid);
+					cobraFinalNoticeDetails.put("EMP_EMAIL_ID", empEmailID);
+					cobraFinalNoticeDetails.put("EMP_EMAIL_ID", "pushpa.kawadi@thoughtfocus.com");
+				}
 				jArray.put(cobraFinalNoticeDetails);
 			}
 			logger.info("oRresultSet ="+jArray);
@@ -139,33 +147,25 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 		return jArray;
 	}
 
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
+	public static String getEmailID(Connection oConnection,String cwid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
 			try {
-				if (con != null) {
-					logger.info("Conn available=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
+
+			String getEmailSql = CSUFConstants.getEmailAddressCwidLookup;
+			getEmailSql = getEmailSql.replaceAll("<<Emp_ID>>", cwid);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
 			}
-		}
-		return null;
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
 	}
 
 }
