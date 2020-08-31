@@ -121,7 +121,7 @@ public class CobraFinalNoticeEmpServlet extends SlingSafeMethodsServlet {
 				if(cobraFinalNoticeDetails.length() > 0) {
 					String empEmailID = getEmailID(oConnection,cwid);
 					cobraFinalNoticeDetails.put("EMP_EMAIL_ID", empEmailID);
-					cobraFinalNoticeDetails.put("EMP_EMAIL_ID", "pushpa.kawadi@thoughtfocus.com");
+					//cobraFinalNoticeDetails.put("EMP_EMAIL_ID", "pushpa.kawadi@thoughtfocus.com");
 				}
 				jArray.put(cobraFinalNoticeDetails);
 			}
