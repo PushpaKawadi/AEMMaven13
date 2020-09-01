@@ -98,16 +98,10 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 		JSONObject employeeEvalDetails;
 		JSONArray jArray = new JSONArray();
 		
-		//String sqlQuery = ConfigManager.getValue("catastrophicLeaveRequest");
 		String sqlQuery = CSUFConstants.catastrophicLeaveRequest;
-		logger.info("sqlQuery="+sqlQuery);
-		//String lookupFields = ConfigManager.getValue("catastrophicFields");
 		String lookupFields = CSUFConstants.catastrophicFields;
-		logger.info("lookupFields="+lookupFields);
 		String[] fields = lookupFields.split(",");
 		sqlQuery = sqlQuery.replaceAll("<<getUser_ID>>", userID);
-		// emplIDSQL = emplIDSQL.replaceAll("<<Empl_ID>>", cwid);
-		logger.info("emplIDSQL="+sqlQuery);
 		Statement oStatement = null;
 		try {
 			oStatement = oConnection.createStatement();
@@ -117,6 +111,10 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i],
 							oRresultSet.getString(fields[i]));
+				}
+				if(employeeEvalDetails.length() > 0) {
+					String empEmailID = getEmailID(oConnection,userID);
+					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
 				}
 				jArray.put(employeeEvalDetails);
 			}
@@ -138,6 +136,27 @@ public class CSUFCatastrophicLeaveRequestServlet extends
 			}
 		}
 		return jArray;
+	}
+	
+	public static String getEmailID(Connection oConnection,String userID) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
+			try {
+
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", userID);
+			oStatement = oConnection.createStatement();
+			
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
+			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}		
+		return empEmail;
 	}
 
 }
