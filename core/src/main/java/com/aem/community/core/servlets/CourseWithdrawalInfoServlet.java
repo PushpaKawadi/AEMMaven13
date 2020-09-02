@@ -299,7 +299,10 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 
 		try {
 
-			String sql = "Select distinct STRM,DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where TERM_BEGIN_DT <= sysdate and TERM_END_DT >=sysdate";
+			//String sql = "Select distinct STRM,DESCR from SYSADM.PS_TERM_TBL@DBL_CBFULTRS where TERM_BEGIN_DT <= sysdate and TERM_END_DT >=sysdate";
+			//Added on 09022020
+			String sql = "Select distinct STRM,DESCR from SYSADM.PS_TERM_TBL@DBL_CFULPRD where TERM_BEGIN_DT <= sysdate and TERM_END_DT >=sysdate";
+			
 			oStatement = oConnection.createStatement();
 			oRresultSet = oStatement.executeQuery(sql);
 
