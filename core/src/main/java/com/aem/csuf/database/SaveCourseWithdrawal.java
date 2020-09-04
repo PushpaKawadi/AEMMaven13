@@ -209,7 +209,7 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 		String studentSignDate = null;
 		Object studDateObj = null;
 		String caseID  = null;
-		
+		String covid19Withdrawal = null;
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -706,6 +706,9 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 							studentSignDate = eElement
 									.getElementsByTagName("StudentSignDate")
 									.item(0).getTextContent();
+							covid19Withdrawal = eElement
+									.getElementsByTagName("Covid19CB")
+									.item(0).getTextContent();
 
 						}
 					}
@@ -861,6 +864,7 @@ public class SaveCourseWithdrawal implements WorkflowProcess {
 						studDateObj = stuDate;
 					}
 					dataMap.put("STUDENT_SIGN_DATE", studDateObj);
+					dataMap.put("WITHDRAWAL_DUE_TO_COVID19", covid19Withdrawal);
 					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 					
 				} catch (SAXException e) {

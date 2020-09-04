@@ -117,6 +117,12 @@ public class PayPlanUserLookupServlet extends SlingSafeMethodsServlet {
 					payPlanJSONDetails.put(fields[i], oRresultSet.getString(fields[i]));
 					logger.info("employeeWaiverDetails ="+payPlanJSONDetails);
 				}
+				if (!payPlanJSONDetails.isNull("EMPLID")) {
+					String cwid = payPlanJSONDetails.getString("EMPLID");
+					String empEmailID = getEmailID(oConnection, cwid);
+					payPlanJSONDetails.put("EMP_EMAIL_ID", empEmailID);
+				}
+				logger.info("Emp Details =" + jArray);
 				jArray.put(payPlanJSONDetails);
 			}
 			logger.info("oRresultSet ="+jArray);
@@ -141,33 +147,25 @@ public class PayPlanUserLookupServlet extends SlingSafeMethodsServlet {
 		return jArray;
 	}
 
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
+	public static String getEmailID(Connection oConnection, String cwid) throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
 		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
 
-		} catch (Exception e) {
-			logger.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn available=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
+			String getEmailSql = CSUFConstants.getEmailAddressCwidLookup;
+			getEmailSql = getEmailSql.replaceAll("<<Emp_ID>>", cwid);
+			oStatement = oConnection.createStatement();
+
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
 			}
+			logger.info("Get Email Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
 		}
-		return null;
+		return empEmail;
 	}
 
 }
