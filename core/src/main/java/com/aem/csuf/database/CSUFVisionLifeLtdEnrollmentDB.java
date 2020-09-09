@@ -90,7 +90,7 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 		String campusName = "";
 		String telephoneNumber = "";
 		String dateInitiated = "";
-
+		String workflowInstance = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -102,7 +102,7 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-
+			workflowInstance = workItem.getWorkflow().getId();
 			String filePath = attachmentXml.getPath();
 
 			log.info("filePath= " + filePath);
@@ -230,6 +230,7 @@ public class CSUFVisionLifeLtdEnrollmentDB implements WorkflowProcess {
 						dateInitiatedObj = dateInitiatedNew;
 					}
 					dataMap.put("DATE_INITIATED", dateInitiatedObj);
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
 					log.error("Datamap Size=" + dataMap.size());
 
 				} catch (SAXException e) {
