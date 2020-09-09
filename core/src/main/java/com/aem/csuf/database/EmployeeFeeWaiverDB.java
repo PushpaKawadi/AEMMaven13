@@ -123,7 +123,7 @@ public class EmployeeFeeWaiverDB implements WorkflowProcess {
 		String EDDE = "";
 		String hrSign = "";
 		String hrSigneddate = "";
-
+		String comment2 = "";
 		LinkedHashMap<String, Object> dataMap = null;
 
 		Resource xmlNode = resolver.getResource(payloadPath);
@@ -207,7 +207,7 @@ public class EmployeeFeeWaiverDB implements WorkflowProcess {
 							probationStatus = eElement.getElementsByTagName("probationStatus").item(0).getTextContent();
 							log.info("probationStatus Value is: " + probationStatus);
 
-							temporary = eElement.getElementsByTagName("temporary").item(0).getTextContent();
+							temporary = eElement.getElementsByTagName("temStatus").item(0).getTextContent();
 							log.info("temporary Value is: " + temporary);
 
 							enddate = eElement.getElementsByTagName("enddate").item(0).getTextContent();
@@ -402,7 +402,7 @@ public class EmployeeFeeWaiverDB implements WorkflowProcess {
 
 							hrSigneddate = eElement.getElementsByTagName("hrSigneddate").item(0).getTextContent();
 							log.info("hrSigneddate Value is: " + hrSigneddate);
-
+							comment2 = eElement.getElementsByTagName("comment2").item(0).getTextContent();
 						}
 					}
 
@@ -451,6 +451,7 @@ public class EmployeeFeeWaiverDB implements WorkflowProcess {
 					dataMap.put("HOURS2", hours2);
 					dataMap.put("RELEASE_TIME2", releaseTime2);
 					dataMap.put("COMMENT1", comment1);
+					dataMap.put("COMMENT2", comment2);
 					dataMap.put("GRADPROFBUS_STATEMENT", gradProfBusStatement);
 					dataMap.put("AUTHORIZATION_INITIALS", authorizationInitials);
 					dataMap.put("EMP_SIGN", empSign);
