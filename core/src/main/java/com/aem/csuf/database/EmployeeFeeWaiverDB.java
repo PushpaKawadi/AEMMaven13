@@ -207,7 +207,7 @@ public class EmployeeFeeWaiverDB implements WorkflowProcess {
 							probationStatus = eElement.getElementsByTagName("probationStatus").item(0).getTextContent();
 							log.info("probationStatus Value is: " + probationStatus);
 
-							temporary = eElement.getElementsByTagName("temStatus").item(0).getTextContent();
+							temporary = eElement.getElementsByTagName("temporary").item(0).getTextContent();
 							log.info("temporary Value is: " + temporary);
 
 							enddate = eElement.getElementsByTagName("enddate").item(0).getTextContent();
