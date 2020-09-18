@@ -71,7 +71,8 @@ public class CSUFSSA1945Filenet implements WorkflowProcess {
 		String ssn = null;
 		String deptID = null;
 		String empUserVal = null;
-		String dateInitiated = null;
+		String dept = null;
+		String logUser = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
 
@@ -129,20 +130,14 @@ public class CSUFSSA1945Filenet implements WorkflowProcess {
 								XPathConstants.NODE);
 						lastName = lnNode.getFirstChild().getNodeValue();
 
-						org.w3c.dom.Node dateInitiatedNode = (org.w3c.dom.Node) xpath.evaluate("//SignDate", doc,
+						org.w3c.dom.Node deptNode = (org.w3c.dom.Node) xpath.evaluate("//Department", doc,
 								XPathConstants.NODE);
-						dateInitiated = dateInitiatedNode.getFirstChild().getNodeValue();
+						dept = deptNode.getFirstChild().getNodeValue();
+						org.w3c.dom.Node logUserNode = (org.w3c.dom.Node) xpath.evaluate("//logUser", doc,
+								XPathConstants.NODE);
+						logUser = logUserNode.getFirstChild().getNodeValue();
 
-						SimpleDateFormat fromDate = new SimpleDateFormat("yyyy-MM-dd");
-						SimpleDateFormat toDate = new SimpleDateFormat("MM/dd/yyyy");
-
-						if (dateInitiated != null && !dateInitiated.equals("")) {
-							try {
-								dateInitiated = toDate.format(fromDate.parse(dateInitiated));
-							} catch (ParseException e) {
-								e.printStackTrace();
-							}
-						}
+						
 					} catch (XPathExpressionException e) {
 						e.printStackTrace();
 					}
@@ -198,12 +193,11 @@ public class CSUFSSA1945Filenet implements WorkflowProcess {
 		JsonObject json = new JsonObject();
 		json.addProperty("FirstName", firstName);
 		json.addProperty("LastName", lastName);
-		json.addProperty("CWID", "");
 		json.addProperty("SSN", ssn);
 		json.addProperty("DepartmentID", "");
-		json.addProperty("DocType", "DPDC");
-		json.addProperty("InitiatedDate", dateInitiated);
-		json.addProperty("EmpUserID", empUserVal);
+		json.addProperty("DocType", "S1945");
+		json.addProperty("DepartmentName", dept);
+		json.addProperty("EmpUserID", logUser);
 		json.addProperty("AttachmentMimeType", "application/pdf");
 		json.addProperty("Attachment", encodedPDF);
 
