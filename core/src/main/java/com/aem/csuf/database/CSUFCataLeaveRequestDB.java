@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -13,7 +14,6 @@ import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
 import javax.jcr.RepositoryException;
 import javax.jcr.ValueFormatException;
-import javax.sql.DataSource;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -34,7 +34,6 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.JDBCConnectionHelperService;
-import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(property = {
 		Constants.SERVICE_DESCRIPTION + "=Catastrophic Leave Request DB",
@@ -72,10 +71,7 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 		String lenghtOfIllness = "";
 		String estimatedSickLeave = "";
 		String empSign = "";
-		String eligibleCB = "";
-		String vacationCredits = "";
-		String allCredits = "";
-		String nonEligibleCB = "";
+		
 		String reasons = "";
 		String staffUnitSign = "";
 		String staffUnitDate = "";
@@ -84,6 +80,8 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 		String empRepresentative = "";
 		String department = "";
 		String payroll = "";
+		String eligibilityCB = "";
+		String creditsCB = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -171,18 +169,18 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 									.item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign")
 									.item(0).getTextContent();
-							eligibleCB = eElement
-									.getElementsByTagName("eligibleCB").item(0)
-									.getTextContent();
-							vacationCredits = eElement
-									.getElementsByTagName("vacationCredits")
-									.item(0).getTextContent();
-							allCredits = eElement
-									.getElementsByTagName("allCredits").item(0)
-									.getTextContent();
-							nonEligibleCB = eElement
-									.getElementsByTagName("nonEligibleCB")
-									.item(0).getTextContent();
+//							eligibleCB = eElement
+//									.getElementsByTagName("eligibleCB").item(0)
+//									.getTextContent();
+//							vacationCredits = eElement
+//									.getElementsByTagName("vacationCredits")
+//									.item(0).getTextContent();
+//							allCredits = eElement
+//									.getElementsByTagName("allCredits").item(0)
+//									.getTextContent();
+//							nonEligibleCB = eElement
+//									.getElementsByTagName("nonEligibleCB")
+//									.item(0).getTextContent();
 							reasons = eElement.getElementsByTagName("Reasons")
 									.item(0).getTextContent();
 							staffUnitSign = eElement
@@ -205,6 +203,11 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 									.getTextContent();
 							payroll = eElement.getElementsByTagName("Payroll")
 									.item(0).getTextContent();
+							
+							eligibilityCB = eElement.getElementsByTagName("EligibilityCB")
+									.item(0).getTextContent();
+							creditsCB = eElement.getElementsByTagName("CreditsCB")
+									.item(0).getTextContent();
 						}
 					}
 					dataMap = new LinkedHashMap<String, Object>();
@@ -220,10 +223,10 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("LENGHT_OF_ILLNESS", lenghtOfIllness);
 					dataMap.put("ESTIMATED_SICK_LEAVE", estimatedSickLeave);
 					dataMap.put("EMP_SIGN", empSign);
-					dataMap.put("ELIGIBLE", eligibleCB);
-					dataMap.put("VACATION_CREDITS", vacationCredits);
-					dataMap.put("ALL_CREDITS", allCredits);
-					dataMap.put("NON_ELIGIBLE", nonEligibleCB);
+//					dataMap.put("ELIGIBLE", eligibleCB);
+//					dataMap.put("VACATION_CREDITS", vacationCredits);
+//					dataMap.put("ALL_CREDITS", allCredits);
+//					dataMap.put("NON_ELIGIBLE", nonEligibleCB);
 					dataMap.put("REASONS_FOR_NON_ELIGIBLE", reasons);
 					dataMap.put("STAFF_SIGN", staffUnitSign);
 					
@@ -244,13 +247,16 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 					dataMap.put("EMP_REPRESENTATIVE", empRepresentative);
 					dataMap.put("DEPARTMENT", department);
 					dataMap.put("PAYROLL", payroll);
-					//dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
+					
+					dataMap.put("ELIGIBILITY_TYPE", eligibilityCB);
+					dataMap.put("CREDITS_TYPE", creditsCB);
+					dataMap.put("WORKFLOW_INSTANCE_ID", wfInstanceID);
 				} catch (SAXException e) {
 					log.error("SAXException=" + e.getMessage());
 					e.printStackTrace();
 				} catch (Exception e) {
 					log.error("Exception1");
-					log.error("Exception=" + e.getMessage());
+					log.error("Exception=" + Arrays.toString(e.getStackTrace()));
 					e.printStackTrace();
 				} finally {
 					try {
@@ -269,30 +275,6 @@ public class CSUFCataLeaveRequestDB implements WorkflowProcess {
 			log.error("Connection Successfull");
 			insertCataLeaveDonationData(conn, dataMap);
 		}
-	}
-
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		log.info("Inside Get Connection");
-
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("AEMDBDEV");
-			con = dataSource.getConnection();
-			return con;
-
-		} catch (Exception e) {
-			log.error("Conn Exception=" + e.getMessage());
-			e.printStackTrace();
-		} /*
-		 * finally { try { if (con != null) { log.info("Conn Exec="); } } catch
-		 * (Exception exp) { exp.printStackTrace(); } }
-		 */
-		return null;
 	}
 /**
  * 

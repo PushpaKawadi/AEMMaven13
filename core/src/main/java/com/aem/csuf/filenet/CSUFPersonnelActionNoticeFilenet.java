@@ -1,14 +1,19 @@
 package com.aem.csuf.filenet;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
+import java.sql.Connection;
+import java.sql.Timestamp;
 import java.util.Base64;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 
 import javax.jcr.Node;
 import javax.jcr.PathNotFoundException;
@@ -17,10 +22,6 @@ import javax.jcr.ValueFormatException;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
 
 import org.apache.commons.io.IOUtils;
 import org.apache.sling.api.resource.Resource;
@@ -40,24 +41,27 @@ import com.adobe.granite.workflow.exec.WorkItem;
 import com.adobe.granite.workflow.exec.WorkflowProcess;
 import com.adobe.granite.workflow.metadata.MetaDataMap;
 import com.aem.community.core.services.GlobalConfigService;
+import com.aem.community.core.services.JDBCConnectionHelperService;
+import com.aem.community.util.DBUtil;
 import com.google.gson.JsonObject;
 
-@Component(property = {
-		Constants.SERVICE_DESCRIPTION + "=personnelFileAccessRequestFileNet",
+@Component(property = { Constants.SERVICE_DESCRIPTION + "=ShortAppDOR",
 		Constants.SERVICE_VENDOR + "=Adobe Systems",
-		"process.label" + "=PersonnelFileAccessRequestFileNet" })
-public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
-
-	private static final Logger log = LoggerFactory
-			.getLogger(PersonnelFileAccessRequestFileNet.class);
+		"process.label" + "=CSUFPANFilenet" })
+public class CSUFPersonnelActionNoticeFilenet implements WorkflowProcess {
 
 	@Reference
 	private GlobalConfigService globalConfigService;
 
+	@Reference
+	private JDBCConnectionHelperService jdbcConnectionService;
+
+	private static final Logger log = LoggerFactory
+			.getLogger(CSUFPersonnelActionNoticeFilenet.class);
+
 	@Override
 	public void execute(WorkItem workItem, WorkflowSession workflowSession,
 			MetaDataMap processArguments) throws WorkflowException {
-
 		ResourceResolver resolver = workflowSession
 				.adaptTo(ResourceResolver.class);
 		String payloadPath = workItem.getWorkflowData().getPayload().toString();
@@ -66,20 +70,28 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 		String firstName = null;
 		String lastName = null;
 		String encodedPDF = null;
-		String empId = null;
-		String deptName = null;
-		String deptID = null;
+		String cwid = "";
+		String deptID = "";
+		String logUserVal = "";
+		String signedDate = "";
+		String dateComp = "";
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
+		Connection conn = null;
+		LinkedHashMap<String, Object> dataMap = null;
+
+		String dataSourceVal = globalConfigService.getAEMDataSource();
+		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
-
+			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
+			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
-				log.info("xmlFiles=======" + filePath);
+				log.info("xmlFiles=" + filePath);
 
 				Node subNode = resolver.getResource(filePath).adaptTo(
 						Node.class);
@@ -105,43 +117,50 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 					try {
 						dBuilder = dbFactory.newDocumentBuilder();
 					} catch (ParserConfigurationException e1) {
-						log.info("ParserConfigurationException====="
-								+ e1.getMessage());
+						log.info("ParserConfigurationException=" + e1);
 						e1.printStackTrace();
 					}
 					try {
 						doc = dBuilder.parse(is);
 					} catch (IOException e1) {
-						log.info("IOException======" + e1.getMessage());
+						log.info("IOException=" + e1);
 						e1.printStackTrace();
 					}
-					XPath xpath = XPathFactory.newInstance().newXPath();
-					try {
-						org.w3c.dom.Node empIdNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Empl_ID", doc, XPathConstants.NODE);
-						empId = empIdNode.getFirstChild().getNodeValue();
+					org.w3c.dom.NodeList nList = doc
+							.getElementsByTagName("afBoundData");
+					for (int temp = 0; temp < nList.getLength(); temp++) {
+						org.w3c.dom.Node nNode = nList.item(temp);
 
-						org.w3c.dom.Node fnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//First_Name", doc,
-										XPathConstants.NODE);
-						firstName = fnNode.getFirstChild().getNodeValue();
+						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
 
-						org.w3c.dom.Node lnNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Last_Name", doc,
-										XPathConstants.NODE);
-						lastName = lnNode.getFirstChild().getNodeValue();
+							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
+							cwid = eElement.getElementsByTagName("EmplID")
+									.item(0).getTextContent();
+							firstName = eElement
+									.getElementsByTagName("FirstName").item(0)
+									.getTextContent();
+							lastName = eElement
+									.getElementsByTagName("LastName").item(0)
+									.getTextContent();
 
-						org.w3c.dom.Node deptNameNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Department", doc,
-										XPathConstants.NODE);
-						deptName = deptNameNode.getFirstChild().getNodeValue();
+							// signedDate =
+							// eElement.getElementsByTagName("SignedDate")
+							// .item(0).getTextContent();
+							// SimpleDateFormat fromDate = new SimpleDateFormat(
+							// "yyyy-MM-dd");
+							// SimpleDateFormat toDate = new SimpleDateFormat(
+							// "MM/dd/yyyy");
+							// if (signedDate != null
+							// && !signedDate.equals("")) {
+							// try {
+							// dateComp = toDate.format(fromDate
+							// .parse(signedDate));
+							// } catch (ParseException e) {
+							// e.printStackTrace();
+							// }
+							// }
 
-						org.w3c.dom.Node deptIDNode = (org.w3c.dom.Node) xpath
-								.evaluate("//Dept_ID", doc, XPathConstants.NODE);
-						deptID = deptIDNode.getFirstChild().getNodeValue();
-
-					} catch (XPathExpressionException e) {
-						e.printStackTrace();
+						}
 					}
 				} catch (SAXException e) {
 					e.printStackTrace();
@@ -158,8 +177,8 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Personal_File_Access_Request.pdf")) {
-
+			if (filePath.contains("PAN.pdf")) {
+				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(
 						Node.class);
@@ -170,6 +189,7 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 						byte[] bytes = IOUtils.toByteArray(is);
 						encodedPDF = Base64.getEncoder().encodeToString(bytes);
 					} catch (IOException e) {
+						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				} catch (ValueFormatException e) {
@@ -193,36 +213,29 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 			}
 		}
 
-		// Create the JSON with the required parameter from Data.xml, encoded
-		// Base 64 to
-		// the Filenet rest call to save the document
-		JsonObject jsonString = new JsonObject();
+		if (encodedPDF != null && cwid != null) {
+			JsonObject json = new JsonObject();
 
-		jsonString.addProperty("CWID", empId);
-		jsonString.addProperty("DepartmentName", deptName);
-		jsonString.addProperty("FirstName", firstName);
-		jsonString.addProperty("LastName", lastName);
-		jsonString.addProperty("EmpUserID", "");
-		jsonString.addProperty("DepartmentID", deptID);
-		jsonString.addProperty("DocType", "PFAR");
-		jsonString.addProperty("Attachment", encodedPDF);
-		jsonString.addProperty("AttachmentMimeType", "application/pdf");
-
-		if (encodedPDF != null && lastName != null && firstName != null) {
-			log.info("Read personnelFileAccessRequest");
+			json.addProperty("FirstName", firstName);
+			json.addProperty("LastName", lastName);
+			json.addProperty("CWID", cwid);
+			json.addProperty("DocType", "PAN");
+			json.addProperty("EmpUserID", "");
+			json.addProperty("AttachmentMimeType", "application/pdf");
+			json.addProperty("Attachment", encodedPDF);
+			String filenetUrl = "";
 			URL url = null;
 			try {
-				String filenetUrl = globalConfigService
-						.getHRBenefitsFilenetURL();
+				filenetUrl = globalConfigService.getHRBenefitsFilenetURL();
 				url = new URL(filenetUrl);
-
+				log.error("url======="+url);
 			} catch (MalformedURLException e) {
 				e.printStackTrace();
 			}
 			HttpURLConnection con = null;
 			try {
 				con = (HttpURLConnection) url.openConnection();
-				log.info("Con=" + con);
+				log.error("Con=" + con);
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -237,13 +250,44 @@ public class PersonnelFileAccessRequestFileNet implements WorkflowProcess {
 			con.setDoOutput(true);
 
 			try (OutputStream os = con.getOutputStream()) {
-				os.write(jsonString.toString().getBytes("utf-8"));
+				os.write(json.toString().getBytes("utf-8"));
 				os.close();
-				con.getResponseCode();
+				int responseCode = con.getResponseCode();
+				log.error("POST Response Code to Filenet :: " + responseCode);
+				if (responseCode == HttpURLConnection.HTTP_OK) {
+					BufferedReader in = new BufferedReader(
+							new InputStreamReader(con.getInputStream()));
+					String inputLine;
+					StringBuffer response = new StringBuffer();
+					while ((inputLine = in.readLine()) != null) {
+						response.append(inputLine);
+					}
+					in.close();
+					log.error("Response from Filenet============="
+							+ response.toString()); // {5E77A58F-EA81-4A33-8C35-B2DA3FD55AA4}
 
+					DBUtil dbUtil = new DBUtil();
+					String tableName = "AEM_AUDIT_TRACE";
+
+					dataMap = new LinkedHashMap<String, Object>();
+
+					Timestamp auditStTime = new java.sql.Timestamp(
+							System.currentTimeMillis());
+
+					dataMap.put("EVENT_TYPE", "Filenet");
+					dataMap.put("AUDIT_TIME", auditStTime);
+					dataMap.put("FILENET_URL", filenetUrl);
+					dataMap.put("DATA_PROCESSED", "0");
+					dataMap.put("FILENET_JSON", json.toString());
+					dataMap.put("FORM_NAME", "Personnel Action Notice");
+
+					dbUtil.insertAutitTrace(conn, dataMap, tableName);
+				}
 			} catch (IOException e1) {
 				log.error("IOException=" + e1.getMessage());
 				e1.printStackTrace();
+			} finally {
+				con.disconnect();
 			}
 
 		}
