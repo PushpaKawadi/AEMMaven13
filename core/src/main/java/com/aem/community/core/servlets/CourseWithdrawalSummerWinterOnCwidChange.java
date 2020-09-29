@@ -251,7 +251,7 @@ public class CourseWithdrawalSummerWinterOnCwidChange extends SlingSafeMethodsSe
 			try {
 				if (oStatement != null)
 					oStatement.close();
-				oRresultSet.close();
+				
 				if (oConnection != null) {
 					oConnection.close();
 				}

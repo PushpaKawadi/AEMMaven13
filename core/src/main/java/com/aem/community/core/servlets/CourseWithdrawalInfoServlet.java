@@ -269,7 +269,6 @@ public class CourseWithdrawalInfoServlet extends SlingSafeMethodsServlet {
 			try {
 				if (oStatement != null)
 					oStatement.close();
-				oRresultSet.close();
 				if (oConnection != null) {
 					oConnection.close();
 				}

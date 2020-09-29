@@ -25,8 +25,11 @@ import org.slf4j.LoggerFactory;
 
 
 
+
+
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
+import com.aem.community.util.CSUFHelper;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -115,8 +118,14 @@ public class InitialCobraEmpLookUp extends SlingSafeMethodsServlet {
 					initialCobDetails.put(fields[i], oRresultSet.getString(fields[i]));
 					logger.info("initialCobraDetails ="+initialCobDetails);
 				}
+				if(initialCobDetails.length() > 0) {
+					String empEmailID = CSUFHelper.getEmailID(oConnection,cwid);
+					initialCobDetails.put("EMP_EMAIL_ID", empEmailID);
+					//cobraFinalNoticeDetails.put("EMP_EMAIL_ID", "pushpa.kawadi@thoughtfocus.com");
+				}
 				jArray.put(initialCobDetails);
 			}
+			
 			logger.info("oRresultSet ="+jArray);
 		} catch (Exception oEx) {
 			logger.info("Exception=" + oEx);
