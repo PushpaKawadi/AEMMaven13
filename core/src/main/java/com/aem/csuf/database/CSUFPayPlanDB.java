@@ -6,6 +6,7 @@ import java.sql.Connection;
 import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 
@@ -117,12 +118,7 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-		// attachment
-
+		
 		String dataSourceVal = globalConfigService.getAEMDataSource();
 		log.info("DataSourceVal==========" + dataSourceVal);
 		conn = jdbcConnectionService.getDBConnection(dataSourceVal);
@@ -290,22 +286,7 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 								secondMonthOff = eElement.getElementsByTagName("secondMonthOff").item(0)
 										.getTextContent();
 
-								approvalRecommendedYes = eElement.getElementsByTagName("approvalRecommendedYes").item(0).getTextContent();
-
-								appropriateAdminName = eElement.getElementsByTagName("appropriateAdminName").item(0)
-										.getTextContent();
-
-								date1 = eElement.getElementsByTagName("date1").item(0)
-										.getTextContent();
-
-								approvalGrantedYes = eElement.getElementsByTagName("approvalGrantedYes").item(0)
-										.getTextContent();
-
-								vpSignature = eElement.getElementsByTagName("vpSignature").item(0)
-										.getTextContent();
-
-								date2 = eElement.getElementsByTagName("date2").item(0)
-										.getTextContent();
+								
 
 															}
 						}
@@ -379,25 +360,7 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 						dataMap.put("PROJECTED_EARNED_SALARY1", projectedEarnedSalary1);
 						dataMap.put("SETTLEMENT_AMOUNT", settlementAmount);
 						dataMap.put("FIRST_MONTH_OFF", firstMonthOff);
-						dataMap.put("SECOND_MONTH_OFF", secondMonthOff);
-						dataMap.put("APPROVAL_RECOMMENDED_YES", approvalRecommendedYes);
-						dataMap.put("APPROPRIATE_ADMIN_NAME", appropriateAdminName); 
-						
-						Object date1Obj = null;
-						if (date1 != null && date1 != "") {
-							Date date1New = Date.valueOf(date1);
-							date1Obj = date1New;
-						}
-						dataMap.put("DATE1", date1Obj);
-						dataMap.put("APPROVAL_GRANTED_YES", approvalGrantedYes);
-						dataMap.put("VP_SIGNATURE", vpSignature);						
-
-						Object date2Obj = null;
-						if (date2 != null && date2 != "") {
-							Date date2New = Date.valueOf(date2);
-							date2Obj = date2New;
-						}
-						dataMap.put("DATE2", date2Obj);					
+						dataMap.put("SECOND_MONTH_OFF", secondMonthOff);								
 
 						log.error("Connection Successfull");
 						insertPayPlanData(conn, dataMap);
@@ -406,8 +369,7 @@ public class CSUFPayPlanDB implements WorkflowProcess {
 						log.error("SAXException=" + e.getMessage());
 						e.printStackTrace();
 					} catch (Exception e) {
-						log.error("Exception1");
-						log.error("Exception=" + e.getMessage());
+						log.error(Arrays.toString(e.getStackTrace()));
 						e.printStackTrace();
 					} finally {
 						try {
