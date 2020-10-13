@@ -24,7 +24,52 @@ public class CSUFHelper {
 			if (oRresultSet.next()) {
 				empEmail = oRresultSet.getString("EMAILID");
 			}
-			logger.info("Get Email Function=" + empEmail);
+			logger.info("Get getEmailID Function=" + empEmail);
+		} catch (Exception oEx) {
+			throw oEx;
+		}
+		return empEmail;
+	}
+	public static String getManagerDetails(Connection oConnection, String empID,String union_cd, String deptId )
+			throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String managerUserId = "";
+		try {
+
+			String getManagerDetailsSql = CSUFConstants.staffManagerAdminDetailsSQL;
+			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<EMP_ID>>", empID);
+			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<DEPT_ID>>", deptId);
+			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<UNION_CD>>", union_cd);
+			oStatement = oConnection.createStatement();
+
+			oRresultSet = oStatement.executeQuery(getManagerDetailsSql);
+			if (oRresultSet.next()) {
+				managerUserId = oRresultSet.getString("MANAGER_EMP_USERID");
+			}
+			logger.info("Get Email Function=" + managerUserId);
+		} catch (Exception oEx) {
+			throw oEx;
+		}
+		return managerUserId;
+	}
+	
+	public static String getEmailIDBasedOnUserID(Connection oConnection, String userId)
+			throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		String empEmail = "";
+		try {
+
+			String getEmailSql = CSUFConstants.getEmailAddressUserIdLookup;
+			getEmailSql = getEmailSql.replaceAll("<<UID>>", userId);
+			oStatement = oConnection.createStatement();
+
+			oRresultSet = oStatement.executeQuery(getEmailSql);
+			if (oRresultSet.next()) {
+				empEmail = oRresultSet.getString("EMAILID");
+			}
+			logger.info("Get getEmailIDBasedOnUserID Function=" + empEmail);
 		} catch (Exception oEx) {
 			throw oEx;
 		}

@@ -76,19 +76,12 @@ public class CareerDevelopmentPlanUserLookUpServlet extends SlingSafeMethodsServ
 		ResultSet oRresultSet = null;
 		JSONObject newCareerDevelopmentDetails;
 		JSONArray jArray = new JSONArray();
-
-        //String userIDSQL = ConfigManager.getValue("careerDevelopmentPlanUserLookUp");
 		String userIDSQL = CSUFConstants.careerDevelopmentPlanUserLookUp;
-        logger.info("The userID SQL is=" + userIDSQL);
-
-        //String lookupFields = ConfigManager.getValue("careerDevelopmentPlanFields");
         String lookupFields = CSUFConstants.careerDevelopmentPlanFields;
-        logger.info("The user LookUp Fields are=" + lookupFields);
 
 		String[] fields = lookupFields.split(",");
 
         userIDSQL = userIDSQL.replaceAll("<<getUser_ID>>", userID);
-        logger.info("User ID is="+userIDSQL);
 		Statement oStatement = null;
 		try {
 
@@ -126,33 +119,5 @@ public class CareerDevelopmentPlanUserLookUpServlet extends SlingSafeMethodsServ
 		return jArray;
 	}
 
-	@Reference
-	private DataSourcePool source;
-
-	private Connection getConnection() {
-		DataSource dataSource = null;
-		Connection con = null;
-		try {
-			// Inject the DataSourcePool right here!
-			dataSource = (DataSource) source.getDataSource("frmmgrprod");
-			con = dataSource.getConnection();
-			logger.info("Connection=" + con);
-			return con;
-
-		} catch (Exception e) {
-			logger.info("Conn Exception=" + e);
-			e.printStackTrace();
-		} finally {
-			try {
-				if (con != null) {
-					logger.info("Conn Exec=");
-				}
-			} catch (Exception exp) {
-				logger.info("Finally Exec=" + exp);
-				exp.printStackTrace();
-			}
-		}
-		return null;
-	}
 
 }
