@@ -292,6 +292,8 @@ public class DockNoticeDB implements WorkflowProcess {
 						e.printStackTrace();
 					} finally {
 						try {
+							parentTable = 0;
+							log.info("Resetting parentTable in finally block==" + parentTable);
 							is.close();
 							conn.close();
 						} catch (IOException e) {
