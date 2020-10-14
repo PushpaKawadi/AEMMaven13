@@ -102,10 +102,10 @@ public class CSUFConstants {
 	public static final String initialCobraEmpLookUpfields = "FIRST_NAME,LAST_NAME,EMPL_RCD,PartnerName";
 	// End of Initial Cobra Lookup
 
-	// Start of Short App Emp Fee Waiver
+	// // Start of Short App Emp Fee Waiver
 	public static final String shortAppEmpFeeWaiverOrg = "SELECT A.FIRST_NAME, A.MIDDLE_NAME, A.LAST_NAME, A.NATIONAL_ID, A.ADDRESS1, A.ADDRESS2, A.CITY, A.STATE, A.POSTAL, (case SEX when 'M' then '1' else '0' end) as Male, (case SEX when 'F' then '1' else '0' end) as Female, A.EMPLID, A.BIRTHDATE, A.HOME_PHONE, C.USERID FROM FUL_ECM_PERS_VW A, FUL_EMP_CWID_NT_NAME C WHERE C.USERID = '<<getUser_ID>>' and A.EMPLID = C.CWID";
-	public static final String shortAppEmpFeeWaiver = "SELECT  A.FIRST_NAME, A.MIDDLE_NAME, A.LAST_NAME, A.NATIONAL_ID,B.UNION_CD, B.EMPL_RCD, A.ADDRESS1, A.ADDRESS2, A.CITY, A.STATE, A.POSTAL, (case SEX when 'M' then '1' else '0' end) as Male, (case SEX when 'F' then '1' else '0' end) as Female,A.EMPLID, A.BIRTHDATE, A.HOME_PHONE, C.USERID FROM FUL_ECM_PERS_VW A, FUL_EMP_CWID_NT_NAME C, ful_ecm_job_vw b WHERE C.USERID = '<<getUser_ID>>' and A.EMPLID = C.CWID and A.EMPLID = B.EMPLID";
-	public static final String shortAppEmpFeeWaiverFields = "FIRST_NAME,MIDDLE_NAME,LAST_NAME,NATIONAL_ID,ADDRESS1,ADDRESS2,CITY,STATE,POSTAL,MALE,FEMALE,EMPLID,BIRTHDATE,HOME_PHONE,USERID,UNION_CD";
+	public static final String shortAppEmpFeeWaiver = "SELECT  A.FIRST_NAME, A.MIDDLE_NAME, A.LAST_NAME, A.NATIONAL_ID,B.UNION_CD, B.EMPL_RCD, B.DEPTID, B.DEPTNAME, A.ADDRESS1, A.ADDRESS2, A.CITY, A.STATE, A.POSTAL, (case SEX when 'M' then '1' else '0' end) as Male, (case SEX when 'F' then '1' else '0' end) as Female,A.EMPLID, A.BIRTHDATE, A.HOME_PHONE, C.USERID FROM FUL_ECM_PERS_VW A, FUL_EMP_CWID_NT_NAME C, ful_ecm_job_vw b WHERE C.USERID = '<<getUser_ID>>' and A.EMPLID = C.CWID and A.EMPLID = B.EMPLID";
+	public static final String shortAppEmpFeeWaiverFields = "FIRST_NAME,MIDDLE_NAME,LAST_NAME,NATIONAL_ID,ADDRESS1,ADDRESS2,CITY,STATE,POSTAL,MALE,FEMALE,EMPLID,BIRTHDATE,HOME_PHONE,USERID,UNION_CD,EMPL_RCD,DEPTID,DEPTNAME";
 	// End of Short App Emp Fee Waiver
 
 	// Start of Vision LIFE_LTD Lookup

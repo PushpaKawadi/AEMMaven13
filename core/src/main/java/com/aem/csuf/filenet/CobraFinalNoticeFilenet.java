@@ -179,7 +179,7 @@ public class CobraFinalNoticeFilenet implements WorkflowProcess {
 			// Payload path contains the PDF, get the inputstream, convert to
 			// Base encoder
 
-			if (filePath.contains("Cobra_Final_Notice.pdf")) {
+			if (filePath.contains("Cobra_Final_Notice_Signed.pdf")) {
 				log.info("filePath =" + filePath);
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				Node subNode = resolver.getResource(filePath).adaptTo(
