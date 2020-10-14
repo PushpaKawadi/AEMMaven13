@@ -78,6 +78,17 @@ public class CSUFGetManagerDetailsServlet extends SlingSafeMethodsServlet {
 				jArray.put(managerDetails);
 			} catch (Exception e) {
 				e.printStackTrace();
+			}finally {
+				try {
+					if (conn != null) {
+						conn.close();
+						logger.info("Connection closed");
+
+					}
+				} catch (Exception e) {
+					logger.error("Exception in CSUFGetManagerDetailsServlet=" + e.getMessage());
+					e.getStackTrace();
+				}
 			}
 
 			response.setContentType("application/json");
