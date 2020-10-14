@@ -39,8 +39,8 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 
 @Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Get Manager Details",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/getManagerDetails" })
-public class CareerDevelopmentPlanGetManagerDetailsServlet extends SlingSafeMethodsServlet {
-	private final static Logger logger = LoggerFactory.getLogger(CareerDevelopmentPlanGetManagerDetailsServlet.class);
+public class CSUFGetManagerDetailsServlet extends SlingSafeMethodsServlet {
+	private final static Logger logger = LoggerFactory.getLogger(CSUFGetManagerDetailsServlet.class);
 	private static final long serialVersionUID = 1L;
 
 	@Reference
