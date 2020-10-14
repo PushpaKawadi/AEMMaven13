@@ -291,4 +291,8 @@ public class CSUFConstants {
 	// Start of get dept chair and dean details
 	public static final String getChairDeanInfoSQL = "select CHAIR_USERID, CHAIR_NAME,CHAIR_EMAIL,DEAN_USERID,DEAN_EMAIL,DEAN_NAME from AR_DEPT_CHAIR_INFO where DEPTID = '<<dept_id>>'";
 	// End of get dept chair and dean details
+	
+	//Start of Get Manager Details 	
+	public static final String getManagerDetails = "SELECT MANAGER_EMP_USERID ,SUPERVISORNAME, ADMIN_EMP_USERID , ADMIN_EMP_NAME FROM HR_STAFF_EVALUATION WHERE EMPLID = '<<EMP_ID>>' AND DEPTID = '<<DEPT_ID>>' AND UNION_CD='<<UNION_CD>>'";
+	//End of Get Manager Details
 }

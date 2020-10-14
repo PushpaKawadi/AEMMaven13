@@ -2,6 +2,9 @@ package com.aem.community.util;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
+
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -30,28 +33,28 @@ public class CSUFHelper {
 		}
 		return empEmail;
 	}
-	public static String getManagerDetails(Connection oConnection, String empID,String union_cd, String deptId )
+	public static JSONObject getManagerDetails(Connection oConnection, String empID,String union_cd, String deptId )
 			throws Exception {
 		ResultSet oRresultSet = null;
 		Statement oStatement = null;
-		String managerUserId = "";
+		JSONObject managerUserArray = new JSONObject();
 		try {
 
-			String getManagerDetailsSql = CSUFConstants.staffManagerAdminDetailsSQL;
+			String getManagerDetailsSql = CSUFConstants.getManagerDetails;
 			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<EMP_ID>>", empID);
 			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<DEPT_ID>>", deptId);
 			getManagerDetailsSql = getManagerDetailsSql.replaceAll("<<UNION_CD>>", union_cd);
 			oStatement = oConnection.createStatement();
-
 			oRresultSet = oStatement.executeQuery(getManagerDetailsSql);
 			if (oRresultSet.next()) {
-				managerUserId = oRresultSet.getString("MANAGER_EMP_USERID");
+				managerUserArray.put("MANAGER_EMP_USERID",oRresultSet.getString("MANAGER_EMP_USERID"));
+				managerUserArray.put("MANAGER_NAME",oRresultSet.getString("SUPERVISORNAME"));
 			}
-			logger.info("Get Email Function=" + managerUserId);
+			logger.info("Get Email Function=" + managerUserArray);
 		} catch (Exception oEx) {
 			throw oEx;
 		}
-		return managerUserId;
+		return managerUserArray;
 	}
 	
 	public static String getEmailIDBasedOnUserID(Connection oConnection, String userId)

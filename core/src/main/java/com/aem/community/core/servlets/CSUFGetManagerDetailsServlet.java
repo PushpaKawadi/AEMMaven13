@@ -52,7 +52,7 @@ public class CSUFGetManagerDetailsServlet extends SlingSafeMethodsServlet {
 		String deptid = "";
 		String cwid = "";
 		String union_cd = "";
-		String managerUserId = "";
+		JSONObject managerUserDetails = new JSONObject();
 		String managerEmailId = "";
 		JSONObject managerDetails;
 		JSONArray jArray = new JSONArray();
@@ -62,8 +62,6 @@ public class CSUFGetManagerDetailsServlet extends SlingSafeMethodsServlet {
 			deptid = req.getParameter("deptid");
 			cwid = req.getParameter("cwid");
 			union_cd = req.getParameter("union_cd");
-			logger.info("Got deptid =" + deptid);
-			logger.info("Got EmpID =" + cwid);
 			conn = jdbcConnectionService.getFrmDBConnection();
 		}
 
@@ -71,11 +69,10 @@ public class CSUFGetManagerDetailsServlet extends SlingSafeMethodsServlet {
 			try {
 				managerDetails = new JSONObject();
 				logger.info("Connection Success=" + conn);
-				managerUserId = CSUFHelper.getManagerDetails(conn, cwid, union_cd, deptid);
-				managerEmailId = CSUFHelper.getEmailIDBasedOnUserID(conn, managerUserId);
-				managerDetails.put("MANAGER_USER_ID", managerUserId);
-				managerDetails.put("MANAGER_EMAIL_ID", managerEmailId);
-				jArray.put(managerDetails);
+				managerUserDetails = CSUFHelper.getManagerDetails(conn, cwid, union_cd, deptid);
+				managerEmailId = CSUFHelper.getEmailIDBasedOnUserID(conn, managerUserDetails.getString("MANAGER_EMP_USERID"));				
+				managerUserDetails.put("MANAGER_EMAIL_ID", managerEmailId);
+				jArray.put(managerUserDetails);
 			} catch (Exception e) {
 				e.printStackTrace();
 			}finally {
