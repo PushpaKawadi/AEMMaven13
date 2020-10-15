@@ -80,7 +80,7 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 		//Date date = null;
 		//SimpleDateFormatter dateFormatter = null;
 
-		String attachmentsPath = "attachments";
+		String attachmentsPath = "Attachments";
 		Resource xmlNode = resolver.getResource(payloadPath);
 
 		// if (xmlNode != null) {
