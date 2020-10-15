@@ -25,6 +25,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
+import com.aem.community.util.CSUFHelper;
 import com.aem.community.util.ConfigManager;
 //Add the DataSourcePool package
 import com.day.commons.datasource.poolservice.DataSourcePool;
@@ -94,8 +95,9 @@ public class CareerDevelopmentPlanUserLookUpServlet extends SlingSafeMethodsServ
 				newCareerDevelopmentDetails = new JSONObject();
 				for (int i = 0; i < fields.length; i++) {
 					newCareerDevelopmentDetails.put(fields[i], oRresultSet.getString(fields[i]));
-
 				}
+				String empEmailId = CSUFHelper.getEmailIDBasedOnUserID(oConnection, userID);
+				newCareerDevelopmentDetails.put("EMP_EMAIL_ID", empEmailId);
 				jArray.put(newCareerDevelopmentDetails);
 				logger.info("jArray=" + jArray);
 			}
