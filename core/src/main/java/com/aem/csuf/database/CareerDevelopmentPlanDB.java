@@ -198,15 +198,15 @@ public class CareerDevelopmentPlanDB implements WorkflowProcess {
 									.item(0).getTextContent();
 							log.info("training Value is: " + training);
 
-							workExperience = eElement.getElementsByTagName("workExperience1")
+							workExperience = eElement.getElementsByTagName("workExperience")
 									.item(0).getTextContent();
                             log.info("workExperience1 Value is: " + workExperience1);
                             
-                            education1 = eElement.getElementsByTagName("education")
+                            education1 = eElement.getElementsByTagName("education1")
                             .item(0).getTextContent();
                             log.info("education Value is: " + education);
 
-                            training1 = eElement.getElementsByTagName("training")
+                            training1 = eElement.getElementsByTagName("training1")
                             .item(0).getTextContent();
                                 log.info("training Value is: " + training);
 
