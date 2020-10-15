@@ -84,18 +84,14 @@ public class CareerDevelopmentPlanDB implements WorkflowProcess {
 		String careerAdvise = "";	
 		String analystSignature = "";
 		String analystDate = "";
+		String workflowInstance = "";
 
 		LinkedHashMap<String, Object> dataMap = null;
 
 		Resource xmlNode = resolver.getResource(payloadPath);
 
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
-		// Get the payload path and iterate the path to find Data.xml, Use
-		// Document
-		// factory to parse the xml and fetch the required values for the
-		// filenet
-        // attachment
-        log.info("Welcome!!");
+		workflowInstance = workItem.getWorkflow().getId();
 
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
@@ -319,6 +315,7 @@ public class CareerDevelopmentPlanDB implements WorkflowProcess {
 						analystDateObj = aanalystDateNew;
 					}	
 					dataMap.put("ANALYST_DATE", analystDateObj);
+					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstance);
 
 
 				} catch (SAXException e) {

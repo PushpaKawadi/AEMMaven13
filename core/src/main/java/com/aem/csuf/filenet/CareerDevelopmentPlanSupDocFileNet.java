@@ -89,7 +89,7 @@ public class CareerDevelopmentPlanSupDocFileNet implements WorkflowProcess {
 		while (xmlFiles.hasNext()) {
 			Resource attachmentXml = xmlFiles.next();
 			String filePath = attachmentXml.getPath();
-			if (filePath.contains("attachments")) {
+			if (filePath.contains("Attachments")) {
 				String attachmentsFilePath = payloadPath + "/"
 						+ attachmentsPath + "/supportDoc1";
 				attachment1 = resolver
