@@ -367,7 +367,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					dataMap.put("STATE", state);
 					dataMap.put("ZIP", zip);
 					dataMap.put("SEX", sex);
-					dataMap.put("MARITAL_STATU", marritalStatus);
+					dataMap.put("MARITAL_STATUS", marritalStatus);
 					dataMap.put("SOCIAL_SEC_NO", socialSecNo);
 					dataMap.put("SPOUSE_SOCIAL_SEC_NO", spouseSocialSecNo);
 					dataMap.put("PERMANENT_EMP", permanentEmp);
@@ -399,7 +399,7 @@ public class DentalPlanEnrollmentDB implements WorkflowProcess {
 					Object dob3Obj = null;
 					if (dob3 != null && dob3 != "") {
 						Date dob3New = Date.valueOf(dob3);
-						dob1Obj = dob3New;
+						dob3Obj = dob3New;
 					}
 					dataMap.put("DOB3", dob3Obj);
 					dataMap.put("FAMILY_RELATIONSHIP3", familyRelationship3);
