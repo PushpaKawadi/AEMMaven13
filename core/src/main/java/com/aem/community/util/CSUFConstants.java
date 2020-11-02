@@ -163,6 +163,8 @@ public class CSUFConstants {
 	// Start of VSP Cobra
 	public static final String vspCobra = "Select B.LAST_NAME, B.FIRST_NAME, B.MIDDLE_NAME, B.BIRTHDATE,  B.ADDRESS1, B.CITY, B.STATE, B.POSTAL, 'N/A' as DeptName, 'N/A' as Jobcode From FUL_ECM_BEN_VW B Where  B.NATIONAL_ID = Replace('<<Applicant_SSN>>','-','') union Select B.LAST_NAME, B.FIRST_NAME, B.MIDDLE_NAME, B.BIRTHDATE,  B.ADDRESS1, B.CITY, B.STATE, B.POSTAL, A.DEPTNAME, A.JOBCODE From FUL_ECM_PERS_VW B, FUL_ECM_JOB_VW A Where  B.NATIONAL_ID = Replace('<<Applicant_SSN>>', '-','') AND A.EMPLID = B.EMPLID";
 	public static final String vspCobraLookUpFields = "LAST_NAME,FIRST_NAME,MIDDLE_NAME,BIRTHDATE,ADDRESS1,CITY,STATE,POSTAL,DEPTNAME,JOBCODE";
+	public static final String vspCobraDepLookup = "Select  (A.FIRST_NAME || ' ' || A.MIDDLE_NAME || ' ' || A.LAST_NAME) as Name, A.NATIONAL_ID, A.BIRTHDATE, A.RELATIONSHIP From  FUL_ECM_BEN_VW A, FUL_ECM_PERS_VW B Where A.EMPLID = B.EMPLID AND B.NATIONAL_ID = Replace('<<SSN>>', '-', '') AND A.FIRST_NAME like (decode(trim('<<DependentName>>'),'',' ', trim('<<DependentName>>')) || '%')";
+	public static final String vspCobraDepFields = "NAME,NATIONAL_ID,BIRTHDATE,RELATIONSHIP";
 	// End of VSP Cobra
 
 	// Start of Evaluation Emp Lookup
@@ -298,4 +300,5 @@ public class CSUFConstants {
 	//Start of Get Employee Details 	
 		public static final String getEmployeeDetails = "SELECT EMP_USERID ,EMP_NAME FROM HR_STAFF_EVALUATION WHERE EMPLID = '<<EMP_ID>>'";
 	//End of Get Employee Details
+		
 }
