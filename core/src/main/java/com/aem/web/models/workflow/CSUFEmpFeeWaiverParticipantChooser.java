@@ -64,6 +64,14 @@ public class CSUFEmpFeeWaiverParticipantChooser implements ParticipantStepChoose
 						}
 					}
 				}
+				if (valStr1.equals("ToEmployee")) {
+					for (Map.Entry<String, Object> entry7 : workItem.getWorkflowData().getMetaDataMap().entrySet()) {
+						if (entry7.getKey().matches("empUserId")) {
+							valStr2 = entry7.getValue().toString();
+							participant = valStr2;
+						}
+					}
+				}
 			}
 		}
 

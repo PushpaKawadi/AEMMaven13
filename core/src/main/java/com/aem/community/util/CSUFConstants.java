@@ -295,4 +295,7 @@ public class CSUFConstants {
 	//Start of Get Manager Details 	
 	public static final String getManagerDetails = "SELECT MANAGER_EMP_USERID ,SUPERVISORNAME, ADMIN_EMP_USERID , ADMIN_EMP_NAME FROM HR_STAFF_EVALUATION WHERE EMPLID = '<<EMP_ID>>' AND DEPTID = '<<DEPT_ID>>' AND UNION_CD='<<UNION_CD>>'";
 	//End of Get Manager Details
+	//Start of Get Employee Details 	
+		public static final String getEmployeeDetails = "SELECT EMP_USERID ,EMP_NAME FROM HR_STAFF_EVALUATION WHERE EMPLID = '<<EMP_ID>>'";
+	//End of Get Employee Details
 }

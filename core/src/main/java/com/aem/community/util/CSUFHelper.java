@@ -78,4 +78,26 @@ public class CSUFHelper {
 		}
 		return empEmail;
 	}
+	
+	public static JSONObject getEmployeeDetails(Connection oConnection, String cwid)
+			throws Exception {
+		ResultSet oRresultSet = null;
+		Statement oStatement = null;
+		JSONObject empUserArray = new JSONObject();
+		try {
+
+			String getEmpDetailsSql = CSUFConstants.getEmployeeDetails;
+			getEmpDetailsSql = getEmpDetailsSql.replaceAll("<<EMP_ID>>", cwid);
+			oStatement = oConnection.createStatement();
+			oRresultSet = oStatement.executeQuery(getEmpDetailsSql);
+			if (oRresultSet.next()) {
+				empUserArray.put("EMP_USERID",oRresultSet.getString("EMP_USERID"));
+				empUserArray.put("EMP_NAME",oRresultSet.getString("EMP_NAME"));
+			}
+			logger.info("Get Employee Details Function=" + empUserArray);
+		} catch (Exception oEx) {
+			throw oEx;
+		}
+		return empUserArray;
+	}
 }
