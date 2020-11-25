@@ -112,24 +112,15 @@ public class SCPRFacultyDB implements WorkflowProcess {
 		String formPreparedBy = "";
 		String empSign = "";
 		String accNumber = "";
-		String chairSign = "";
-		String chairName = "";
-		String chairDate = "";
-		String sourceApproverName = "";
-		String sourceApproverSign = "";
-		String sourceApproverDate = "";
-		String deanOrDesignerName = "";
-		String deanOrDesignerSign = "";
-		String deanOrDesignerDate = "";
-		String avpOperationSign = "";
-		String avpOperationDate = "";
-		String avpAdditionalPay = "";
-		String hrName = "";
 		String hrSign = "";
 		String hrDate = "";
-
+		String empComments = "";
+		String managerSign = "";
+		String managerSignDate = "";
+		String managerComments = "";
 		String workflowInstanceID = "";
-
+		String hrComments = "";
+		String empEmail = "";
 		LinkedHashMap<String, Object> dataMap = null;
 		Resource xmlNode = resolver.getResource(payloadPath);
 		Iterator<Resource> xmlFiles = xmlNode.listChildren();
@@ -187,18 +178,26 @@ public class SCPRFacultyDB implements WorkflowProcess {
 
 							empStatusRB = eElement.getElementsByTagName("EmpStatusRB").item(0).getTextContent();
 							statusTB = eElement.getElementsByTagName("StatusTB").item(0).getTextContent();
-							additionalEmpCB1 = eElement.getElementsByTagName("AdditionalEmpCB1").item(0).getTextContent();
-							additionalEmpCB2 = eElement.getElementsByTagName("AdditionalEmpCB2").item(0).getTextContent();
-							additionalEmpCB3 = eElement.getElementsByTagName("AdditionalEmpCB3").item(0).getTextContent();
-							additionalEmpCB4 = eElement.getElementsByTagName("AdditionalEmpCB4").item(0).getTextContent();
-							fiscalAnotherLocationRB = eElement.getElementsByTagName("FiscalAnotherLocationRB").item(0).getTextContent();
-							fiscalExtendedEducationRB = eElement.getElementsByTagName("FiscalExtendedEducationRB").item(0).getTextContent();
-							fiscalAnotherLocationTB = eElement.getElementsByTagName("FiscalAnotherLocationTB").item(0).getTextContent();
-							fiscalExtendedEducationTB = eElement.getElementsByTagName("FiscalExtendedEducationTB").item(0).getTextContent();
+							additionalEmpCB1 = eElement.getElementsByTagName("AdditionalEmpCB1").item(0)
+									.getTextContent();
+							additionalEmpCB2 = eElement.getElementsByTagName("AdditionalEmpCB2").item(0)
+									.getTextContent();
+							additionalEmpCB3 = eElement.getElementsByTagName("AdditionalEmpCB3").item(0)
+									.getTextContent();
+							additionalEmpCB4 = eElement.getElementsByTagName("AdditionalEmpCB4").item(0)
+									.getTextContent();
+							fiscalAnotherLocationRB = eElement.getElementsByTagName("FiscalAnotherLocationRB").item(0)
+									.getTextContent();
+							fiscalExtendedEducationRB = eElement.getElementsByTagName("FiscalExtendedEducationRB")
+									.item(0).getTextContent();
+							fiscalAnotherLocationTB = eElement.getElementsByTagName("FiscalAnotherLocationTB").item(0)
+									.getTextContent();
+							fiscalExtendedEducationTB = eElement.getElementsByTagName("FiscalExtendedEducationTB")
+									.item(0).getTextContent();
 							empID = eElement.getElementsByTagName("EmpID").item(0).getTextContent();
 							unit = eElement.getElementsByTagName("Unit").item(0).getTextContent();
 							officeOrRoom = eElement.getElementsByTagName("OfficeOrRoom").item(0).getTextContent();
-							extension = eElement.getElementsByTagName("Extension").item(0).getTextContent();
+							empEmail = eElement.getElementsByTagName("employeeEmail").item(0).getTextContent();
 							college = eElement.getElementsByTagName("College").item(0).getTextContent();
 							empFname = eElement.getElementsByTagName("EmpFname").item(0).getTextContent();
 							empLname = eElement.getElementsByTagName("EmpLname").item(0).getTextContent();
@@ -238,26 +237,18 @@ public class SCPRFacultyDB implements WorkflowProcess {
 							projNumber = eElement.getElementsByTagName("ProjNumber").item(0).getTextContent();
 							aySalary = eElement.getElementsByTagName("AYSalary").item(0).getTextContent();
 							auxCMSPos = eElement.getElementsByTagName("AuxCMSPos").item(0).getTextContent();
-							empExt = eElement.getElementsByTagName("EmpExt").item(0).getTextContent();
+							// empExt = eElement.getElementsByTagName("EmpExt").item(0).getTextContent();
 							empDate = eElement.getElementsByTagName("EmpDate").item(0).getTextContent();
 							formPreparedBy = eElement.getElementsByTagName("FormPreparedBy").item(0).getTextContent();
 							empSign = eElement.getElementsByTagName("EmpSign").item(0).getTextContent();
+							empComments = eElement.getElementsByTagName("EmpComments").item(0).getTextContent();
 							accNumber = eElement.getElementsByTagName("AccNumber").item(0).getTextContent();
-							chairSign = eElement.getElementsByTagName("ChairSign").item(0).getTextContent();
-							chairName = eElement.getElementsByTagName("ChairName").item(0).getTextContent();
-							chairDate = eElement.getElementsByTagName("ChairDate").item(0).getTextContent();
-							sourceApproverName = eElement.getElementsByTagName("SourceApproverName").item(0).getTextContent();
-							sourceApproverSign = eElement.getElementsByTagName("SourceApproverSign").item(0).getTextContent();
-							sourceApproverDate = eElement.getElementsByTagName("SourceApproverDate").item(0).getTextContent();
-							deanOrDesignerName = eElement.getElementsByTagName("DeanOrDesignerName").item(0).getTextContent();
-							deanOrDesignerSign = eElement.getElementsByTagName("DeanOrDesignerSign").item(0).getTextContent();
-							deanOrDesignerDate = eElement.getElementsByTagName("DeanOrDesignerDate").item(0).getTextContent();
-							avpOperationSign = eElement.getElementsByTagName("AVPOperationSign").item(0).getTextContent();
-							avpOperationDate = eElement.getElementsByTagName("AVPOperationDate").item(0).getTextContent();
-							avpAdditionalPay = eElement.getElementsByTagName("AVPAdditionalPay").item(0).getTextContent();
-							hrName = eElement.getElementsByTagName("HRName").item(0).getTextContent();
-							hrSign = eElement.getElementsByTagName("HRSign").item(0).getTextContent();
-							hrDate = eElement.getElementsByTagName("HRDate").item(0).getTextContent();
+							managerSign = eElement.getElementsByTagName("ManagerSign").item(0).getTextContent();
+							managerSignDate = eElement.getElementsByTagName("ManagerSignDate").item(0).getTextContent();
+							managerComments = eElement.getElementsByTagName("ManagerComments").item(0).getTextContent();
+							hrSign = eElement.getElementsByTagName("PayRollSign").item(0).getTextContent();
+							hrDate = eElement.getElementsByTagName("PayRollSignDate").item(0).getTextContent();
+							hrComments = eElement.getElementsByTagName("PayrollComments").item(0).getTextContent();
 
 						}
 					}
@@ -267,7 +258,7 @@ public class SCPRFacultyDB implements WorkflowProcess {
 					dataMap.put("OTHER_STATUS", statusTB);
 					dataMap.put("ADD_EMPLOYEMENT_PAY_REQ1", additionalEmpCB1);
 					dataMap.put("ADD_EMPLOYEMENT_PAY_REQ2", additionalEmpCB2);
-					dataMap.put("ADD_EMPLOYEMENT_PAY_REQ3", additionalEmpCB3);					
+					dataMap.put("ADD_EMPLOYEMENT_PAY_REQ3", additionalEmpCB3);
 					dataMap.put("ADD_EMPLOYEMENT_PAY_REQ4", additionalEmpCB4);
 					dataMap.put("WORK_AT_ANOTHER_LOC", fiscalAnotherLocationRB);
 					dataMap.put("WORK_FOR_EXT_EDU", fiscalExtendedEducationRB);
@@ -276,7 +267,7 @@ public class SCPRFacultyDB implements WorkflowProcess {
 					dataMap.put("EMP_ID", empID);
 					dataMap.put("UNIT", unit);
 					dataMap.put("BUILDING", officeOrRoom);
-					dataMap.put("EXTENSION", extension);
+					dataMap.put("EMP_EMAIL", empEmail);
 					dataMap.put("COLLEGE", college);
 					dataMap.put("EMP_FNAME", empFname);
 					dataMap.put("EMP_LNAME", empLname);
@@ -316,56 +307,33 @@ public class SCPRFacultyDB implements WorkflowProcess {
 					dataMap.put("PROJ_NO", projNumber);
 					dataMap.put("AY_SALARY", aySalary);
 					dataMap.put("AUX_CMS_POS", auxCMSPos);
-					dataMap.put("EMP_EXT", empExt);
+					// dataMap.put("EMP_EXT", empExt);
 					Object empSignDateObj = null;
 					if (empDate != null && empDate != "") {
 						Date empDateNew = Date.valueOf(empDate);
 						empSignDateObj = empDateNew;
 					}
-					dataMap.put("EMP_DATE", empSignDateObj);					
+					dataMap.put("EMP_DATE", empSignDateObj);
 					dataMap.put("FORM_PREPARED_BY", formPreparedBy);
 					dataMap.put("EMP_SIGN", empSign);
+					dataMap.put("EMP_COMMENTS", empComments);
 					dataMap.put("ACC_NUMBER", accNumber);
-					dataMap.put("CHAIR_SIGN", chairSign);
-					dataMap.put("CHAIR_NAME", chairName);
-					Object chairDateObj = null;
-					if (chairDate != null && chairDate != "") {
-						Date chairDateNew = Date.valueOf(chairDate);
-						chairDateObj = chairDateNew;
+					dataMap.put("MANAGER_SIGN", managerSign);
+					dataMap.put("MANAGER_COMMENTS", managerComments);
+					Object managerDateObj = null;
+					if (managerSignDate != null && managerSignDate != "") {
+						Date managerDateNew = Date.valueOf(managerSignDate);
+						managerDateObj = managerDateNew;
 					}
-					dataMap.put("CHAIR_DATE", chairDateObj);
-					dataMap.put("FUNDING_SOURCE_APPROVER_NAME", sourceApproverName);
-					dataMap.put("FUNDING_SOURCE_APPROVER_SIGN", sourceApproverSign);
-					Object sourceApproverDateObj = null;
-					if (sourceApproverDate != null && sourceApproverDate != "") {
-						Date sourceApproverDateNew = Date.valueOf(sourceApproverDate);
-						sourceApproverDateObj = sourceApproverDateNew;
-					}
-					dataMap.put("FUNDING_SOURCE_APPROVER_DATE", sourceApproverDateObj);
-					dataMap.put("DEAN_OR_DESIGNEE_NAME", deanOrDesignerName);
-					dataMap.put("DEAN_OR_DESIGNEE_SIGN", deanOrDesignerSign);
-					Object deanOrDesignerDateObj = null;
-					if (deanOrDesignerDate != null && deanOrDesignerDate != "") {
-						Date deanOrDesignerDateNew = Date.valueOf(deanOrDesignerDate);
-						deanOrDesignerDateObj = deanOrDesignerDateNew;
-					}
-					dataMap.put("DEAN_OR_DESIGNEE_DATE", deanOrDesignerDateObj);
-					dataMap.put("AVP_OPERATOR_SIGN", avpOperationSign);
-					Object avpOperationDateObj = null;
-					if (avpOperationDate != null && avpOperationDate != "") {
-						Date avpOperationDateNew = Date.valueOf(avpOperationDate);
-						avpOperationDateObj = avpOperationDateNew;
-					}
-					dataMap.put("AVP_OPERATOR_DATE", avpOperationDateObj);
-					dataMap.put("AVP_ADDITIONAL_PAY_PERC", avpAdditionalPay);
-					dataMap.put("HR_NAME", hrName);
-					dataMap.put("HR_SIGN", hrSign);
+					dataMap.put("MANAGER_SIGN_DATE", managerDateObj);
+					dataMap.put("PAYROLL_SIGN", hrSign);
+					dataMap.put("PAYROLL_COMMENTS", hrComments);
 					Object hrDateObj = null;
 					if (hrDate != null && hrDate != "") {
 						Date hrDateNew = Date.valueOf(hrDate);
 						hrDateObj = hrDateNew;
 					}
-					dataMap.put("HR_DATE", hrDateObj);
+					dataMap.put("PAYROLL_SIGN_DATE", hrDateObj);
 					dataMap.put("WORKFLOW_INSTANCE_ID", workflowInstanceID);
 
 					log.error("Datamap Size=" + dataMap.size());
