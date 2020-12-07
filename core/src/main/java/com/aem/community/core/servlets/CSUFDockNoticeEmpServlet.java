@@ -38,6 +38,7 @@ import org.slf4j.LoggerFactory;
 
 import com.aem.community.core.services.JDBCConnectionHelperService;
 import com.aem.community.util.CSUFConstants;
+import com.aem.community.util.CSUFHelper;
 
 /**
  * Servlet that writes some sample content into the response. It is mounted for
@@ -112,6 +113,11 @@ public class CSUFDockNoticeEmpServlet extends SlingSafeMethodsServlet {
 				for (int i = 0; i < fields.length; i++) {
 					employeeEvalDetails.put(fields[i],
 							oRresultSet.getString(fields[i]));
+				}
+				
+				if(employeeEvalDetails.length() > 0) {
+					String empEmailID = CSUFHelper.getEmailID(oConnection,cwid);
+					employeeEvalDetails.put("EMP_EMAIL_ID", empEmailID);
 				}
 				jArray.put(employeeEvalDetails);
 			}
