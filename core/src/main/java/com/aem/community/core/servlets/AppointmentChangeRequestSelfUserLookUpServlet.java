@@ -35,7 +35,7 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
  * idempotent. For write operations use the {@link SlingAllMethodsServlet}.
  */
 
-@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Career Development Plan",
+@Component(service = Servlet.class, property = { Constants.SERVICE_DESCRIPTION + "=Appointment Change Request",
 		"sling.servlet.methods=" + HttpConstants.METHOD_POST, "sling.servlet.paths=" + "/bin/appointmentChangeRequestUserLookUp" })
 public class AppointmentChangeRequestSelfUserLookUpServlet extends SlingSafeMethodsServlet {
     private final static Logger logger = LoggerFactory.getLogger(AppointmentChangeRequestSelfUserLookUpServlet.class);
