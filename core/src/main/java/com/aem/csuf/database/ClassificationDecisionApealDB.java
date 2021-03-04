@@ -41,7 +41,7 @@ import com.day.commons.datasource.poolservice.DataSourcePool;
 
 public class ClassificationDecisionApealDB implements WorkflowProcess{
 
-private static final Logger log = LoggerFactory.getLogger(CareerDevelopmentPlanDB.class);
+private static final Logger log = LoggerFactory.getLogger(ClassificationDecisionApealDB.class);
 
 	@Reference
 	private JDBCConnectionHelperService jdbcConnectionService;
