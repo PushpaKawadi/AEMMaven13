@@ -108,7 +108,6 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 			// log.info("xmlFiles inside ");
 			String filePath = attachmentXml.getPath();
 
-			log.info("filePath= " + filePath);
 			if (filePath.contains("Data.xml")) {
 				filePath = attachmentXml.getPath().concat("/jcr:content");
 				log.info("xmlFiles=" + filePath);
@@ -150,7 +149,7 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 						if (nNode.getNodeType() == org.w3c.dom.Node.ELEMENT_NODE) {
                             log.info("Inside IF"); 
 							org.w3c.dom.Element eElement = (org.w3c.dom.Element) nNode;
-                            log.info("Before Fields"); 							
+                           						
 
                             first_Name = eElement.getElementsByTagName("First_Name")
                                     .item(0).getTextContent();                                  
@@ -165,7 +164,8 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
                                     .item(0).getTextContent();                           
 
                             empl_ID = eElement.getElementsByTagName("Empl_ID")
-                                    .item(0).getTextContent();                           
+                                    .item(0).getTextContent();   
+                            log.info("Pushpa1"); 	
 
                             campus_Phone = eElement.getElementsByTagName("Campus_Phone")
                                     .item(0).getTextContent();                           
@@ -180,7 +180,9 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
                                     .item(0).getTextContent();                           
 
                             email = eElement.getElementsByTagName("Email")
-                                    .item(0).getTextContent();                           
+                                    .item(0).getTextContent();    
+                            
+                            log.info("Pushpa2"); 
 
                             viewPersonnelFile = eElement.getElementsByTagName("ViewPersonnelFile")
                                     .item(0).getTextContent();                          
@@ -195,7 +197,9 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 									.item(0).getTextContent();                           
                             
                             copy3 = eElement.getElementsByTagName("Copy3")
-                            .item(0).getTextContent();                          
+                            .item(0).getTextContent();           
+                            
+                            log.info("Pushpa3"); 
 
                             copy4 = eElement.getElementsByTagName("Copy4")
                             .item(0).getTextContent();                              
@@ -212,6 +216,8 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 							nameOfUnionRep = eElement.getElementsByTagName("NameOfUnionRep")
 									.item(0).getTextContent();							
 
+							log.info("Pushpa4"); 
+							
 							other = eElement.getElementsByTagName("Other")
 									.item(0).getTextContent();							
 							
@@ -225,7 +231,9 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 									.item(0).getTextContent();							
 							
 							other4 = eElement.getElementsByTagName("Other4")
-									.item(0).getTextContent();											
+									.item(0).getTextContent();		
+							
+							log.info("Pushpa5"); 
 							
 							employeeSignature = eElement.getElementsByTagName("EmployeeSignature")
 									.item(0).getTextContent();							
@@ -233,8 +241,8 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 							employeeDate = eElement.getElementsByTagName("EmployeeDate")
 									.item(0).getTextContent();							
 							
-							hrdiCompletingRequest = eElement.getElementsByTagName("HRDICompletingRequest")
-									.item(0).getTextContent();							
+							/*hrdiCompletingRequest = eElement.getElementsByTagName("HRDICompletingRequest")
+									.item(0).getTextContent();*/					
 							
 							scheduledReviewDate = eElement.getElementsByTagName("ScheduledReviewDate")
 									.item(0).getTextContent();												
@@ -246,7 +254,8 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 									.item(0).getTextContent();
 														
 							copieProvidedTime = eElement.getElementsByTagName("CopiesProvidedTime")
-									.item(0).getTextContent();							
+									.item(0).getTextContent();	
+							log.info("Pushpa6"); 
 						}
 					}
 
@@ -291,7 +300,7 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 						employeeDateObj = employeeDateNew;
 					}	
 					dataMap.put("EMPLOYEE_DATE", employeeDateObj);					
-					dataMap.put("HRDI_COMPLETING_REQUEST", hrdiCompletingRequest);
+					dataMap.put("HRDI_COMPLETING_REQUEST", "");
 					
 					Object scheduledReviewDateObj= null;
                     if(scheduledReviewDate != null && scheduledReviewDate != "") {
@@ -364,6 +373,7 @@ public class PersonnelFileAccessRequestDB implements WorkflowProcess {
 	public void insertCareerDevelopmentData(Connection conn, LinkedHashMap<String, Object> dataMap) {
 		PreparedStatement preparedStmt = null;
 		log.error("conn=" + conn);
+		log.error("dataMap==="+dataMap.size());
 		if (conn != null) {
 			try {
 				conn.setAutoCommit(false);
