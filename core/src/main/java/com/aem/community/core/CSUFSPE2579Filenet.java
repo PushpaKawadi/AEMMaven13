@@ -33,8 +33,6 @@ import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.xml.sax.SAXException;
 
-
-
 //import com.adobe.aemfd.docmanager.Document;
 import com.adobe.granite.workflow.WorkflowException;
 import com.adobe.granite.workflow.WorkflowSession;
@@ -49,7 +47,7 @@ import com.aem.community.util.ConfigManager;
 public class CSUFSPE2579Filenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory.getLogger(CSUFSPE2579Filenet.class);
-	
+
 	@Reference
 	private GlobalConfigService globalConfigService;
 
@@ -195,7 +193,7 @@ public class CSUFSPE2579Filenet implements WorkflowProcess {
 		// log.error("firstName="+firstName);
 		// log.error("empId="+empId);
 		// log.error("Rating="+rating);
-		//log.error("Json String:" + jsonString.toString());
+		// log.error("Json String:" + jsonString.toString());
 
 		// log.error("encodedPDF="+encodedPDF);
 		if (encodedPDF != null && lastName != null && firstName != null) {
