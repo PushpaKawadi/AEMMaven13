@@ -50,7 +50,7 @@ import com.google.gson.JsonObject;
 public class CSUFCertificateOfEligibilityFilenet implements WorkflowProcess {
 
 	private static final Logger log = LoggerFactory
-			.getLogger(CSUFPrePerfEvalFilenet.class);
+			.getLogger(CSUFCertificateOfEligibilityFilenet.class);
 
 	@Reference
 	private GlobalConfigService globalConfigService;
